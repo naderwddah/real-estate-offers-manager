@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>مسار — الإعدادات</title>
+    <link rel="stylesheet" href="global.css" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+      * {
+        font-family: "Tajawal", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #f0f4fa;
+        min-height: 100vh;
+      }
+      .btn {
+        padding: 10px 28px;
+        border-radius: 40px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+      }
+      .btn-gold {
+        background: #1e3a5f;
+        color: #fff;
+      }
+      .btn-gold:hover {
+        background: #0f2a47;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25);
+      }
+      .btn-outline {
+        background: transparent;
+        color: #1e3a5f;
+        border: 2px solid #1e3a5f;
+      }
+      .btn-outline:hover {
+        background: #1e3a5f;
+        color: #fff;
+      }
+      .btn-sm {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+      }
+      .btn-emerald {
+        background: #10b981;
+        color: #fff;
+      }
+      .btn-emerald:hover {
+        background: #059669;
+      }
+      .btn-danger {
+        background: #dc2626;
+        color: #fff;
+      }
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
+      .btn-amber {
+        background: #f59e0b;
+        color: #fff;
+      }
+      .btn-amber:hover {
+        background: #d97706;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .field label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #374151;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        border: 2px solid #e5e9f0;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        transition: border 0.2s;
+        background: #fff;
+        width: 100%;
+        font-family: "Tajawal", sans-serif;
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        outline: none;
+        border-color: #1e3a5f;
+        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
+      }
+      .field.full-width {
+        grid-column: 1 / -1;
+      }
+      .settings-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e9edf4;
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        transition: all 0.2s;
+      }
+      .settings-card:hover {
+        border-color: #d1d9e6;
+      }
+      .settings-card .card-title {
+        font-size: 18px;
+        font-weight: 800;
+        color: #1e3a5f;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .settings-card .card-title .icon {
+        font-size: 1.2rem;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        background: #1f2937;
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 14px;
+        font-weight: 500;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        animation: slideUp 0.3s ease;
+        max-width: 90%;
+      }
+      .toast.show {
+        display: flex;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .tag-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.85rem;
+        margin: 4px;
+        border: 1px solid #e5e9f0;
+      }
+      .tag-item .remove {
+        cursor: pointer;
+        color: #9ca3af;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+      .tag-item .remove:hover {
+        color: #dc2626;
+      }
+      .tag-input-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .tag-input-group input {
+        flex: 1;
+        min-width: 150px;
+      }
+      .tag-input-group .btn {
+        white-space: nowrap;
+      }
+      @media (max-width: 768px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+        .settings-card {
+          padding: 16px;
+        }
+      }
+      .settings-card .divider {
+        border-top: 1px solid #e9edf4;
+        margin: 16px 0;
+      }
+      .help-text {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+      <!-- TOAST -->
+      <div class="toast" id="toast">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
+      </div>
+
+      <!-- ===== PAGE WRAPPER ===== -->
+      <div class="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+        <!-- Header -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+        >
+          <div>
+            <h1
+              class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight"
+            >
+              <i class="fas fa-cog ml-2 text-[#2d6a9f]"></i>الإعدادات
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+              إدارة إعدادات النظام والبيانات الأساسية
+            </p>
+          </div>
+          <button onclick="saveAllSettings()" class="btn btn-gold text-sm">
+            <i class="fas fa-save"></i> حفظ جميع الإعدادات
+          </button>
+        </div>
+
+        <!-- Settings Form -->
+        <form id="settingsForm" onsubmit="return false;">
+          <!-- 1. Company Settings -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">🏢</span> بيانات الشركة
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>اسم الشركة *</label>
+                <input
+                  type="text"
+                  id="companyName"
+                  placeholder="مثال: شركة مسار العقارية"
+                />
+              </div>
+              <div class="field">
+                <label>شعار الشركة (رابط الصورة)</label>
+                <input
+                  type="url"
+                  id="companyLogo"
+                  placeholder="https://example.com/logo.png"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Manager Settings -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">👤</span> المدير (أسد)
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>اسم المدير المسؤول عن التسعير *</label>
+                <input type="text" id="managerName" placeholder="مثال: أسد" />
+              </div>
+              <div class="field">
+                <label>رقم واتساب المدير *</label>
+                <input
+                  type="tel"
+                  id="managerPhone"
+                  placeholder="مثال: 966500000000"
+                />
+              </div>
+            </div>
+            <div class="help-text">
+              سيتم استخدام هذا الرقم لإرسال تفاصيل العروض للمدير للتسعير.
+            </div>
+          </div>
+
+          <!-- 3. Legal Department -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">⚖️</span> الشؤون القانونية
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>اسم جهة الشؤون القانونية</label>
+                <input
+                  type="text"
+                  id="legalName"
+                  placeholder="مثال: الشؤون القانونية"
+                />
+              </div>
+              <div class="field">
+                <label>رقم واتساب الشؤون القانونية</label>
+                <input
+                  type="tel"
+                  id="legalPhone"
+                  placeholder="مثال: 966500000000"
+                />
+              </div>
+            </div>
+            <div class="help-text">
+              سيتم استخدام هذا الرقم لإرسال المستندات والعقود للمراجعة
+              القانونية.
+            </div>
+          </div>
+
+          <!-- 4. General Settings -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">⚙️</span> الإعدادات العامة
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>اليوم الأسبوعي لتقرير الأسبوع</label>
+                <select id="reportDay">
+                  <option value="0">الأحد</option>
+                  <option value="1">الإثنين</option>
+                  <option value="2">الثلاثاء</option>
+                  <option value="3">الأربعاء</option>
+                  <option value="4" selected>الخميس</option>
+                  <option value="5">الجمعة</option>
+                  <option value="6">السبت</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>المهلة القصوى للانتظار (أيام)</label>
+                <input
+                  type="number"
+                  id="maxWaitDays"
+                  value="3"
+                  min="1"
+                  max="30"
+                />
+                <div class="help-text">
+                  عدد الأيام قبل اعتبار الطلب/العرض متأخراً.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Property Types -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">🏗️</span> أنواع العقارات
+            </div>
+            <div class="field">
+              <label>أنواع العقارات المسموحة (افصل بينها بفاصلة)</label>
+              <input
+                type="text"
+                id="propertyTypesInput"
+                placeholder="أرض, محطة وقود, مركز تجاري, فيلا, شقة, عمارة"
+              />
+            </div>
+            <div id="propertyTypesTags" class="flex flex-wrap gap-1 mt-2"></div>
+            <div class="help-text">
+              هذه الأنواع ستظهر في قوائم اختيار نوع العقار في العروض والطلبات.
+            </div>
+          </div>
+
+          <!-- 6. Document Types -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">📄</span> أنواع المستندات المطلوبة
+            </div>
+            <div class="field">
+              <label>أنواع المستندات المطلوبة للعروض (افصل بينها بفاصلة)</label>
+              <input
+                type="text"
+                id="docTypesInput"
+                placeholder="صك, هوية, وكالة, رخصة بناء"
+              />
+            </div>
+            <div id="docTypesTags" class="flex flex-wrap gap-1 mt-2"></div>
+            <div class="help-text">
+              هذه المستندات ستظهر كقائمة تحقق في العروض الخاصة بالشركة.
+            </div>
+          </div>
+
+          <!-- 7. Notification Settings -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">🔔</span> إعدادات الإشعارات
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>تفعيل الإشعارات</label>
+                <select id="notificationsEnabled">
+                  <option value="true">مفعل</option>
+                  <option value="false">معطل</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>تذكير المتابعات التلقائية</label>
+                <select id="autoReminders">
+                  <option value="true">مفعل</option>
+                  <option value="false">معطل</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top: 12px">
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                onclick="requestNotificationPermission()"
+              >
+                <i class="fas fa-bell"></i> طلب إذن الإشعارات
+              </button>
+              <span
+                id="notificationStatus"
+                class="text-xs text-gray-500 mr-3"
+              ></span>
+            </div>
+          </div>
+
+          <!-- 8. Backup & Reset -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">💾</span> النسخ الاحتياطي والاستعادة
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button
+                type="button"
+                class="btn btn-emerald btn-sm"
+                onclick="backupData()"
+              >
+                <i class="fas fa-download"></i> تحميل نسخة احتياطية
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                onclick="restoreData()"
+              >
+                <i class="fas fa-upload"></i> استعادة من نسخة احتياطية
+              </button>
+              <button
+                type="button"
+                class="btn btn-amber btn-sm"
+                onclick="resetSystem()"
+              >
+                <i class="fas fa-undo"></i> إعادة تعيين الإعدادات الافتراضية
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                onclick="clearAllData()"
+              >
+                <i class="fas fa-trash"></i> مسح جميع البيانات
+              </button>
+            </div>
+            <div class="help-text mt-2">
+              ⚠️ مسح جميع البيانات سيحذف العروض والطلبات وجهات الاتصال
+              والإعدادات نهائياً.
+            </div>
+          </div>
+
+          <!-- 9. Data Statistics -->
+          <div class="settings-card">
+            <div class="card-title">
+              <span class="icon">📊</span> إحصائيات النظام
+            </div>
+            <div
+              id="statsInfo"
+              class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm"
+            >
+              <div>
+                <span class="text-gray-500">العروض:</span>
+                <span class="font-bold" id="statOffers">0</span>
+              </div>
+              <div>
+                <span class="text-gray-500">الطلبات:</span>
+                <span class="font-bold" id="statRequests">0</span>
+              </div>
+              <div>
+                <span class="text-gray-500">جهات الاتصال:</span>
+                <span class="font-bold" id="statContacts">0</span>
+              </div>
+              <div>
+                <span class="text-gray-500">الملاك:</span>
+                <span class="font-bold" id="statOwners">0</span>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Save Button (Bottom) -->
+        <div class="flex justify-end gap-3 mt-4">
+          <button onclick="saveAllSettings()" class="btn btn-gold">
+            <i class="fas fa-save"></i> حفظ جميع الإعدادات
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="sidebar.js"></script>
+    <script src="global.js"></script>
+    <script>
+      // ============================================================
+      //  DEFAULT SETTINGS
+      // ============================================================
+      const DEFAULT_SETTINGS = {
+        companyName: "شركة مسار العقارية",
+        companyLogo: "",
+        managerName: "أسد",
+        managerPhone: "966500000000",
+        legalName: "الشؤون القانونية",
+        legalPhone: "966500000000",
+        reportDay: 4,
+        maxWaitDays: 3,
+        propertyTypes: [
+          "أرض",
+          "محطة وقود",
+          "مركز تجاري",
+          "فيلا",
+          "شقة",
+          "عمارة",
+        ],
+        docTypes: ["صك", "هوية", "وكالة", "رخصة بناء"],
+        notificationsEnabled: true,
+        autoReminders: true,
+      };
+
+      let settings = {};
+
+      // ============================================================
+      //  LOAD / SAVE SETTINGS
+      // ============================================================
+      function loadSettings() {
+        const saved = localStorage.getItem("masarSettings");
+        if (saved) {
+          try {
+            settings = JSON.parse(saved);
+            // Ensure all fields exist
+            for (const key in DEFAULT_SETTINGS) {
+              if (!(key in settings)) {
+                settings[key] = DEFAULT_SETTINGS[key];
+              }
+            }
+            return;
+          } catch (e) {}
+        }
+        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+        saveSettings();
+      }
+
+      function saveSettings() {
+        localStorage.setItem("masarSettings", JSON.stringify(settings));
+      }
+
+      function renderSettings() {
+        document.getElementById("companyName").value =
+          settings.companyName || "";
+        document.getElementById("companyLogo").value =
+          settings.companyLogo || "";
+        document.getElementById("managerName").value =
+          settings.managerName || "";
+        document.getElementById("managerPhone").value =
+          settings.managerPhone || "";
+        document.getElementById("legalName").value = settings.legalName || "";
+        document.getElementById("legalPhone").value = settings.legalPhone || "";
+        document.getElementById("reportDay").value = settings.reportDay || 4;
+        document.getElementById("maxWaitDays").value =
+          settings.maxWaitDays || 3;
+        document.getElementById("propertyTypesInput").value = (
+          settings.propertyTypes || []
+        ).join("، ");
+        document.getElementById("docTypesInput").value = (
+          settings.docTypes || []
+        ).join("، ");
+        document.getElementById("notificationsEnabled").value =
+          settings.notificationsEnabled ? "true" : "false";
+        document.getElementById("autoReminders").value = settings.autoReminders
+          ? "true"
+          : "false";
+        renderTags("propertyTypesInput", "propertyTypesTags", "propertyTypes");
+        renderTags("docTypesInput", "docTypesTags", "docTypes");
+        updateStats();
+        updateNotificationStatus();
+      }
+
+      function renderTags(inputId, containerId, settingsKey) {
+        const container = document.getElementById(containerId);
+        const values = settings[settingsKey] || [];
+        container.innerHTML = values
+          .map(
+            (v) => `
+                <span class="tag-item">
+                    ${v}
+                    <span class="remove" onclick="removeTag('${settingsKey}','${v}')">✕</span>
+                </span>
+            `,
+          )
+          .join("");
+      }
+
+      function removeTag(settingsKey, value) {
+        const arr = settings[settingsKey] || [];
+        settings[settingsKey] = arr.filter((v) => v !== value);
+        saveSettings();
+        renderSettings();
+        toast("🗑️ تم حذف العنصر", "info");
+      }
+
+      function addTagFromInput(inputId, settingsKey) {
+        const input = document.getElementById(inputId);
+        const val = input.value.trim();
+        if (!val) return;
+        const arr = settings[settingsKey] || [];
+        const items = val.split(/[,،\s]+/).filter((s) => s.trim());
+        items.forEach((item) => {
+          if (!arr.includes(item)) {
+            arr.push(item);
+          }
+        });
+        settings[settingsKey] = arr;
+        saveSettings();
+        renderSettings();
+        input.value = "";
+        toast("✅ تم إضافة العناصر", "success");
+      }
+
+      // ============================================================
+      //  SAVE ALL SETTINGS
+      // ============================================================
+      function saveAllSettings() {
+        const companyName = document.getElementById("companyName").value.trim();
+        const companyLogo = document.getElementById("companyLogo").value.trim();
+        const managerName = document.getElementById("managerName").value.trim();
+        const managerPhone = document
+          .getElementById("managerPhone")
+          .value.trim();
+        const legalName = document.getElementById("legalName").value.trim();
+        const legalPhone = document.getElementById("legalPhone").value.trim();
+        const reportDay = parseInt(document.getElementById("reportDay").value);
+        const maxWaitDays =
+          parseInt(document.getElementById("maxWaitDays").value) || 3;
+        const propertyTypesInput =
+          document.getElementById("propertyTypesInput").value;
+        const docTypesInput = document.getElementById("docTypesInput").value;
+        const notificationsEnabled =
+          document.getElementById("notificationsEnabled").value === "true";
+        const autoReminders =
+          document.getElementById("autoReminders").value === "true";
+
+        if (!companyName || !managerName || !managerPhone) {
+          toast("⚠️ يرجى ملء الحقول المطلوبة (*)", "error");
+          return;
+        }
+
+        settings.companyName = companyName;
+        settings.companyLogo = companyLogo;
+        settings.managerName = managerName;
+        settings.managerPhone = managerPhone;
+        settings.legalName = legalName;
+        settings.legalPhone = legalPhone;
+        settings.reportDay = reportDay;
+        settings.maxWaitDays = maxWaitDays;
+        settings.notificationsEnabled = notificationsEnabled;
+        settings.autoReminders = autoReminders;
+
+        // Parse property types
+        if (propertyTypesInput) {
+          settings.propertyTypes = propertyTypesInput
+            .split(/[,،\s]+/)
+            .filter((s) => s.trim())
+            .map((s) => s.trim());
+        } else {
+          settings.propertyTypes = DEFAULT_SETTINGS.propertyTypes;
+        }
+
+        if (docTypesInput) {
+          settings.docTypes = docTypesInput
+            .split(/[,،\s]+/)
+            .filter((s) => s.trim())
+            .map((s) => s.trim());
+        } else {
+          settings.docTypes = DEFAULT_SETTINGS.docTypes;
+        }
+
+        saveSettings();
+        renderSettings();
+        toast("✅ تم حفظ جميع الإعدادات بنجاح", "success");
+      }
+
+      // ============================================================
+      //  NOTIFICATION PERMISSION
+      // ============================================================
+      function requestNotificationPermission() {
+        if (!("Notification" in window)) {
+          toast("⚠️ المتصفح لا يدعم الإشعارات", "error");
+          return;
+        }
+        if (Notification.permission === "granted") {
+          toast("✅ الإشعارات مفعلة بالفعل", "success");
+          return;
+        }
+        Notification.requestPermission().then((perm) => {
+          if (perm === "granted") {
+            toast("✅ تم تفعيل الإشعارات", "success");
+            new Notification("🔔 تم تفعيل الإشعارات", {
+              body: "ستصلك تنبيهات النظام.",
+            });
+          } else {
+            toast("⚠️ تم رفض الإشعارات", "error");
+          }
+          updateNotificationStatus();
+        });
+      }
+
+      function updateNotificationStatus() {
+        const status = document.getElementById("notificationStatus");
+        if (!("Notification" in window)) {
+          status.textContent = "⚠️ غير مدعوم";
+          status.className = "text-xs text-red-500 mr-3";
+          return;
+        }
+        if (Notification.permission === "granted") {
+          status.textContent = "✅ مفعل";
+          status.className = "text-xs text-emerald-500 mr-3";
+        } else if (Notification.permission === "denied") {
+          status.textContent = "❌ مرفوض";
+          status.className = "text-xs text-red-500 mr-3";
+        } else {
+          status.textContent = "⏳ لم يسمح بعد";
+          status.className = "text-xs text-amber-500 mr-3";
+        }
+      }
+
+      // ============================================================
+      //  BACKUP & RESTORE
+      // ============================================================
+      function backupData() {
+        const data = {
+          settings: settings,
+          offers: loadData("masarOffersDataV6"),
+          requests: loadData("masarRequestsDataV4"),
+          contacts: loadData("masarContactsData"),
+          owners: loadData("masarOwnersData"),
+          timestamp: new Date().toISOString(),
+        };
+        const json = JSON.stringify(data, null, 2);
+        const blob = new Blob([json], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `backup_masar_${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        toast("✅ تم تحميل النسخة الاحتياطية", "success");
+      }
+
+      function restoreData() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = function (ev) {
+            try {
+              const data = JSON.parse(ev.target.result);
+              if (data.settings) {
+                settings = data.settings;
+                saveSettings();
+              }
+              if (data.offers)
+                localStorage.setItem(
+                  "masarOffersDataV6",
+                  JSON.stringify(data.offers),
+                );
+              if (data.requests)
+                localStorage.setItem(
+                  "masarRequestsDataV4",
+                  JSON.stringify(data.requests),
+                );
+              if (data.contacts)
+                localStorage.setItem(
+                  "masarContactsData",
+                  JSON.stringify(data.contacts),
+                );
+              if (data.owners)
+                localStorage.setItem(
+                  "masarOwnersData",
+                  JSON.stringify(data.owners),
+                );
+              renderSettings();
+              toast("✅ تم استعادة البيانات بنجاح", "success");
+            } catch (err) {
+              toast("⚠️ ملف غير صالح", "error");
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      }
+
+      function loadData(key) {
+        const data = localStorage.getItem(key);
+        if (data) {
+          try {
+            return JSON.parse(data);
+          } catch (e) {}
+        }
+        return [];
+      }
+
+      // ============================================================
+      //  RESET & CLEAR
+      // ============================================================
+      function resetSystem() {
+        if (
+          !confirm(
+            "⚠️ هل أنت متأكد من إعادة تعيين الإعدادات إلى القيم الافتراضية؟",
+          )
+        )
+          return;
+        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+        saveSettings();
+        renderSettings();
+        toast("✅ تم إعادة تعيين الإعدادات", "success");
+      }
+
+      function clearAllData() {
+        if (
+          !confirm(
+            "🚨 سيتم حذف جميع البيانات نهائياً (العروض، الطلبات، جهات الاتصال، الإعدادات). هل أنت متأكد؟",
+          )
+        )
+          return;
+        if (!confirm("تأكيد نهائي: هل تريد حذف كل شيء؟")) return;
+        localStorage.removeItem("masarOffersDataV6");
+        localStorage.removeItem("masarRequestsDataV4");
+        localStorage.removeItem("masarContactsData");
+        localStorage.removeItem("masarOwnersData");
+        localStorage.removeItem("masarSettings");
+        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+        saveSettings();
+        renderSettings();
+        toast("🗑️ تم حذف جميع البيانات", "info");
+      }
+
+      // ============================================================
+      //  STATISTICS
+      // ============================================================
+      function updateStats() {
+        const offers = loadData("masarOffersDataV6");
+        const requests = loadData("masarRequestsDataV4");
+        const contacts = loadData("masarContactsData");
+        const owners = loadData("masarOwnersData");
+        document.getElementById("statOffers").textContent = offers.length;
+        document.getElementById("statRequests").textContent = requests.length;
+        document.getElementById("statContacts").textContent = contacts.length;
+        document.getElementById("statOwners").textContent = owners.length;
+      }
+
+      // ============================================================
+      //  TOAST
+      // ============================================================
+      function toast(msg, type) {
+        const el = document.getElementById("toast");
+        const icon = el.querySelector("i");
+        const text = document.getElementById("toastMessage");
+        text.textContent = msg;
+        if (type === "error") {
+          icon.className = "fas fa-exclamation-circle text-red-400";
+        } else if (type === "success") {
+          icon.className = "fas fa-check-circle text-emerald-400";
+        } else {
+          icon.className = "fas fa-info-circle text-blue-400";
+        }
+        el.classList.add("show");
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove("show"), 3500);
+      }
+
+      // ============================================================
+      //  KEYBOARD SHORTCUTS
+      // ============================================================
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+          e.preventDefault();
+          saveAllSettings();
+        }
+      });
+
+      // ============================================================
+      //  INIT
+      // ============================================================
+      loadSettings();
+      renderSettings();
+
+      // ============================================================
+      //  GLOBALS
+      // ============================================================
+      window.saveAllSettings = saveAllSettings;
+      window.backupData = backupData;
+      window.restoreData = restoreData;
+      window.resetSystem = resetSystem;
+      window.clearAllData = clearAllData;
+      window.requestNotificationPermission = requestNotificationPermission;
+      window.removeTag = removeTag;
+      window.addTagFromInput = addTagFromInput;
+      window.toast = toast;
+      window.loadData = loadData;
+    </script>
+  </body>
+</html>

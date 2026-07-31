@@ -1,0 +1,173 @@
+/* global.css */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+* {
+    font-family: 'Tajawal', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f0f4fa;
+    min-height: 100vh;
+    display: flex;
+    /* لجعل السايد بار والمحتوى جنباً إلى جنب */
+}
+
+/* ============================================
+   SIDEBAR STYLES
+   ============================================ */
+#sidebar-container {
+    width: 250px;
+    min-height: 100vh;
+    background: #1e3a5f;
+    color: #fff;
+    flex-shrink: 0;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+}
+
+/* الشعار أو اسم النظام */
+.sidebar-brand {
+    padding: 0 20px 30px 20px;
+    font-size: 22px;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.sidebar-brand i {
+    color: #fbbf24;
+    /* لون ذهبي */;
+}
+
+/* قائمة الروابط */
+.sidebar-menu {
+    list-style: none;
+    padding: 0 12px;
+    flex: 1;
+}
+.sidebar-menu li {
+    margin-bottom: 4px;
+}
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+.sidebar-menu li a i {
+    width: 22px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+.sidebar-menu li a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+.sidebar-menu li a.active {
+    background: #fbbf24;
+    color: #1e3a5f;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+.sidebar-menu li a.active i {
+    color: #1e3a5f;
+}
+
+/* ============================================
+   MAIN CONTENT (حيث توضع بقية الصفحة)
+   ============================================ */
+.main-content {
+    flex: 1;
+    padding: 20px 30px;
+    background: #f0f4fa;
+    min-height: 100vh;
+}
+
+/* ============================================
+   TOAST (منقول من صفحة الإعدادات)
+   ============================================ */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background: #1f2937;
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 500;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    animation: slideUp 0.3s ease;
+    max-width: 90%;
+}
+.toast.show {
+    display: flex;
+}
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE (شاشات صغيرة)
+   ============================================ */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    #sidebar-container {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        position: relative;
+        padding: 10px 0;
+    }
+    .sidebar-brand {
+        padding: 0 20px 15px 20px;
+        font-size: 18px;
+    }
+    .sidebar-menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        padding: 0 10px;
+    }
+    .sidebar-menu li {
+        margin-bottom: 0;
+    }
+    .sidebar-menu li a {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+        gap: 8px;
+    }
+    .main-content {
+        padding: 15px;
+    }
+}

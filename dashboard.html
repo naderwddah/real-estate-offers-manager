@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>مسار — لوحة التحكم</title>
+    <link rel="stylesheet" href="global.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+      * {
+        font-family: "Tajawal", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #f0f4fa;
+        min-height: 100vh;
+      }
+      .stat-card {
+        transition: all 0.25s ease;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+      }
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+      }
+      .stat-card .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+      .btn {
+        padding: 10px 28px;
+        border-radius: 40px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+      }
+      .btn-gold {
+        background: #1e3a5f;
+        color: #fff;
+      }
+      .btn-gold:hover {
+        background: #0f2a47;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25);
+      }
+      .btn-outline {
+        background: transparent;
+        color: #1e3a5f;
+        border: 2px solid #1e3a5f;
+      }
+      .btn-outline:hover {
+        background: #1e3a5f;
+        color: #fff;
+      }
+      .btn-sm {
+        padding: 6px 16px;
+        font-size: 0.8rem;
+      }
+      .btn-emerald {
+        background: #10b981;
+        color: #fff;
+      }
+      .btn-emerald:hover {
+        background: #059669;
+      }
+      .btn-danger {
+        background: #dc2626;
+        color: #fff;
+      }
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
+      .btn-amber {
+        background: #f59e0b;
+        color: #fff;
+      }
+      .btn-amber:hover {
+        background: #d97706;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 14px;
+        border-radius: 30px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .status-dot.pulse {
+        animation: pulse-dot 1.8s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(1.3);
+        }
+      }
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        background: #1f2937;
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 14px;
+        font-weight: 500;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        gap: 12px;
+        animation: slideUp 0.3s ease;
+        max-width: 90%;
+      }
+      .toast.show {
+        display: flex;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+      .activity-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+      }
+      .activity-dot.gold {
+        background: #c9a24b;
+      }
+      .activity-dot.blue {
+        background: #3b82f6;
+      }
+      .activity-dot.green {
+        background: #10b981;
+      }
+      .activity-dot.red {
+        background: #dc2626;
+      }
+      .activity-dot.amber {
+        background: #f59e0b;
+      }
+      .activity-dot.purple {
+        background: #8b5cf6;
+      }
+      .alert-item {
+        padding: 12px 16px;
+        border-radius: 12px;
+        border-right: 4px solid;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid #e9edf4;
+      }
+      .alert-item.urgent {
+        border-right-color: #dc2626;
+        background: #fef2f2;
+      }
+      .alert-item.warning {
+        border-right-color: #f59e0b;
+        background: #fffbeb;
+      }
+      .alert-item.info {
+        border-right-color: #3b82f6;
+        background: #eff6ff;
+      }
+      .alert-item.success {
+        border-right-color: #10b981;
+        background: #ecfdf5;
+      }
+      @media (max-width: 768px) {
+        .stat-card .stat-icon {
+          width: 36px;
+          height: 36px;
+          font-size: 1rem;
+        }
+      }
+      .chart-bar {
+        transition: height 0.6s ease;
+      }
+      .greeting-time {
+        font-size: 0.9rem;
+        color: #6b7a93;
+      }
+      .quick-action-btn {
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: 1px solid #e5e9f0;
+        background: #fff;
+        transition: all 0.2s;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #1e3a5f;
+      }
+      .quick-action-btn:hover {
+        border-color: #1e3a5f;
+        background: #f8fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+      .quick-action-btn .icon {
+        font-size: 1.2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+      <!-- TOAST -->
+      <div class="toast" id="toast">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
+      </div>
+
+      <!-- ===== PAGE WRAPPER ===== -->
+      <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+        <!-- Header with Greeting -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+        >
+          <div>
+            <h1
+              class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight"
+            >
+              <i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i>لوحة التحكم
+            </h1>
+            <p class="text-sm text-gray-500 mt-1" id="greetingText">
+              مرحباً بك، إليك ملخص أعمالك اليوم
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-sm text-gray-400" id="currentDate"></span>
+            <button
+              onclick="window.location.href = 'offers.html'"
+              class="btn btn-gold text-sm"
+            >
+              <i class="fas fa-plus"></i> عرض جديد
+            </button>
+            <button
+              onclick="window.location.href = 'requests.html'"
+              class="btn btn-outline text-sm"
+            >
+              <i class="fas fa-plus"></i> طلب جديد
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6"
+          id="statsGrid"
+        >
+          <!-- يتم تعبئتها بواسطة JS -->
+        </div>
+
+        <!-- Quick Actions -->
+        <div
+          class="bg-white rounded-2xl border border-[#e9edf4] p-4 md:p-5 mb-6"
+        >
+          <h3 class="text-sm font-bold text-[#1e3a5f] mb-3">
+            ⚡ إجراءات سريعة
+          </h3>
+          <div class="flex flex-wrap gap-3">
+            <div
+              class="quick-action-btn"
+              onclick="window.location.href = 'offers.html'"
+            >
+              <span class="icon">🏗️</span> عرض جديد
+            </div>
+            <div
+              class="quick-action-btn"
+              onclick="window.location.href = 'requests.html'"
+            >
+              <span class="icon">📋</span> طلب جديد
+            </div>
+            <div class="quick-action-btn" onclick="showTodayAppointments()">
+              <span class="icon">📅</span> معاينات اليوم
+            </div>
+            <div class="quick-action-btn" onclick="exportExcel()">
+              <span class="icon">📊</span> تصدير تقرير
+            </div>
+            <div
+              class="quick-action-btn"
+              onclick="window.location.href = 'offers.html'"
+            >
+              <span class="icon">🔍</span> عرض العروض
+            </div>
+            <div
+              class="quick-action-btn"
+              onclick="window.location.href = 'requests.html'"
+            >
+              <span class="icon">🔍</span> عرض الطلبات
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts & Activities -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- Alerts -->
+          <div
+            class="lg:col-span-2 bg-white rounded-2xl border border-[#e9edf4] p-5"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-[#1e3a5f]">
+                <i class="fas fa-bell ml-2 text-[#2d6a9f]"></i> التنبيهات
+                والتنبيهات
+              </h3>
+              <span class="text-xs text-gray-400" id="alertCount">0 تنبيه</span>
+            </div>
+            <div id="alertsContainer" class="max-h-[280px] overflow-y-auto">
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+
+          <!-- Today's Appointments -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-[#1e3a5f]">
+                <i class="fas fa-calendar-check ml-2 text-[#2d6a9f]"></i>
+                معاينات اليوم
+              </h3>
+              <span class="text-xs text-gray-400" id="appointmentCount">0</span>
+            </div>
+            <div
+              id="appointmentsContainer"
+              class="max-h-[280px] overflow-y-auto"
+            >
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts & Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Chart: Property Types -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <h3 class="font-bold text-[#1e3a5f] mb-4">
+              <i class="fas fa-chart-bar ml-2 text-[#2d6a9f]"></i> توزيع
+              العقارات
+            </h3>
+            <div
+              id="propertyChart"
+              class="h-48 flex items-end justify-center gap-4"
+            >
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+
+          <!-- Chart: Request Status -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <h3 class="font-bold text-[#1e3a5f] mb-4">
+              <i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i> حالة الطلبات
+            </h3>
+            <div
+              id="requestChart"
+              class="h-48 flex items-end justify-center gap-4"
+            >
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+
+          <!-- Recent Activity Feed -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <h3 class="font-bold text-[#1e3a5f] mb-4">
+              <i class="fas fa-clock ml-2 text-[#2d6a9f]"></i> آخر النشاطات
+            </h3>
+            <div id="activityFeed" class="max-h-[200px] overflow-y-auto">
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming / Pending -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <!-- Pending Offers -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-[#1e3a5f]">
+                <i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> عروض
+                قيد الانتظار
+              </h3>
+              <button
+                onclick="window.location.href = 'offers.html'"
+                class="text-xs text-[#1e3a5f] hover:underline"
+              >
+                عرض الكل
+              </button>
+            </div>
+            <div
+              id="pendingOffersList"
+              class="space-y-2 max-h-[180px] overflow-y-auto"
+            >
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+
+          <!-- Pending Requests -->
+          <div class="bg-white rounded-2xl border border-[#e9edf4] p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-[#1e3a5f]">
+                <i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> طلبات
+                قيد المطابقة
+              </h3>
+              <button
+                onclick="window.location.href = 'requests.html'"
+                class="text-xs text-[#1e3a5f] hover:underline"
+              >
+                عرض الكل
+              </button>
+            </div>
+            <div
+              id="pendingRequestsList"
+              class="space-y-2 max-h-[180px] overflow-y-auto"
+            >
+              <!-- يتم تعبئتها بواسطة JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="sidebar.js"></script>
+    <script src="global.js"></script>
+    <script>
+      // ============================================================
+      //  DATA LOADING
+      // ============================================================
+      function loadOffers() {
+        const data = localStorage.getItem("masarOffersDataV6");
+        if (data) {
+          try {
+            return JSON.parse(data);
+          } catch (e) {}
+        }
+        return [];
+      }
+
+      function loadRequests() {
+        const data = localStorage.getItem("masarRequestsDataV4");
+        if (data) {
+          try {
+            return JSON.parse(data);
+          } catch (e) {}
+        }
+        return [];
+      }
+
+      function getStatusName(id, isOffer = false) {
+        if (isOffer) {
+          const stages = [
+            { id: 1, name: "عرض جديد" },
+            { id: 2, name: "بانتظار رد المدير" },
+            { id: 3, name: "تم تحديد السعر" },
+            { id: 4, name: "تم إبلاغ المالك" },
+            { id: 5, name: "تم استلام المستندات" },
+            { id: 6, name: "قيد المراجعة القانونية" },
+            { id: 7, name: "مكتمل ✅" },
+            { id: 10, name: "مباع" },
+          ];
+          const s = stages.find((s) => s.id === id);
+          return s ? s.name : "غير معروف";
+        } else {
+          const stages = [
+            { id: 1, name: "طلب جديد" },
+            { id: 2, name: "جاري المطابقة" },
+            { id: 3, name: "تم اختيار العرض" },
+            { id: 4, name: "جدولة المعاينة" },
+            { id: 5, name: "مكتمل ✅" },
+          ];
+          const s = stages.find((s) => s.id === id);
+          return s ? s.name : "غير معروف";
+        }
+      }
+
+      function getStatusColor(id, isOffer = false) {
+        if (isOffer) {
+          const map = {
+            1: "#f97316",
+            2: "#f59e0b",
+            3: "#3b82f6",
+            4: "#8b5cf6",
+            5: "#10b981",
+            6: "#f59e0b",
+            7: "#10b981",
+            10: "#10b981",
+          };
+          return map[id] || "#9ca3af";
+        } else {
+          const map = {
+            1: "#f97316",
+            2: "#3b82f6",
+            3: "#8b5cf6",
+            4: "#f59e0b",
+            5: "#10b981",
+          };
+          return map[id] || "#9ca3af";
+        }
+      }
+
+      function fmtDate(d) {
+        if (!d) return "-";
+        const parts = d.split("-");
+        return parts[2] + "/" + parts[1] + "/" + parts[0];
+      }
+
+      function fmtMoney(n) {
+        return n ? Number(n).toLocaleString("en-US") + " ريال" : "—";
+      }
+
+      function toast(msg, type) {
+        const el = document.getElementById("toast");
+        const icon = el.querySelector("i");
+        const text = document.getElementById("toastMessage");
+        text.textContent = msg;
+        if (type === "error") {
+          icon.className = "fas fa-exclamation-circle text-red-400";
+        } else if (type === "success") {
+          icon.className = "fas fa-check-circle text-emerald-400";
+        } else {
+          icon.className = "fas fa-info-circle text-blue-400";
+        }
+        el.classList.add("show");
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove("show"), 4000);
+      }
+
+      // ============================================================
+      //  DASHBOARD RENDER
+      // ============================================================
+      function renderDashboard() {
+        const offers = loadOffers();
+        const requests = loadRequests();
+
+        // Stats
+        const totalOffers = offers.length;
+        const totalRequests = requests.length;
+        const activeOffers = offers.filter(
+          (o) => o.stageId < 7 && o.stageId !== 10,
+        ).length;
+        const pendingRequests = requests.filter((r) => r.stageId === 2).length;
+        const completedRequests = requests.filter(
+          (r) => r.stageId === 5,
+        ).length;
+        const todayAppointments = requests.filter(
+          (r) =>
+            r.stageId === 4 &&
+            r.appointmentDate === new Date().toISOString().slice(0, 10),
+        );
+        const delayed = requests.filter(
+          (r) =>
+            r.stageId === 4 &&
+            r.appointmentDate &&
+            r.appointmentDate < new Date().toISOString().slice(0, 10),
+        ).length;
+
+        const land = offers.filter((o) => o.type === "أرض").length;
+        const gas = offers.filter((o) => o.type === "محطة وقود").length;
+        const mall = offers.filter((o) => o.type === "مركز تجاري").length;
+
+        const statsGrid = document.getElementById("statsGrid");
+        statsGrid.innerHTML = `
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="window.location.href='offers.html'">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-blue-50 text-blue-600"><i class="fas fa-file-signature"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">العروض</p>
+                            <p class="text-xl md:text-2xl font-bold text-[#1e3a5f]">${totalOffers}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="window.location.href='requests.html'">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-purple-50 text-purple-600"><i class="fas fa-clipboard-list"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">الطلبات</p>
+                            <p class="text-xl md:text-2xl font-bold text-[#1e3a5f]">${totalRequests}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="window.location.href='offers.html'">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-emerald-50 text-emerald-600"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">عروض نشطة</p>
+                            <p class="text-xl md:text-2xl font-bold text-[#1e3a5f]">${activeOffers}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="window.location.href='requests.html'">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-amber-50 text-amber-600"><i class="fas fa-hourglass-half"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">قيد المطابقة</p>
+                            <p class="text-xl md:text-2xl font-bold text-[#f59e0b]">${pendingRequests}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="showTodayAppointments()">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-blue-50 text-blue-600"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">معاينات اليوم</p>
+                            <p class="text-xl md:text-2xl font-bold text-[#1e3a5f]">${todayAppointments.length}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm" onclick="toast('عرض المتأخرات...')">
+                    <div class="flex items-center gap-3">
+                        <div class="stat-icon bg-red-50 text-red-600"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium">متأخرة</p>
+                            <p class="text-xl md:text-2xl font-bold text-red-500">${delayed}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        // Alerts
+        const alerts = generateAlerts(offers, requests);
+        const alertsContainer = document.getElementById("alertsContainer");
+        document.getElementById("alertCount").textContent =
+          alerts.length + " تنبيه";
+        if (alerts.length === 0) {
+          alertsContainer.innerHTML = `<div class="text-center py-8 text-gray-400"><i class="fas fa-check-circle text-2xl block mb-2"></i> لا توجد تنبيهات</div>`;
+        } else {
+          alertsContainer.innerHTML = alerts
+            .slice(0, 6)
+            .map(
+              (a) => `
+                    <div class="alert-item ${a.level}">
+                        <div class="flex items-center gap-3">
+                            <span class="text-lg">${a.icon}</span>
+                            <div>
+                                <div class="text-sm font-medium">${a.title}</div>
+                                <div class="text-xs text-gray-500">${a.message}</div>
+                            </div>
+                        </div>
+                        ${a.link ? `<button onclick="window.location.href='${a.link}'" class="text-xs text-[#1e3a5f] hover:underline font-bold">عرض</button>` : ""}
+                    </div>
+                `,
+            )
+            .join("");
+        }
+
+        // Appointments
+        const appointments = requests.filter(
+          (r) =>
+            r.stageId === 4 &&
+            r.appointmentDate === new Date().toISOString().slice(0, 10),
+        );
+        const appContainer = document.getElementById("appointmentsContainer");
+        document.getElementById("appointmentCount").textContent =
+          appointments.length;
+        if (appointments.length === 0) {
+          appContainer.innerHTML = `<div class="text-center py-8 text-gray-400"><i class="fas fa-calendar-day text-2xl block mb-2"></i> لا توجد معاينات اليوم</div>`;
+        } else {
+          appContainer.innerHTML = appointments
+            .map(
+              (r) => `
+                    <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl mb-2">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold">${r.client.charAt(0)}</div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold">${r.client}</div>
+                            <div class="text-xs text-gray-500">${r.type} · ${r.appointmentTime || "غير محدد"}</div>
+                            <div class="text-xs text-gray-400">${r.id}</div>
+                        </div>
+                        <button onclick="window.location.href='requests.html'" class="text-xs text-[#1e3a5f] font-bold hover:underline">فتح</button>
+                    </div>
+                `,
+            )
+            .join("");
+        }
+
+        // Charts
+        renderPropertyChart(offers);
+        renderRequestChart(requests);
+
+        // Activity Feed
+        renderActivityFeed(offers, requests);
+
+        // Pending Offers
+        const pendingOffers = offers
+          .filter((o) => o.stageId < 7 && o.stageId !== 10)
+          .slice(0, 5);
+        const pendingOffersList = document.getElementById("pendingOffersList");
+        if (pendingOffers.length === 0) {
+          pendingOffersList.innerHTML = `<div class="text-center py-4 text-gray-400 text-sm">لا توجد عروض قيد الانتظار</div>`;
+        } else {
+          pendingOffersList.innerHTML = pendingOffers
+            .map(
+              (o) => `
+                    <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                        <div>
+                            <div class="text-sm font-semibold">${o.id} — ${o.type}</div>
+                            <div class="text-xs text-gray-500">${o.city} · ${getStatusName(o.stageId, true)}</div>
+                        </div>
+                        <button onclick="window.location.href='offers.html'" class="text-xs text-[#1e3a5f] font-bold hover:underline">عرض</button>
+                    </div>
+                `,
+            )
+            .join("");
+        }
+
+        // Pending Requests
+        const pendingReqs = requests.filter((r) => r.stageId === 2).slice(0, 5);
+        const pendingRequestsList = document.getElementById(
+          "pendingRequestsList",
+        );
+        if (pendingReqs.length === 0) {
+          pendingRequestsList.innerHTML = `<div class="text-center py-4 text-gray-400 text-sm">لا توجد طلبات قيد المطابقة</div>`;
+        } else {
+          pendingRequestsList.innerHTML = pendingReqs
+            .map(
+              (r) => `
+                    <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                        <div>
+                            <div class="text-sm font-semibold">${r.id} — ${r.type}</div>
+                            <div class="text-xs text-gray-500">${r.city} · ${r.client}</div>
+                        </div>
+                        <button onclick="window.location.href='requests.html'" class="text-xs text-[#1e3a5f] font-bold hover:underline">عرض</button>
+                    </div>
+                `,
+            )
+            .join("");
+        }
+      }
+
+      // ============================================================
+      //  GENERATE ALERTS
+      // ============================================================
+      function generateAlerts(offers, requests) {
+        const alerts = [];
+        const today = new Date().toISOString().slice(0, 10);
+
+        // 1. العروض المتأخرة في مرحلة "بانتظار رد المدير"
+        offers.forEach((o) => {
+          if (o.stageId === 2 && o.statusDate) {
+            const days = Math.floor(
+              (new Date() - new Date(o.statusDate)) / (1000 * 60 * 60 * 24),
+            );
+            if (days >= 2) {
+              alerts.push({
+                level: "urgent",
+                icon: "⏰",
+                title: `عرض متأخر: ${o.id}`,
+                message: `بانتظار رد المدير منذ ${days} أيام`,
+                link: "offers.html",
+              });
+            }
+          }
+          // مستندات ناقصة
+          if (
+            o.documents &&
+            Object.values(o.documents).some((v) => v === false)
+          ) {
+            const missing = Object.entries(o.documents)
+              .filter(([k, v]) => !v)
+              .map(([k]) => k)
+              .join("، ");
+            alerts.push({
+              level: "warning",
+              icon: "📄",
+              title: `مستند ناقص: ${o.id}`,
+              message: `المستندات الناقصة: ${missing}`,
+              link: "offers.html",
+            });
+          }
+        });
+
+        // 2. الطلبات في مرحلة المعاينة بدون موعد
+        requests.forEach((r) => {
+          if (r.stageId === 4 && !r.appointmentDate) {
+            alerts.push({
+              level: "warning",
+              icon: "📅",
+              title: `طلب بدون موعد: ${r.id}`,
+              message: `تم اختيار العرض ولكن لم يتم تحديد موعد المعاينة`,
+              link: "requests.html",
+            });
+          }
+          if (
+            r.stageId === 4 &&
+            r.appointmentDate &&
+            r.appointmentDate < today
+          ) {
+            alerts.push({
+              level: "urgent",
+              icon: "⏰",
+              title: `معاينة متأخرة: ${r.id}`,
+              message: `موعد المعاينة ${fmtDate(r.appointmentDate)} ${r.appointmentTime || ""} لم يتم تأكيده`,
+              link: "requests.html",
+            });
+          }
+          if (r.stageId === 2 && r.createdAt) {
+            const days = Math.floor(
+              (new Date() - new Date(r.createdAt)) / (1000 * 60 * 60 * 24),
+            );
+            if (days >= 3) {
+              alerts.push({
+                level: "info",
+                icon: "🔍",
+                title: `طلب قيد المطابقة: ${r.id}`,
+                message: `جاري البحث عن عرض مطابق منذ ${days} أيام`,
+                link: "requests.html",
+              });
+            }
+          }
+        });
+
+        // 3. تنبيهات يومية
+        const day = new Date().getDay();
+        if (day === 4) {
+          // الخميس
+          alerts.push({
+            level: "info",
+            icon: "📊",
+            title: "تقرير الأسبوع",
+            message: "اليوم موعد تسليم تقرير الأسبوع",
+            link: "reports.html",
+          });
+        }
+
+        return alerts.slice(0, 10);
+      }
+
+      // ============================================================
+      //  CHARTS
+      // ============================================================
+      function renderPropertyChart(offers) {
+        const types = {};
+        offers.forEach((o) => {
+          types[o.type] = (types[o.type] || 0) + 1;
+        });
+        const labels = Object.keys(types);
+        const values = Object.values(types);
+        const max = Math.max(...values, 1);
+        const colors = {
+          أرض: "#10b981",
+          "محطة وقود": "#f59e0b",
+          "مركز تجاري": "#3b82f6",
+        };
+        const container = document.getElementById("propertyChart");
+        if (labels.length === 0) {
+          container.innerHTML = `<div class="text-center text-gray-400 w-full">لا توجد بيانات كافية</div>`;
+          return;
+        }
+        container.innerHTML = labels
+          .map(
+            (label, i) => `
+                <div class="flex flex-col items-center gap-2 flex-1">
+                    <span class="text-xs font-bold text-gray-600">${values[i]}</span>
+                    <div class="w-full max-w-[40px] rounded-t-lg chart-bar" style="height:${(values[i] / max) * 120}px; background:${colors[label] || "#9ca3af"};"></div>
+                    <span class="text-xs text-gray-500 truncate max-w-[60px]">${label}</span>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      function renderRequestChart(requests) {
+        const statuses = {};
+        requests.forEach((r) => {
+          const label = getStatusName(r.stageId, false);
+          statuses[label] = (statuses[label] || 0) + 1;
+        });
+        const labels = Object.keys(statuses);
+        const values = Object.values(statuses);
+        const max = Math.max(...values, 1);
+        const colors = ["#f97316", "#3b82f6", "#8b5cf6", "#f59e0b", "#10b981"];
+        const container = document.getElementById("requestChart");
+        if (labels.length === 0) {
+          container.innerHTML = `<div class="text-center text-gray-400 w-full">لا توجد بيانات كافية</div>`;
+          return;
+        }
+        container.innerHTML = labels
+          .map(
+            (label, i) => `
+                <div class="flex flex-col items-center gap-2 flex-1">
+                    <span class="text-xs font-bold text-gray-600">${values[i]}</span>
+                    <div class="w-full max-w-[40px] rounded-t-lg chart-bar" style="height:${(values[i] / max) * 120}px; background:${colors[i % colors.length]};"></div>
+                    <span class="text-xs text-gray-500 truncate max-w-[60px]">${label}</span>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // ============================================================
+      //  ACTIVITY FEED
+      // ============================================================
+      function renderActivityFeed(offers, requests) {
+        const activities = [];
+
+        // آخر 3 عروض
+        offers.slice(0, 3).forEach((o) => {
+          const lastLog =
+            o.log && o.log.length > 0 ? o.log[o.log.length - 1] : "تم التسجيل";
+          const time = lastLog.slice(0, 16) || o.date || "";
+          activities.push({
+            time: time,
+            text: `عرض ${o.id} — ${o.type}`,
+            detail: lastLog.slice(16) || "تم التسجيل",
+            type: "offer",
+            id: o.id,
+            color: "gold",
+          });
+        });
+
+        // آخر 3 طلبات
+        requests.slice(0, 3).forEach((r) => {
+          const lastLog =
+            r.log && r.log.length > 0 ? r.log[r.log.length - 1] : "تم التسجيل";
+          const time = lastLog.slice(0, 16) || r.date || "";
+          activities.push({
+            time: time,
+            text: `طلب ${r.id} — ${r.client}`,
+            detail: lastLog.slice(16) || "تم التسجيل",
+            type: "request",
+            id: r.id,
+            color: "purple",
+          });
+        });
+
+        // معاينات اليوم
+        const today = new Date().toISOString().slice(0, 10);
+        requests
+          .filter((r) => r.stageId === 4 && r.appointmentDate === today)
+          .slice(0, 3)
+          .forEach((r) => {
+            activities.push({
+              time: r.appointmentTime || "اليوم",
+              text: `معاينة ${r.id}`,
+              detail: `${r.client} — ${r.type}`,
+              type: "appointment",
+              id: r.id,
+              color: "blue",
+            });
+          });
+
+        // ترتيب من الأحدث للأقدم
+        activities.sort((a, b) => b.time.localeCompare(a.time));
+
+        const container = document.getElementById("activityFeed");
+        if (activities.length === 0) {
+          container.innerHTML = `<div class="text-center py-6 text-gray-400 text-sm">لا توجد نشاطات حديثة</div>`;
+          return;
+        }
+        container.innerHTML = activities
+          .slice(0, 6)
+          .map(
+            (a) => `
+                <div class="activity-item">
+                    <div class="activity-dot ${a.color}"></div>
+                    <div class="flex-1">
+                        <div class="text-sm font-medium">${a.text}</div>
+                        <div class="text-xs text-gray-500">${a.detail}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">${a.time}</div>
+                    </div>
+                    <button onclick="window.location.href='${a.type === "offer" ? "offers.html" : "requests.html"}'" class="text-xs text-[#1e3a5f] hover:underline">فتح</button>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // ============================================================
+      //  ACTIONS
+      // ============================================================
+      function showTodayAppointments() {
+        const today = new Date().toISOString().slice(0, 10);
+        const requests = loadRequests();
+        const appointments = requests.filter(
+          (r) => r.stageId === 4 && r.appointmentDate === today,
+        );
+        if (appointments.length === 0) {
+          toast("📅 لا توجد معاينات اليوم", "info");
+          return;
+        }
+        let msg = "📅 معاينات اليوم:\n";
+        appointments.forEach((r) => {
+          msg += `\n${r.id} — ${r.client} — ${r.type} (${r.appointmentTime || "غير محدد"})`;
+        });
+        alert(msg);
+      }
+
+      function exportExcel() {
+        const offers = loadOffers();
+        const requests = loadRequests();
+        if (offers.length === 0 && requests.length === 0) {
+          toast("لا توجد بيانات للتصدير", "error");
+          return;
+        }
+        const headers = [
+          "النوع",
+          "الرقم",
+          "العميل/المالك",
+          "نوع العقار",
+          "المدينة",
+          "المرحلة",
+          "التاريخ",
+        ];
+        const rows = [];
+        offers.forEach((o) => {
+          rows.push([
+            "عرض",
+            o.id,
+            o.client || o.providerName || "-",
+            o.type,
+            o.city,
+            getStatusName(o.stageId, true),
+            o.date,
+          ]);
+        });
+        requests.forEach((r) => {
+          rows.push([
+            "طلب",
+            r.id,
+            r.client,
+            r.type,
+            r.city,
+            getStatusName(r.stageId, false),
+            r.date,
+          ]);
+        });
+        let csv = "\uFEFF" + headers.join(",") + "\n";
+        rows.forEach((r) => {
+          csv +=
+            r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",") + "\n";
+        });
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `تقرير_لوحة_التحكم_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+        toast("✅ تم تصدير التقرير", "success");
+      }
+
+      // ============================================================
+      //  GREETING
+      // ============================================================
+      function setGreeting() {
+        const hour = new Date().getHours();
+        let greeting = "صباح الخير";
+        if (hour >= 12 && hour < 17) greeting = "مساء الخير";
+        else if (hour >= 17) greeting = "مساء الخير";
+        document.getElementById("greetingText").textContent =
+          `${greeting}، إليك ملخص أعمالك اليوم`;
+        const now = new Date();
+        document.getElementById("currentDate").textContent =
+          now.toLocaleDateString("ar-SA", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+      }
+
+      // ============================================================
+      //  INIT
+      // ============================================================
+      setGreeting();
+      renderDashboard();
+
+      // تحديث كل 60 ثانية
+      setInterval(renderDashboard, 60000);
+
+      // ============================================================
+      //  GLOBALS
+      // ============================================================
+      window.showTodayAppointments = showTodayAppointments;
+      window.exportExcel = exportExcel;
+      window.toast = toast;
+    </script>
+  </body>
+</html>
