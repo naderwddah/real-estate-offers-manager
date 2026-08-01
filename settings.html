@@ -2,18 +2,11 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>مسار — الإعدادات</title>
     <link rel="stylesheet" href="global.css" />
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
       * {
@@ -221,34 +214,100 @@
         color: #9ca3af;
         margin-top: 4px;
       }
+      .spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      /* Login overlay */
+      #loginOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(4px);
+      }
+      #loginOverlay.show {
+        display: flex;
+      }
+      .login-box {
+        background: #fff;
+        padding: 40px 30px;
+        border-radius: 24px;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      .login-box h2 {
+        color: #1e3a5f;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .login-box .field {
+        margin-bottom: 16px;
+      }
+      .login-box .btn {
+        width: 100%;
+        justify-content: center;
+      }
     </style>
   </head>
   <body>
-    <div id="sidebar-container"></div>
-    <div class="main-content">
-      <!-- TOAST -->
-      <div class="toast" id="toast">
-        <i class="fas fa-check-circle text-emerald-400"></i>
-        <span id="toastMessage">تم الإجراء بنجاح</span>
+    <!-- ========== LOGIN OVERLAY ========== -->
+    <div id="loginOverlay">
+      <div class="login-box">
+        <h2><i class="fas fa-lock ml-2"></i>تسجيل الدخول</h2>
+        <form id="loginForm" onsubmit="login(event)">
+          <div class="field">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" value="admin@masar.sa" required />
+          </div>
+          <div class="field">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPassword" value="Admin@123" required />
+          </div>
+          <button type="submit" class="btn btn-gold mt-2">
+            <i class="fas fa-sign-in-alt"></i> دخول
+          </button>
+          <div id="loginError" class="text-red-500 text-sm mt-2 text-center"></div>
+        </form>
       </div>
+    </div>
 
-      <!-- ===== PAGE WRAPPER ===== -->
+    <!-- ========== TOAST ========== -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle text-emerald-400"></i>
+      <span id="toastMessage">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- ========== SIDEBAR ========== -->
+    <div id="sidebar-container"></div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
       <div class="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
         <!-- Header -->
-        <div
-          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-        >
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h1
-              class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight"
-            >
+            <h1 class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
               <i class="fas fa-cog ml-2 text-[#2d6a9f]"></i>الإعدادات
             </h1>
-            <p class="text-sm text-gray-500 mt-1">
-              إدارة إعدادات النظام والبيانات الأساسية
-            </p>
+            <p class="text-sm text-gray-500 mt-1">إدارة إعدادات النظام والبيانات الأساسية</p>
           </div>
-          <button onclick="saveAllSettings()" class="btn btn-gold text-sm">
+          <button onclick="saveAllSettings()" class="btn btn-gold text-sm" id="saveBtn">
             <i class="fas fa-save"></i> حفظ جميع الإعدادات
           </button>
         </div>
@@ -257,34 +316,30 @@
         <form id="settingsForm" onsubmit="return false;">
           <!-- 1. Company Settings -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">🏢</span> بيانات الشركة
-            </div>
+            <div class="card-title"><span class="icon">🏢</span> بيانات الشركة</div>
             <div class="grid-2">
               <div class="field">
                 <label>اسم الشركة *</label>
-                <input
-                  type="text"
-                  id="companyName"
-                  placeholder="مثال: شركة مسار العقارية"
-                />
+                <input type="text" id="companyName" placeholder="مثال: شركة مسار العقارية" />
               </div>
               <div class="field">
                 <label>شعار الشركة (رابط الصورة)</label>
-                <input
-                  type="url"
-                  id="companyLogo"
-                  placeholder="https://example.com/logo.png"
-                />
+                <input type="url" id="companyLogo" placeholder="https://example.com/logo.png" />
+              </div>
+              <div class="field">
+                <label>رقم هاتف الشركة</label>
+                <input type="tel" id="companyPhone" placeholder="مثال: 966500000000" />
+              </div>
+              <div class="field">
+                <label>البريد الإلكتروني للشركة</label>
+                <input type="email" id="companyEmail" placeholder="info@masar.sa" />
               </div>
             </div>
           </div>
 
           <!-- 2. Manager Settings -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">👤</span> المدير (أسد)
-            </div>
+            <div class="card-title"><span class="icon">👤</span> المدير (أسد)</div>
             <div class="grid-2">
               <div class="field">
                 <label>اسم المدير المسؤول عن التسعير *</label>
@@ -292,52 +347,39 @@
               </div>
               <div class="field">
                 <label>رقم واتساب المدير *</label>
-                <input
-                  type="tel"
-                  id="managerPhone"
-                  placeholder="مثال: 966500000000"
-                />
+                <input type="tel" id="managerPhone" placeholder="مثال: 966500000000" />
+              </div>
+              <div class="field">
+                <label>البريد الإلكتروني للمدير</label>
+                <input type="email" id="managerEmail" placeholder="manager@masar.sa" />
               </div>
             </div>
-            <div class="help-text">
-              سيتم استخدام هذا الرقم لإرسال تفاصيل العروض للمدير للتسعير.
-            </div>
+            <div class="help-text">سيتم استخدام هذا الرقم لإرسال تفاصيل العروض للمدير للتسعير.</div>
           </div>
 
           <!-- 3. Legal Department -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">⚖️</span> الشؤون القانونية
-            </div>
+            <div class="card-title"><span class="icon">⚖️</span> الشؤون القانونية</div>
             <div class="grid-2">
               <div class="field">
                 <label>اسم جهة الشؤون القانونية</label>
-                <input
-                  type="text"
-                  id="legalName"
-                  placeholder="مثال: الشؤون القانونية"
-                />
+                <input type="text" id="legalName" placeholder="مثال: الشؤون القانونية" />
               </div>
               <div class="field">
                 <label>رقم واتساب الشؤون القانونية</label>
-                <input
-                  type="tel"
-                  id="legalPhone"
-                  placeholder="مثال: 966500000000"
-                />
+                <input type="tel" id="legalPhone" placeholder="مثال: 966500000000" />
+              </div>
+              <div class="field">
+                <label>البريد الإلكتروني للشؤون القانونية</label>
+                <input type="email" id="legalEmail" placeholder="legal@masar.sa" />
               </div>
             </div>
-            <div class="help-text">
-              سيتم استخدام هذا الرقم لإرسال المستندات والعقود للمراجعة
-              القانونية.
-            </div>
+            <div class="help-text">سيتم استخدام هذا الرقم لإرسال المستندات والعقود للمراجعة القانونية.</div>
           </div>
 
           <!-- 4. General Settings -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">⚙️</span> الإعدادات العامة
-            </div>
+            <div class="card-title"><span class="icon">⚙️</span> الإعدادات العامة</div>
             <div class="grid-2">
               <div class="field">
                 <label>اليوم الأسبوعي لتقرير الأسبوع</label>
@@ -353,63 +395,35 @@
               </div>
               <div class="field">
                 <label>المهلة القصوى للانتظار (أيام)</label>
-                <input
-                  type="number"
-                  id="maxWaitDays"
-                  value="3"
-                  min="1"
-                  max="30"
-                />
-                <div class="help-text">
-                  عدد الأيام قبل اعتبار الطلب/العرض متأخراً.
-                </div>
+                <input type="number" id="maxWaitDays" value="3" min="1" max="30" />
+                <div class="help-text">عدد الأيام قبل اعتبار الطلب/العرض متأخراً.</div>
+              </div>
+              <div class="field full-width">
+                <label>تذييل التقارير (نص إضافي)</label>
+                <textarea id="reportFooter" rows="2" placeholder="نص يظهر في تذييل جميع التقارير..."></textarea>
               </div>
             </div>
           </div>
 
-          <!-- 5. Property Types -->
+          <!-- 5. Property Types (via API) -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">🏗️</span> أنواع العقارات
-            </div>
+            <div class="card-title"><span class="icon">🏗️</span> أنواع العقارات</div>
             <div class="field">
-              <label>أنواع العقارات المسموحة (افصل بينها بفاصلة)</label>
-              <input
-                type="text"
-                id="propertyTypesInput"
-                placeholder="أرض, محطة وقود, مركز تجاري, فيلا, شقة, عمارة"
-              />
-            </div>
-            <div id="propertyTypesTags" class="flex flex-wrap gap-1 mt-2"></div>
-            <div class="help-text">
-              هذه الأنواع ستظهر في قوائم اختيار نوع العقار في العروض والطلبات.
+              <label>أنواع العقارات المسموحة</label>
+              <div class="tag-input-group">
+                <input type="text" id="newPropertyType" placeholder="أدخل نوع جديد..." />
+                <button type="button" class="btn btn-outline btn-sm" onclick="addPropertyType()">
+                  <i class="fas fa-plus"></i> إضافة
+                </button>
+              </div>
+              <div id="propertyTypesTags" class="flex flex-wrap gap-1 mt-2"></div>
+              <div class="help-text">هذه الأنواع ستظهر في قوائم اختيار نوع العقار في العروض والطلبات.</div>
             </div>
           </div>
 
-          <!-- 6. Document Types -->
+          <!-- 6. Notification Settings (local only) -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">📄</span> أنواع المستندات المطلوبة
-            </div>
-            <div class="field">
-              <label>أنواع المستندات المطلوبة للعروض (افصل بينها بفاصلة)</label>
-              <input
-                type="text"
-                id="docTypesInput"
-                placeholder="صك, هوية, وكالة, رخصة بناء"
-              />
-            </div>
-            <div id="docTypesTags" class="flex flex-wrap gap-1 mt-2"></div>
-            <div class="help-text">
-              هذه المستندات ستظهر كقائمة تحقق في العروض الخاصة بالشركة.
-            </div>
-          </div>
-
-          <!-- 7. Notification Settings -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">🔔</span> إعدادات الإشعارات
-            </div>
+            <div class="card-title"><span class="icon">🔔</span> إعدادات الإشعارات</div>
             <div class="grid-2">
               <div class="field">
                 <label>تفعيل الإشعارات</label>
@@ -427,91 +441,49 @@
               </div>
             </div>
             <div style="margin-top: 12px">
-              <button
-                type="button"
-                class="btn btn-outline btn-sm"
-                onclick="requestNotificationPermission()"
-              >
+              <button type="button" class="btn btn-outline btn-sm" onclick="requestNotificationPermission()">
                 <i class="fas fa-bell"></i> طلب إذن الإشعارات
               </button>
-              <span
-                id="notificationStatus"
-                class="text-xs text-gray-500 mr-3"
-              ></span>
+              <span id="notificationStatus" class="text-xs text-gray-500 mr-3"></span>
             </div>
+            <div class="help-text">هذه الإعدادات تُخزن محلياً في المتصفح، وليست جزءاً من قاعدة البيانات.</div>
           </div>
 
-          <!-- 8. Backup & Reset -->
+          <!-- 7. Backup & Reset -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">💾</span> النسخ الاحتياطي والاستعادة
-            </div>
+            <div class="card-title"><span class="icon">💾</span> النسخ الاحتياطي والاستعادة</div>
             <div class="flex flex-wrap gap-3">
-              <button
-                type="button"
-                class="btn btn-emerald btn-sm"
-                onclick="backupData()"
-              >
+              <button type="button" class="btn btn-emerald btn-sm" onclick="backupData()">
                 <i class="fas fa-download"></i> تحميل نسخة احتياطية
               </button>
-              <button
-                type="button"
-                class="btn btn-outline btn-sm"
-                onclick="restoreData()"
-              >
-                <i class="fas fa-upload"></i> استعادة من نسخة احتياطية
+              <button type="button" class="btn btn-outline btn-sm" onclick="restoreData()">
+                <i class="fas fa-upload"></i> استعادة الإعدادات
               </button>
-              <button
-                type="button"
-                class="btn btn-amber btn-sm"
-                onclick="resetSystem()"
-              >
+              <button type="button" class="btn btn-amber btn-sm" onclick="resetSystem()">
                 <i class="fas fa-undo"></i> إعادة تعيين الإعدادات الافتراضية
               </button>
-              <button
-                type="button"
-                class="btn btn-danger btn-sm"
-                onclick="clearAllData()"
-              >
+              <button type="button" class="btn btn-danger btn-sm" onclick="clearAllData()">
                 <i class="fas fa-trash"></i> مسح جميع البيانات
               </button>
             </div>
             <div class="help-text mt-2">
-              ⚠️ مسح جميع البيانات سيحذف العروض والطلبات وجهات الاتصال
-              والإعدادات نهائياً.
+              ⚠️ مسح جميع البيانات سيعيد تعيين الإعدادات فقط (لا يحذف العروض أو الطلبات من قاعدة البيانات).
             </div>
           </div>
 
-          <!-- 9. Data Statistics -->
+          <!-- 8. Data Statistics -->
           <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">📊</span> إحصائيات النظام
-            </div>
-            <div
-              id="statsInfo"
-              class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm"
-            >
-              <div>
-                <span class="text-gray-500">العروض:</span>
-                <span class="font-bold" id="statOffers">0</span>
-              </div>
-              <div>
-                <span class="text-gray-500">الطلبات:</span>
-                <span class="font-bold" id="statRequests">0</span>
-              </div>
-              <div>
-                <span class="text-gray-500">جهات الاتصال:</span>
-                <span class="font-bold" id="statContacts">0</span>
-              </div>
-              <div>
-                <span class="text-gray-500">الملاك:</span>
-                <span class="font-bold" id="statOwners">0</span>
-              </div>
+            <div class="card-title"><span class="icon">📊</span> إحصائيات النظام</div>
+            <div id="statsInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+              <div><span class="text-gray-500">العروض:</span> <span class="font-bold" id="statOffers">0</span></div>
+              <div><span class="text-gray-500">الطلبات:</span> <span class="font-bold" id="statRequests">0</span></div>
+              <div><span class="text-gray-500">جهات الاتصال:</span> <span class="font-bold" id="statContacts">0</span></div>
+              <div><span class="text-gray-500">الملاك:</span> <span class="font-bold" id="statOwners">0</span></div>
             </div>
           </div>
         </form>
 
-        <!-- Save Button (Bottom) -->
+        <!-- Bottom Save -->
         <div class="flex justify-end gap-3 mt-4">
           <button onclick="saveAllSettings()" class="btn btn-gold">
             <i class="fas fa-save"></i> حفظ جميع الإعدادات
@@ -519,300 +491,400 @@
         </div>
       </div>
     </div>
+
     <script src="sidebar.js"></script>
-    <script src="global.js"></script>
     <script>
       // ============================================================
-      //  DEFAULT SETTINGS
+      //  CONFIGURATION
       // ============================================================
-      const DEFAULT_SETTINGS = {
-        companyName: "شركة مسار العقارية",
-        companyLogo: "",
-        managerName: "أسد",
-        managerPhone: "966500000000",
-        legalName: "الشؤون القانونية",
-        legalPhone: "966500000000",
-        reportDay: 4,
-        maxWaitDays: 3,
-        propertyTypes: [
-          "أرض",
-          "محطة وقود",
-          "مركز تجاري",
-          "فيلا",
-          "شقة",
-          "عمارة",
-        ],
-        docTypes: ["صك", "هوية", "وكالة", "رخصة بناء"],
-        notificationsEnabled: true,
-        autoReminders: true,
-      };
+      const API_BASE = 'http://localhost:8000/api';
+      const STORAGE_KEY = 'masar_settings_token';
 
+      // ============================================================
+      //  STATE
+      // ============================================================
+      let token = localStorage.getItem(STORAGE_KEY) || '';
       let settings = {};
+      let propertyTypes = [];
 
       // ============================================================
-      //  LOAD / SAVE SETTINGS
+      //  TOAST
       // ============================================================
-      function loadSettings() {
-        const saved = localStorage.getItem("masarSettings");
-        if (saved) {
-          try {
-            settings = JSON.parse(saved);
-            // Ensure all fields exist
-            for (const key in DEFAULT_SETTINGS) {
-              if (!(key in settings)) {
-                settings[key] = DEFAULT_SETTINGS[key];
-              }
-            }
-            return;
-          } catch (e) {}
+      function toast(msg, type = 'success') {
+        const el = document.getElementById('toast');
+        const icon = el.querySelector('i');
+        const text = document.getElementById('toastMessage');
+        text.textContent = msg;
+        if (type === 'error') {
+          icon.className = 'fas fa-exclamation-circle text-red-400';
+        } else if (type === 'success') {
+          icon.className = 'fas fa-check-circle text-emerald-400';
+        } else {
+          icon.className = 'fas fa-info-circle text-blue-400';
         }
-        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-        saveSettings();
+        el.classList.add('show');
+        clearTimeout(el._timer);
+        el._timer = setTimeout(() => el.classList.remove('show'), 3500);
       }
 
-      function saveSettings() {
-        localStorage.setItem("masarSettings", JSON.stringify(settings));
+      // ============================================================
+      //  AUTH
+      // ============================================================
+      async function login(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const errorEl = document.getElementById('loginError');
+        errorEl.textContent = '';
+
+        try {
+          const res = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'فشل تسجيل الدخول');
+          token = data.data.token;
+          localStorage.setItem(STORAGE_KEY, token);
+          document.getElementById('loginOverlay').classList.remove('show');
+          toast('✅ تم تسجيل الدخول بنجاح');
+          loadAllData();
+        } catch (err) {
+          errorEl.textContent = err.message;
+        }
       }
 
+      function logout() {
+        localStorage.removeItem(STORAGE_KEY);
+        token = '';
+        document.getElementById('loginOverlay').classList.add('show');
+        toast('تم تسجيل الخروج');
+      }
+
+      function checkAuth() {
+        if (!token) {
+          document.getElementById('loginOverlay').classList.add('show');
+          return false;
+        }
+        return true;
+      }
+
+      // ============================================================
+      //  FETCH HELPER
+      // ============================================================
+      async function fetchWithAuth(endpoint, options = {}) {
+        if (!token && !endpoint.includes('/auth/login')) {
+          throw new Error('غير مصرح، يرجى تسجيل الدخول');
+        }
+        const headers = {
+          'Content-Type': 'application/json',
+          ...(options.headers || {}),
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+          ...options,
+          headers,
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (res.status === 401) {
+            // token expired
+            localStorage.removeItem(STORAGE_KEY);
+            token = '';
+            document.getElementById('loginOverlay').classList.add('show');
+            throw new Error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً');
+          }
+          throw new Error(data.message || data.errors ? 'خطأ في الطلب' : 'خطأ غير معروف');
+        }
+        return data;
+      }
+
+      // ============================================================
+      //  LOAD DATA
+      // ============================================================
+      async function loadSettings() {
+        const data = await fetchWithAuth('/settings');
+        if (data.status === 'success' && data.data) {
+          // assume data.data is the settings object (maybe array? but we have one)
+          const s = Array.isArray(data.data) ? data.data[0] : data.data;
+          settings = s;
+          renderSettings();
+        } else {
+          throw new Error('لم نتمكن من تحميل الإعدادات');
+        }
+      }
+
+      async function loadPropertyTypes() {
+        const data = await fetchWithAuth('/property-types');
+        if (data.status === 'success' && data.data) {
+          propertyTypes = data.data;
+          renderPropertyTypes();
+        } else {
+          throw new Error('فشل تحميل أنواع العقارات');
+        }
+      }
+
+      async function loadStats() {
+        const data = await fetchWithAuth('/reports/dashboard');
+        if (data.status === 'success') {
+          const stats = data.data;
+          document.getElementById('statOffers').textContent = stats.total_offers || 0;
+          document.getElementById('statRequests').textContent = stats.total_requests || 0;
+          document.getElementById('statContacts').textContent = stats.total_clients || 0;
+          // For owners, we can use total_users if available, or fallback to 0
+          document.getElementById('statOwners').textContent = stats.total_users || 0;
+        }
+      }
+
+      async function loadAllData() {
+        if (!checkAuth()) return;
+        try {
+          await loadSettings();
+          await loadPropertyTypes();
+          await loadStats();
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      }
+
+      // ============================================================
+      //  RENDER SETTINGS
+      // ============================================================
       function renderSettings() {
-        document.getElementById("companyName").value =
-          settings.companyName || "";
-        document.getElementById("companyLogo").value =
-          settings.companyLogo || "";
-        document.getElementById("managerName").value =
-          settings.managerName || "";
-        document.getElementById("managerPhone").value =
-          settings.managerPhone || "";
-        document.getElementById("legalName").value = settings.legalName || "";
-        document.getElementById("legalPhone").value = settings.legalPhone || "";
-        document.getElementById("reportDay").value = settings.reportDay || 4;
-        document.getElementById("maxWaitDays").value =
-          settings.maxWaitDays || 3;
-        document.getElementById("propertyTypesInput").value = (
-          settings.propertyTypes || []
-        ).join("، ");
-        document.getElementById("docTypesInput").value = (
-          settings.docTypes || []
-        ).join("، ");
-        document.getElementById("notificationsEnabled").value =
-          settings.notificationsEnabled ? "true" : "false";
-        document.getElementById("autoReminders").value = settings.autoReminders
-          ? "true"
-          : "false";
-        renderTags("propertyTypesInput", "propertyTypesTags", "propertyTypes");
-        renderTags("docTypesInput", "docTypesTags", "docTypes");
-        updateStats();
+        document.getElementById('companyName').value = settings.company_name || '';
+        document.getElementById('companyLogo').value = settings.logo_path || '';
+        document.getElementById('companyPhone').value = settings.phone || '';
+        document.getElementById('companyEmail').value = settings.email || '';
+        document.getElementById('managerName').value = settings.manager_name || '';
+        document.getElementById('managerPhone').value = settings.manager_phone || '';
+        document.getElementById('managerEmail').value = settings.manager_email || '';
+        document.getElementById('legalName').value = settings.legal_name || '';
+        document.getElementById('legalPhone').value = settings.legal_phone || '';
+        document.getElementById('legalEmail').value = settings.legal_email || '';
+        document.getElementById('reportDay').value = settings.report_day || 4;
+        document.getElementById('maxWaitDays').value = settings.max_wait_days || 3;
+        document.getElementById('reportFooter').value = settings.report_footer || '';
+        // Notification settings are local
+        const notif = localStorage.getItem('masar_notif_enabled');
+        document.getElementById('notificationsEnabled').value = notif !== null ? notif : 'true';
+        const auto = localStorage.getItem('masar_auto_reminders');
+        document.getElementById('autoReminders').value = auto !== null ? auto : 'true';
         updateNotificationStatus();
       }
 
-      function renderTags(inputId, containerId, settingsKey) {
-        const container = document.getElementById(containerId);
-        const values = settings[settingsKey] || [];
-        container.innerHTML = values
-          .map(
-            (v) => `
-                <span class="tag-item">
-                    ${v}
-                    <span class="remove" onclick="removeTag('${settingsKey}','${v}')">✕</span>
-                </span>
-            `,
-          )
-          .join("");
+      // ============================================================
+      //  RENDER PROPERTY TYPES
+      // ============================================================
+      function renderPropertyTypes() {
+        const container = document.getElementById('propertyTypesTags');
+        container.innerHTML = propertyTypes
+          .map((p) => `
+            <span class="tag-item">
+              ${p.name}
+              <span class="remove" onclick="deletePropertyType(${p.id})">✕</span>
+            </span>
+          `)
+          .join('');
       }
 
-      function removeTag(settingsKey, value) {
-        const arr = settings[settingsKey] || [];
-        settings[settingsKey] = arr.filter((v) => v !== value);
-        saveSettings();
-        renderSettings();
-        toast("🗑️ تم حذف العنصر", "info");
-      }
-
-      function addTagFromInput(inputId, settingsKey) {
-        const input = document.getElementById(inputId);
-        const val = input.value.trim();
-        if (!val) return;
-        const arr = settings[settingsKey] || [];
-        const items = val.split(/[,،\s]+/).filter((s) => s.trim());
-        items.forEach((item) => {
-          if (!arr.includes(item)) {
-            arr.push(item);
+      // ============================================================
+      //  PROPERTY TYPES CRUD
+      // ============================================================
+      async function addPropertyType() {
+        const input = document.getElementById('newPropertyType');
+        const name = input.value.trim();
+        if (!name) return toast('الرجاء إدخال اسم النوع', 'error');
+        try {
+          const data = await fetchWithAuth('/property-types', {
+            method: 'POST',
+            body: JSON.stringify({ name }),
+          });
+          if (data.status === 'success') {
+            propertyTypes.push(data.data);
+            renderPropertyTypes();
+            input.value = '';
+            toast('✅ تم إضافة النوع');
+          } else {
+            toast(data.message || 'فشل الإضافة', 'error');
           }
-        });
-        settings[settingsKey] = arr;
-        saveSettings();
-        renderSettings();
-        input.value = "";
-        toast("✅ تم إضافة العناصر", "success");
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      }
+
+      async function deletePropertyType(id) {
+        if (!confirm('هل أنت متأكد من حذف هذا النوع؟')) return;
+        try {
+          const data = await fetchWithAuth(`/property-types/${id}`, { method: 'DELETE' });
+          if (data.status === 'success') {
+            propertyTypes = propertyTypes.filter((p) => p.id !== id);
+            renderPropertyTypes();
+            toast('✅ تم الحذف');
+          } else {
+            toast(data.message || 'فشل الحذف', 'error');
+          }
+        } catch (err) {
+          toast(err.message, 'error');
+        }
       }
 
       // ============================================================
       //  SAVE ALL SETTINGS
       // ============================================================
-      function saveAllSettings() {
-        const companyName = document.getElementById("companyName").value.trim();
-        const companyLogo = document.getElementById("companyLogo").value.trim();
-        const managerName = document.getElementById("managerName").value.trim();
-        const managerPhone = document
-          .getElementById("managerPhone")
-          .value.trim();
-        const legalName = document.getElementById("legalName").value.trim();
-        const legalPhone = document.getElementById("legalPhone").value.trim();
-        const reportDay = parseInt(document.getElementById("reportDay").value);
-        const maxWaitDays =
-          parseInt(document.getElementById("maxWaitDays").value) || 3;
-        const propertyTypesInput =
-          document.getElementById("propertyTypesInput").value;
-        const docTypesInput = document.getElementById("docTypesInput").value;
-        const notificationsEnabled =
-          document.getElementById("notificationsEnabled").value === "true";
-        const autoReminders =
-          document.getElementById("autoReminders").value === "true";
+      async function saveAllSettings() {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
 
-        if (!companyName || !managerName || !managerPhone) {
-          toast("⚠️ يرجى ملء الحقول المطلوبة (*)", "error");
-          return;
+        try {
+          const payload = {
+            company_name: document.getElementById('companyName').value.trim(),
+            logo_path: document.getElementById('companyLogo').value.trim(),
+            phone: document.getElementById('companyPhone').value.trim(),
+            email: document.getElementById('companyEmail').value.trim(),
+            manager_name: document.getElementById('managerName').value.trim(),
+            manager_phone: document.getElementById('managerPhone').value.trim(),
+            manager_email: document.getElementById('managerEmail').value.trim(),
+            legal_name: document.getElementById('legalName').value.trim(),
+            legal_phone: document.getElementById('legalPhone').value.trim(),
+            legal_email: document.getElementById('legalEmail').value.trim(),
+            report_day: parseInt(document.getElementById('reportDay').value),
+            max_wait_days: parseInt(document.getElementById('maxWaitDays').value) || 3,
+            report_footer: document.getElementById('reportFooter').value.trim(),
+          };
+
+          // Validation
+          if (!payload.company_name || !payload.manager_name || !payload.manager_phone) {
+            toast('⚠️ يرجى ملء الحقول المطلوبة (*)', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> حفظ جميع الإعدادات';
+            return;
+          }
+
+          const settingsId = settings.id || 1;
+          const data = await fetchWithAuth(`/settings/${settingsId}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload),
+          });
+
+          if (data.status === 'success') {
+            settings = data.data;
+            renderSettings();
+            toast('✅ تم حفظ جميع الإعدادات بنجاح');
+          } else {
+            toast(data.message || 'فشل الحفظ', 'error');
+          }
+        } catch (err) {
+          toast(err.message, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-save"></i> حفظ جميع الإعدادات';
         }
-
-        settings.companyName = companyName;
-        settings.companyLogo = companyLogo;
-        settings.managerName = managerName;
-        settings.managerPhone = managerPhone;
-        settings.legalName = legalName;
-        settings.legalPhone = legalPhone;
-        settings.reportDay = reportDay;
-        settings.maxWaitDays = maxWaitDays;
-        settings.notificationsEnabled = notificationsEnabled;
-        settings.autoReminders = autoReminders;
-
-        // Parse property types
-        if (propertyTypesInput) {
-          settings.propertyTypes = propertyTypesInput
-            .split(/[,،\s]+/)
-            .filter((s) => s.trim())
-            .map((s) => s.trim());
-        } else {
-          settings.propertyTypes = DEFAULT_SETTINGS.propertyTypes;
-        }
-
-        if (docTypesInput) {
-          settings.docTypes = docTypesInput
-            .split(/[,،\s]+/)
-            .filter((s) => s.trim())
-            .map((s) => s.trim());
-        } else {
-          settings.docTypes = DEFAULT_SETTINGS.docTypes;
-        }
-
-        saveSettings();
-        renderSettings();
-        toast("✅ تم حفظ جميع الإعدادات بنجاح", "success");
       }
 
       // ============================================================
-      //  NOTIFICATION PERMISSION
+      //  NOTIFICATION PERMISSION (local)
       // ============================================================
       function requestNotificationPermission() {
-        if (!("Notification" in window)) {
-          toast("⚠️ المتصفح لا يدعم الإشعارات", "error");
+        if (!('Notification' in window)) {
+          toast('⚠️ المتصفح لا يدعم الإشعارات', 'error');
           return;
         }
-        if (Notification.permission === "granted") {
-          toast("✅ الإشعارات مفعلة بالفعل", "success");
+        if (Notification.permission === 'granted') {
+          toast('✅ الإشعارات مفعلة بالفعل', 'success');
           return;
         }
         Notification.requestPermission().then((perm) => {
-          if (perm === "granted") {
-            toast("✅ تم تفعيل الإشعارات", "success");
-            new Notification("🔔 تم تفعيل الإشعارات", {
-              body: "ستصلك تنبيهات النظام.",
-            });
+          if (perm === 'granted') {
+            toast('✅ تم تفعيل الإشعارات', 'success');
+            new Notification('🔔 تم تفعيل الإشعارات', { body: 'ستصلك تنبيهات النظام.' });
           } else {
-            toast("⚠️ تم رفض الإشعارات", "error");
+            toast('⚠️ تم رفض الإشعارات', 'error');
           }
           updateNotificationStatus();
         });
       }
 
       function updateNotificationStatus() {
-        const status = document.getElementById("notificationStatus");
-        if (!("Notification" in window)) {
-          status.textContent = "⚠️ غير مدعوم";
-          status.className = "text-xs text-red-500 mr-3";
+        const status = document.getElementById('notificationStatus');
+        if (!('Notification' in window)) {
+          status.textContent = '⚠️ غير مدعوم';
+          status.className = 'text-xs text-red-500 mr-3';
           return;
         }
-        if (Notification.permission === "granted") {
-          status.textContent = "✅ مفعل";
-          status.className = "text-xs text-emerald-500 mr-3";
-        } else if (Notification.permission === "denied") {
-          status.textContent = "❌ مرفوض";
-          status.className = "text-xs text-red-500 mr-3";
+        if (Notification.permission === 'granted') {
+          status.textContent = '✅ مفعل';
+          status.className = 'text-xs text-emerald-500 mr-3';
+        } else if (Notification.permission === 'denied') {
+          status.textContent = '❌ مرفوض';
+          status.className = 'text-xs text-red-500 mr-3';
         } else {
-          status.textContent = "⏳ لم يسمح بعد";
-          status.className = "text-xs text-amber-500 mr-3";
+          status.textContent = '⏳ لم يسمح بعد';
+          status.className = 'text-xs text-amber-500 mr-3';
         }
       }
 
       // ============================================================
-      //  BACKUP & RESTORE
+      //  BACKUP & RESTORE (local JSON)
       // ============================================================
-      function backupData() {
-        const data = {
-          settings: settings,
-          offers: loadData("masarOffersDataV6"),
-          requests: loadData("masarRequestsDataV4"),
-          contacts: loadData("masarContactsData"),
-          owners: loadData("masarOwnersData"),
-          timestamp: new Date().toISOString(),
-        };
-        const json = JSON.stringify(data, null, 2);
-        const blob = new Blob([json], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `backup_masar_${new Date().toISOString().slice(0, 10)}.json`;
-        link.click();
-        toast("✅ تم تحميل النسخة الاحتياطية", "success");
+      async function backupData() {
+        try {
+          // Fetch all data we can
+          const [settingsRes, propertyTypesRes, offersRes, requestsRes, clientsRes] = await Promise.all([
+            fetchWithAuth('/settings'),
+            fetchWithAuth('/property-types'),
+            fetchWithAuth('/offers?per_page=9999'),
+            fetchWithAuth('/requests?per_page=9999'),
+            fetchWithAuth('/clients?per_page=9999'),
+          ]);
+          const data = {
+            settings: settingsRes.data,
+            propertyTypes: propertyTypesRes.data,
+            offers: offersRes.data.data || [],
+            requests: requestsRes.data.data || [],
+            clients: clientsRes.data.data || [],
+            timestamp: new Date().toISOString(),
+          };
+          const json = JSON.stringify(data, null, 2);
+          const blob = new Blob([json], { type: 'application/json' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = `backup_masar_${new Date().toISOString().slice(0, 10)}.json`;
+          link.click();
+          toast('✅ تم تحميل النسخة الاحتياطية');
+        } catch (err) {
+          toast(err.message, 'error');
+        }
       }
 
       function restoreData() {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".json";
-        input.onchange = function (e) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = async function (e) {
           const file = e.target.files[0];
           if (!file) return;
           const reader = new FileReader();
-          reader.onload = function (ev) {
+          reader.onload = async function (ev) {
             try {
               const data = JSON.parse(ev.target.result);
               if (data.settings) {
-                settings = data.settings;
-                saveSettings();
+                // Restore settings via API
+                const settingsId = data.settings.id || 1;
+                await fetchWithAuth(`/settings/${settingsId}`, {
+                  method: 'PUT',
+                  body: JSON.stringify(data.settings),
+                });
+                toast('✅ تم استعادة الإعدادات بنجاح');
+                await loadSettings();
+              } else {
+                toast('⚠️ الملف لا يحتوي على إعدادات صالحة', 'error');
               }
-              if (data.offers)
-                localStorage.setItem(
-                  "masarOffersDataV6",
-                  JSON.stringify(data.offers),
-                );
-              if (data.requests)
-                localStorage.setItem(
-                  "masarRequestsDataV4",
-                  JSON.stringify(data.requests),
-                );
-              if (data.contacts)
-                localStorage.setItem(
-                  "masarContactsData",
-                  JSON.stringify(data.contacts),
-                );
-              if (data.owners)
-                localStorage.setItem(
-                  "masarOwnersData",
-                  JSON.stringify(data.owners),
-                );
-              renderSettings();
-              toast("✅ تم استعادة البيانات بنجاح", "success");
             } catch (err) {
-              toast("⚠️ ملف غير صالح", "error");
+              toast(err.message || 'ملف غير صالح', 'error');
             }
           };
           reader.readAsText(file);
@@ -820,90 +892,58 @@
         input.click();
       }
 
-      function loadData(key) {
-        const data = localStorage.getItem(key);
-        if (data) {
-          try {
-            return JSON.parse(data);
-          } catch (e) {}
-        }
-        return [];
-      }
-
       // ============================================================
       //  RESET & CLEAR
       // ============================================================
-      function resetSystem() {
-        if (
-          !confirm(
-            "⚠️ هل أنت متأكد من إعادة تعيين الإعدادات إلى القيم الافتراضية؟",
-          )
-        )
-          return;
-        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-        saveSettings();
-        renderSettings();
-        toast("✅ تم إعادة تعيين الإعدادات", "success");
-      }
-
-      function clearAllData() {
-        if (
-          !confirm(
-            "🚨 سيتم حذف جميع البيانات نهائياً (العروض، الطلبات، جهات الاتصال، الإعدادات). هل أنت متأكد؟",
-          )
-        )
-          return;
-        if (!confirm("تأكيد نهائي: هل تريد حذف كل شيء؟")) return;
-        localStorage.removeItem("masarOffersDataV6");
-        localStorage.removeItem("masarRequestsDataV4");
-        localStorage.removeItem("masarContactsData");
-        localStorage.removeItem("masarOwnersData");
-        localStorage.removeItem("masarSettings");
-        settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-        saveSettings();
-        renderSettings();
-        toast("🗑️ تم حذف جميع البيانات", "info");
-      }
-
-      // ============================================================
-      //  STATISTICS
-      // ============================================================
-      function updateStats() {
-        const offers = loadData("masarOffersDataV6");
-        const requests = loadData("masarRequestsDataV4");
-        const contacts = loadData("masarContactsData");
-        const owners = loadData("masarOwnersData");
-        document.getElementById("statOffers").textContent = offers.length;
-        document.getElementById("statRequests").textContent = requests.length;
-        document.getElementById("statContacts").textContent = contacts.length;
-        document.getElementById("statOwners").textContent = owners.length;
-      }
-
-      // ============================================================
-      //  TOAST
-      // ============================================================
-      function toast(msg, type) {
-        const el = document.getElementById("toast");
-        const icon = el.querySelector("i");
-        const text = document.getElementById("toastMessage");
-        text.textContent = msg;
-        if (type === "error") {
-          icon.className = "fas fa-exclamation-circle text-red-400";
-        } else if (type === "success") {
-          icon.className = "fas fa-check-circle text-emerald-400";
-        } else {
-          icon.className = "fas fa-info-circle text-blue-400";
+      async function resetSystem() {
+        if (!confirm('⚠️ هل أنت متأكد من إعادة تعيين الإعدادات إلى القيم الافتراضية؟')) return;
+        const defaultSettings = {
+          company_name: 'شركة مسار العقارية',
+          logo_path: '',
+          phone: '',
+          email: '',
+          manager_name: 'أسد',
+          manager_phone: '966500000000',
+          manager_email: '',
+          legal_name: 'الشؤون القانونية',
+          legal_phone: '',
+          legal_email: '',
+          report_day: 4,
+          max_wait_days: 3,
+          report_footer: '',
+        };
+        try {
+          const settingsId = settings.id || 1;
+          await fetchWithAuth(`/settings/${settingsId}`, {
+            method: 'PUT',
+            body: JSON.stringify(defaultSettings),
+          });
+          toast('✅ تم إعادة تعيين الإعدادات');
+          await loadSettings();
+        } catch (err) {
+          toast(err.message, 'error');
         }
-        el.classList.add("show");
-        clearTimeout(el._timer);
-        el._timer = setTimeout(() => el.classList.remove("show"), 3500);
+      }
+
+      async function clearAllData() {
+        if (!confirm('🚨 سيتم حذف جميع البيانات نهائياً (العروض، الطلبات، جهات الاتصال، الإعدادات). هل أنت متأكد؟')) return;
+        if (!confirm('تأكيد نهائي: هل تريد حذف كل شيء؟')) return;
+
+        // Since we cannot bulk delete via API, we'll just reset settings and clear local storage
+        // and show a warning that data must be deleted manually from the database.
+        toast('⚠️ لا يمكن حذف البيانات عبر API حالياً. تم إعادة تعيين الإعدادات فقط.', 'error');
+        await resetSystem();
+        // Also clear local notification settings
+        localStorage.removeItem('masar_notif_enabled');
+        localStorage.removeItem('masar_auto_reminders');
+        renderSettings();
       }
 
       // ============================================================
-      //  KEYBOARD SHORTCUTS
+      //  KEYBOARD SHORTCUT
       // ============================================================
-      document.addEventListener("keydown", (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
           e.preventDefault();
           saveAllSettings();
         }
@@ -912,8 +952,16 @@
       // ============================================================
       //  INIT
       // ============================================================
-      loadSettings();
-      renderSettings();
+      // Check if token exists
+      if (token) {
+        // verify token by trying to load settings
+        loadAllData().catch(() => {
+          // if fails, show login
+          document.getElementById('loginOverlay').classList.add('show');
+        });
+      } else {
+        document.getElementById('loginOverlay').classList.add('show');
+      }
 
       // ============================================================
       //  GLOBALS
@@ -924,10 +972,10 @@
       window.resetSystem = resetSystem;
       window.clearAllData = clearAllData;
       window.requestNotificationPermission = requestNotificationPermission;
-      window.removeTag = removeTag;
-      window.addTagFromInput = addTagFromInput;
+      window.addPropertyType = addPropertyType;
+      window.deletePropertyType = deletePropertyType;
+      window.login = login;
       window.toast = toast;
-      window.loadData = loadData;
     </script>
   </body>
 </html>
