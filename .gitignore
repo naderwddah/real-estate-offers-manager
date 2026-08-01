@@ -1,0 +1,62 @@
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+.zed/
+.cursor/
+.codex/
+.nova/
+
+# PHP
+.phpactor.json
+.phpunit.result.cache
+.phpunit.cache/
+_ide_helper.php
+
+# Composer
+/vendor/
+/auth.json
+
+# Node
+/node_modules/
+
+# Build
+/public/build/
+/public/hot
+/public/storage
+/public/fonts-manifest.dev.json
+
+# Storage
+/storage/*.key
+/storage/pail
+
+# Testing
+coverage/
+.phpunit.cache/
+
+# Laravel Sail
+docker-compose.override.yml
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Temporary files
+*.swp
+*.swo
+*~
