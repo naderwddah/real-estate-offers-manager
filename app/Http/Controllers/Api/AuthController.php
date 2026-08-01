@@ -18,41 +18,40 @@ class AuthController extends Controller
     /**
      * تسجيل الدخول
      */
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string|min:6'
-        ]);
+public function login(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email',
+        'password' => 'required|string|min:6'
+    ]);
 
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors());
-        }
-
-        $credentials = $request->only('email', 'password');
-
-        try {
-            if (!$token = JWTAuth::attempt($credentials)) {
-                return $this->error('بيانات الدخول غير صحيحة', 401);
-            }
-        } catch (JWTException $e) {
-            return $this->error('حدث خطأ في المصادقة', 500);
-        }
-
-        $user = auth()->user();
-
-        return $this->success([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'phone' => $user->phone
-            ]
-        ], 'تم تسجيل الدخول بنجاح');
+    if ($validator->fails()) {
+        return $this->validationError($validator->errors());
     }
+
+    // البحث عن المستخدم بالبريد الإلكتروني
+    $user = User::where('email', $request->email)->first();
+    
+    // التحقق من وجود المستخدم وصحة كلمة المرور
+    if (!$user || !Hash::check($request->password, $user->password_hash)) {
+        return $this->error('بيانات الدخول غير صحيحة', 401);
+    }
+
+    // إنشاء التوكن للمستخدم
+    $token = JWTAuth::fromUser($user);
+
+    return $this->success([
+        'token' => $token,
+        'token_type' => 'bearer',
+        'expires_in' => auth()->factory()->getTTL() * 60,
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone
+        ]
+    ], 'تم تسجيل الدخول بنجاح');
+}
 
     /**
      * تسجيل الخروج

@@ -7,6 +7,8 @@ use App\Models\Offer;
 use App\Models\Client;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Models\Stage;
+use App\Models\Reminder;
 use Illuminate\Support\Facades\Validator;
 
 class OfferController extends Controller
