@@ -1,1393 +1,766 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>مسار — التنبيهات والتذكيرات</title>
-    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="global.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
-      * {
-        font-family: "Tajawal", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: #f0f4fa;
-        min-height: 100vh;
-      }
-      .stat-card {
-        transition: all 0.25s ease;
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        cursor: pointer;
-      }
-      .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
-      }
-      .stat-card .stat-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-      }
-      .btn {
-        padding: 10px 28px;
-        border-radius: 40px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.95rem;
-      }
-      .btn-gold {
-        background: #1e3a5f;
-        color: #fff;
-      }
-      .btn-gold:hover {
-        background: #0f2a47;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25);
-      }
-      .btn-outline {
-        background: transparent;
-        color: #1e3a5f;
-        border: 2px solid #1e3a5f;
-      }
-      .btn-outline:hover {
-        background: #1e3a5f;
-        color: #fff;
-      }
-      .btn-sm {
-        padding: 6px 16px;
-        font-size: 0.8rem;
-      }
-      .btn-emerald {
-        background: #10b981;
-        color: #fff;
-      }
-      .btn-emerald:hover {
-        background: #059669;
-      }
-      .btn-danger {
-        background: #dc2626;
-        color: #fff;
-      }
-      .btn-danger:hover {
-        background: #b91c1c;
-      }
-      .btn-amber {
-        background: #f59e0b;
-        color: #fff;
-      }
-      .btn-amber:hover {
-        background: #d97706;
-      }
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 14px;
-        border-radius: 30px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-      }
-      .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        flex-shrink: 0;
-      }
-      .status-dot.pulse {
-        animation: pulse-dot 1.8s ease-in-out infinite;
-      }
-      @keyframes pulse-dot {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.5;
-          transform: scale(1.3);
-        }
-      }
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        overflow-y: auto;
-      }
-      .modal-overlay.active {
-        display: flex;
-      }
-      .modal-box {
-        background: #fff;
-        border-radius: 24px;
-        max-width: 600px;
-        width: 100%;
-        max-height: 92vh;
-        overflow-y: auto;
-        padding: 28px 32px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
-        animation: modalFadeIn 0.25s ease;
-        position: relative;
-      }
-      @keyframes modalFadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.95) translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
-      .modal-close {
-        position: sticky;
-        top: 0;
-        float: left;
-        background: none;
-        border: none;
-        font-size: 28px;
-        color: #9aa3b5;
-        cursor: pointer;
-        transition: color 0.2s;
-        line-height: 1;
-        z-index: 10;
-      }
-      .modal-close:hover {
-        color: #1f2937;
-      }
-      .modal-title {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e3a5f;
-        margin-bottom: 20px;
-      }
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .field label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #374151;
-      }
-      .field input,
-      .field select,
-      .field textarea {
-        border: 2px solid #e5e9f0;
-        border-radius: 12px;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-        transition: border 0.2s;
-        background: #fff;
-        width: 100%;
-        font-family: "Tajawal", sans-serif;
-      }
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        outline: none;
-        border-color: #1e3a5f;
-        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
-      }
-      .field.full-width {
-        grid-column: 1 / -1;
-      }
-      .toast {
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-        background: #1f2937;
-        color: #fff;
-        padding: 14px 28px;
-        border-radius: 14px;
-        font-weight: 500;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        gap: 12px;
-        animation: slideUp 0.3s ease;
-        max-width: 90%;
-      }
-      .toast.show {
-        display: flex;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .notif-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 14px 16px;
-        border-radius: 12px;
-        border: 1px solid #e5e9f0;
-        background: #fff;
-        transition: all 0.2s;
-        margin-bottom: 8px;
-      }
-      .notif-item:hover {
-        border-color: #d1d9e6;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      }
-      .notif-item.unread {
-        border-right: 4px solid #1e3a5f;
-        background: #f8fafc;
-      }
-      .notif-item .notif-icon {
-        font-size: 1.4rem;
-        flex-shrink: 0;
-        margin-top: 2px;
-      }
-      .notif-item .notif-content {
-        flex: 1;
-      }
-      .notif-item .notif-title {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: #1f2937;
-      }
-      .notif-item .notif-message {
-        font-size: 0.85rem;
-        color: #6b7a93;
-        margin-top: 2px;
-      }
-      .notif-item .notif-time {
-        font-size: 0.7rem;
-        color: #9ca3af;
-        margin-top: 4px;
-      }
-      .notif-item .notif-actions {
-        display: flex;
-        gap: 6px;
-        flex-shrink: 0;
-        align-items: center;
-      }
-      .notif-item .notif-actions button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #9ca3af;
-        transition: color 0.2s;
-        font-size: 0.9rem;
-        padding: 4px 6px;
-      }
-      .notif-item .notif-actions button:hover {
-        color: #1e3a5f;
-      }
-      .notif-item .notif-actions button.danger:hover {
-        color: #dc2626;
-      }
-      .reminder-item {
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid #e5e9f0;
-        background: #fff;
-        margin-bottom: 8px;
-        transition: all 0.2s;
-      }
-      .reminder-item:hover {
-        border-color: #d1d9e6;
-      }
-      .reminder-item.done {
-        opacity: 0.6;
-        background: #f8fafc;
-      }
-      .reminder-item .reminder-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .reminder-item .reminder-title {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: #1f2937;
-      }
-      .reminder-item .reminder-date {
-        font-size: 0.75rem;
-        color: #9ca3af;
-      }
-      .reminder-item .reminder-notes {
-        font-size: 0.85rem;
-        color: #6b7a93;
-        margin-top: 4px;
-      }
-      .reminder-item .reminder-actions {
-        display: flex;
-        gap: 6px;
-        margin-top: 8px;
-      }
-      .reminder-item .reminder-actions button {
-        padding: 2px 12px;
-        border-radius: 20px;
-        border: none;
-        font-size: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .reminder-item .reminder-actions .done-btn {
-        background: #10b981;
-        color: #fff;
-      }
-      .reminder-item .reminder-actions .done-btn:hover {
-        background: #059669;
-      }
-      .reminder-item .reminder-actions .edit-btn {
-        background: #e5e9f0;
-        color: #374151;
-      }
-      .reminder-item .reminder-actions .edit-btn:hover {
-        background: #d1d9e6;
-      }
-      .reminder-item .reminder-actions .delete-btn {
-        background: #fef2f2;
-        color: #dc2626;
-      }
-      .reminder-item .reminder-actions .delete-btn:hover {
-        background: #fee2e2;
-      }
-      .tab-btn {
-        padding: 8px 20px;
-        border: none;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: transparent;
-        color: #6b7a93;
-      }
-      .tab-btn.active {
-        background: #1e3a5f;
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
-      }
-      .tab-btn:hover:not(.active) {
-        background: #f1f5f9;
-      }
-      .tab-content {
-        display: none;
-      }
-      .tab-content.active {
-        display: block;
-      }
-      @media (max-width: 768px) {
-        .grid-2 {
-          grid-template-columns: 1fr;
-        }
-        .modal-box {
-          padding: 16px;
-          margin: 8px;
-          border-radius: 16px;
-        }
-        .notif-item {
-          padding: 12px;
-        }
-      }
-      .empty-state {
-        text-align: center;
-        padding: 40px 20px;
-        color: #9ca3af;
-      }
-      .empty-state .icon {
-        font-size: 3rem;
-        margin-bottom: 12px;
-      }
-      .filter-group {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-      }
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+        * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
+        
+        /* ===== تنسيقات الواجهة المظلمة ===== */
+        .bg-surface { background: #121B2C; }
+        .bg-surface2 { background: #1A2740; }
+        .bg-surface3 { background: #22314C; }
+        .bg-bg { background: #0B121E; }
+        .text-muted { color: #8B96A8; }
+        .text-ink { color: #EDEAE2; }
+        .border-line { border-color: rgba(237, 234, 226, 0.08); }
+        .bg-gold { background: #C9A24B; }
+        .text-gold { color: #C9A24B; }
+        .bg-emerald { background: #1F7A5C; }
+        .text-emerald { color: #1F7A5C; }
+        .bg-terracotta { background: #C1543A; }
+        .text-terracotta { color: #C1543A; }
+        .bg-danger { background: #E05A4A; }
+        .text-danger { color: #E05A4A; }
+        
+        .stat-card { transition: all 0.25s ease; border: 1px solid rgba(237, 234, 226, 0.08); cursor: pointer; background: #121B2C; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+        .stat-card .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        
+        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn-gold { background: #C9A24B; color: #0B121E; }
+        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
+        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
+        .btn-danger { background: #E05A4A; color: #fff; }
+        .btn-danger:hover { background: #C1543A; }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 24px; max-width: 600px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; position: relative; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: #8B96A8; cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: #EDEAE2; }
+        .modal-title { font-size: 24px; font-weight: 800; color: #EDEAE2; margin-bottom: 20px; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 4px; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        .field input::placeholder, .field textarea::placeholder { color: #5A6A7A; }
+        .field.full-width { grid-column: 1 / -1; }
+        
+        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .notif-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(237, 234, 226, 0.08); background: #121B2C; transition: all 0.2s; margin-bottom: 8px; }
+        .notif-item:hover { border-color: #C9A24B55; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+        .notif-item.unread { border-right: 4px solid #C9A24B; background: #1A2740; }
+        .notif-item .notif-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .notif-item .notif-content { flex: 1; }
+        .notif-item .notif-title { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
+        .notif-item .notif-message { font-size: 0.85rem; color: #8B96A8; margin-top: 2px; }
+        .notif-item .notif-time { font-size: 0.7rem; color: #5A6A7A; margin-top: 4px; }
+        .notif-item .notif-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
+        .notif-item .notif-actions button { background: none; border: none; cursor: pointer; color: #8B96A8; transition: color 0.2s; font-size: 0.9rem; padding: 4px 6px; }
+        .notif-item .notif-actions button:hover { color: #C9A24B; }
+        .notif-item .notif-actions button.danger:hover { color: #E05A4A; }
+        
+        .reminder-item { padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(237, 234, 226, 0.08); background: #121B2C; margin-bottom: 8px; transition: all 0.2s; }
+        .reminder-item:hover { border-color: #C9A24B55; }
+        .reminder-item.done { opacity: 0.5; background: #0F1830; }
+        .reminder-item .reminder-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+        .reminder-item .reminder-title { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
+        .reminder-item .reminder-date { font-size: 0.75rem; color: #8B96A8; }
+        .reminder-item .reminder-notes { font-size: 0.85rem; color: #8B96A8; margin-top: 4px; }
+        .reminder-item .reminder-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .reminder-item .reminder-actions button { padding: 2px 12px; border-radius: 20px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .reminder-item .reminder-actions .done-btn { background: #1F7A5C; color: #fff; }
+        .reminder-item .reminder-actions .done-btn:hover { background: #123D30; }
+        .reminder-item .reminder-actions .edit-btn { background: #1A2740; color: #EDEAE2; }
+        .reminder-item .reminder-actions .edit-btn:hover { background: #22314C; }
+        .reminder-item .reminder-actions .delete-btn { background: #3A1A14; color: #E05A4A; }
+        .reminder-item .reminder-actions .delete-btn:hover { background: #3A1E19; }
+        
+        .tab-btn { padding: 8px 20px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
+        .tab-btn.active { background: #C9A24B; color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
+        .tab-btn:hover:not(.active) { background: #1A2740; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .filter-btn { padding: 4px 14px; border-radius: 20px; border: 1px solid #22314C; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
+        .filter-btn.active { background: #C9A24B; color: #0B121E; border-color: #C9A24B; }
+        .filter-btn:hover:not(.active) { background: #1A2740; }
+        
+        @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .modal-box { padding: 16px; } }
+        
+        /* ===== شاشة الدخول ===== */
+        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+        #loginOverlay.show { display: flex !important; }
+        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
+        .login-box .field { margin-bottom: 16px; }
+        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
+        .login-box .btn { width: 100%; justify-content: center; }
+        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
+        
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .main-content { display: none !important; }
+        .main-content.visible { display: block !important; }
     </style>
-  </head>
-  <body>
-    <div id="sidebar-container"></div>
-<div class="main-content">
-      <!-- TOAST -->
-    <div class="toast" id="toast">
-      <i class="fas fa-check-circle text-emerald-400"></i>
-      <span id="toastMessage">تم الإجراء بنجاح</span>
-    </div>
+</head>
+<body>
 
-    <!-- ===== PAGE WRAPPER ===== -->
-    <div class="max-w-6xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
-      <!-- Header -->
-      <div
-        class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-      >
-        <div>
-          <h1
-            class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight"
-          >
-            <i class="fas fa-bell ml-2 text-[#2d6a9f]"></i>التنبيهات والتذكيرات
-          </h1>
-          <p class="text-sm text-gray-500 mt-1">
-            إدارة جميع الإشعارات والتذكيرات في مكان واحد
-          </p>
-        </div>
-        <button onclick="openAddReminder()" class="btn btn-gold text-sm">
-          <i class="fas fa-plus"></i> إضافة تذكير جديد
-        </button>
-      </div>
-
-      <!-- Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="statsGrid">
-        <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="stat-icon bg-blue-50 text-blue-600">
-              <i class="fas fa-bell"></i>
-            </div>
-            <div>
-              <p class="text-xs text-gray-400 font-medium">إجمالي الإشعارات</p>
-              <p
-                class="text-xl md:text-2xl font-bold text-[#1e3a5f]"
-                id="totalNotifications"
-              >
-                0
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="stat-icon bg-amber-50 text-amber-600">
-              <i class="fas fa-circle"></i>
-            </div>
-            <div>
-              <p class="text-xs text-gray-400 font-medium">غير مقروءة</p>
-              <p
-                class="text-xl md:text-2xl font-bold text-[#f59e0b]"
-                id="unreadNotifications"
-              >
-                0
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="stat-icon bg-emerald-50 text-emerald-600">
-              <i class="fas fa-clock"></i>
-            </div>
-            <div>
-              <p class="text-xs text-gray-400 font-medium">التذكيرات</p>
-              <p
-                class="text-xl md:text-2xl font-bold text-[#10b981]"
-                id="totalReminders"
-              >
-                0
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm">
-          <div class="flex items-center gap-3">
-            <div class="stat-icon bg-red-50 text-red-600">
-              <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div>
-              <p class="text-xs text-gray-400 font-medium">متأخرة</p>
-              <p
-                class="text-xl md:text-2xl font-bold text-red-500"
-                id="overdueReminders"
-              >
-                0
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="flex flex-wrap gap-2 mb-4">
-        <button
-          class="tab-btn active"
-          data-tab="notifications"
-          onclick="switchTab('notifications')"
-        >
-          <i class="fas fa-bell ml-1"></i> الإشعارات
-          <span
-            class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full mr-1"
-            id="notifBadge"
-            >0</span
-          >
-        </button>
-        <button
-          class="tab-btn"
-          data-tab="reminders"
-          onclick="switchTab('reminders')"
-        >
-          <i class="fas fa-clock ml-1"></i> التذكيرات
-          <span
-            class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full mr-1"
-            id="reminderBadge"
-            >0</span
-          >
-        </button>
-      </div>
-
-      <!-- ===== NOTIFICATIONS TAB ===== -->
-      <div id="tab-notifications" class="tab-content active">
-        <div class="bg-white rounded-2xl border border-[#e9edf4] p-4 md:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <div class="filter-group">
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-[#1e3a5f] text-white"
-                data-filter="all"
-                onclick="filterNotifications('all')"
-              >
-                الكل
-              </button>
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-white text-[#4b5563] hover:bg-[#f8fafc]"
-                data-filter="unread"
-                onclick="filterNotifications('unread')"
-              >
-                غير مقروءة
-              </button>
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-white text-[#4b5563] hover:bg-[#f8fafc]"
-                data-filter="read"
-                onclick="filterNotifications('read')"
-              >
-                مقروءة
-              </button>
-            </div>
-            <div class="flex gap-2">
-              <button onclick="markAllRead()" class="btn btn-outline btn-sm">
-                تحديد الكل كمقروء
-              </button>
-              <button
-                onclick="clearAllNotifications()"
-                class="btn btn-danger btn-sm"
-              >
-                حذف الكل
-              </button>
-            </div>
-          </div>
-          <div id="notificationsList">
-            <!-- يتم تعبئتها بواسطة JS -->
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== REMINDERS TAB ===== -->
-      <div id="tab-reminders" class="tab-content">
-        <div class="bg-white rounded-2xl border border-[#e9edf4] p-4 md:p-5">
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <div class="filter-group">
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-[#1e3a5f] text-white"
-                data-filter="all"
-                onclick="filterReminders('all')"
-              >
-                الكل
-              </button>
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-white text-[#4b5563] hover:bg-[#f8fafc]"
-                data-filter="pending"
-                onclick="filterReminders('pending')"
-              >
-                قيد الانتظار
-              </button>
-              <button
-                class="filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] bg-white text-[#4b5563] hover:bg-[#f8fafc]"
-                data-filter="done"
-                onclick="filterReminders('done')"
-              >
-                منتهية
-              </button>
-            </div>
-            <button onclick="openAddReminder()" class="btn btn-gold btn-sm">
-              <i class="fas fa-plus"></i> تذكير جديد
-            </button>
-          </div>
-          <div id="remindersList">
-            <!-- يتم تعبئتها بواسطة JS -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== MODAL: إضافة / تعديل تذكير ===== -->
-    <div class="modal-overlay" id="reminderModal">
-      <div class="modal-box">
-        <button class="modal-close" onclick="closeModal('reminderModal')">
-          ✕
-        </button>
-        <div class="modal-title" id="reminderModalTitle">إضافة تذكير جديد</div>
-        <form id="reminderForm" onsubmit="saveReminder(event)">
-          <input type="hidden" id="editReminderId" value="" />
-          <div class="grid-2">
-            <div class="field full-width">
-              <label>العنوان *</label>
-              <input
-                type="text"
-                id="remTitle"
-                required
-                placeholder="مثال: متابعة عرض ع-١٢٣"
-              />
-            </div>
-            <div class="field">
-              <label>التاريخ *</label>
-              <input type="date" id="remDate" required />
-            </div>
-            <div class="field">
-              <label>الوقت</label>
-              <input type="time" id="remTime" />
-            </div>
-            <div class="field full-width">
-              <label>الملاحظات</label>
-              <textarea
-                id="remNotes"
-                rows="3"
-                placeholder="تفاصيل التذكير..."
-              ></textarea>
-            </div>
-            <div class="field full-width">
-              <label>الربط مع (اختياري)</label>
-              <select id="remLinkType">
-                <option value="">لا يوجد ربط</option>
-                <option value="offer">عرض</option>
-                <option value="request">طلب</option>
-              </select>
-            </div>
-            <div class="field full-width" id="remLinkIdContainer">
-              <label>رقم العرض/الطلب</label>
-              <input
-                type="text"
-                id="remLinkId"
-                placeholder="مثال: ع-١٢٣ أو ط-١٠١"
-              />
-            </div>
-          </div>
-          <div
-            style="
-              display: flex;
-              gap: 12px;
-              justify-content: flex-end;
-              margin-top: 20px;
-              flex-wrap: wrap;
-            "
-          >
-            <button
-              type="button"
-              class="btn btn-outline"
-              onclick="closeModal('reminderModal')"
-            >
-              إلغاء
-            </button>
-            <button type="submit" class="btn btn-gold">💾 حفظ التذكير</button>
-          </div>
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2><i class="fas fa-lock ml-2"></i>تسجيل الدخول</h2>
+        <form id="loginForm">
+            <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" value="admin@masar.sa" required /></div>
+            <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" value="Admin.123" required /></div>
+            <div id="loginError">خطأ في بيانات الدخول</div>
+            <button type="submit" class="btn btn-gold mt-2"><i class="fas fa-sign-in-alt"></i> دخول</button>
         </form>
-      </div>
     </div>
 </div>
-    <script src="sidebar.js"></script>
-    <script src="global.js"></script>
-    <script>
-      // ============================================================
-      //  DATA STORE
-      // ============================================================
-      let notifications = [];
-      let reminders = [];
-      let currentNotifFilter = "all";
-      let currentReminderFilter = "all";
 
-      // ============================================================
-      //  LOAD / SAVE
-      // ============================================================
-      function loadNotifications() {
-        const saved = localStorage.getItem("masarNotifications");
-        if (saved) {
-          try {
-            notifications = JSON.parse(saved);
-          } catch (e) {
-            notifications = [];
-          }
-        }
-        if (notifications.length === 0) {
-          // Generate sample notifications from system data
-          generateSystemNotifications();
-        }
-      }
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle text-emerald-400"></i>
+    <span id="toastMessage">تم الإجراء بنجاح</span>
+</div>
 
-      function loadReminders() {
-        const saved = localStorage.getItem("masarReminders");
-        if (saved) {
-          try {
-            reminders = JSON.parse(saved);
-          } catch (e) {
-            reminders = [];
-          }
-        }
-      }
+<!-- SIDEBAR -->
+<div id="sidebar-container"></div>
 
-      function saveNotifications() {
-        localStorage.setItem(
-          "masarNotifications",
-          JSON.stringify(notifications),
-        );
-      }
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+    <div class="max-w-6xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight">
+                    <i class="fas fa-bell ml-2 text-gold"></i>التنبيهات والتذكيرات
+                </h1>
+                <p class="text-sm text-muted mt-1">إدارة جميع الإشعارات والتذكيرات في مكان واحد</p>
+            </div>
+            <button onclick="openAddReminder()" class="btn btn-gold text-sm"><i class="fas fa-plus"></i> إضافة تذكير جديد</button>
+        </div>
 
-      function saveReminders() {
-        localStorage.setItem("masarReminders", JSON.stringify(reminders));
-      }
+        <!-- Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="statsGrid">
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="stat-icon bg-blue-50/10 text-blue-400"><i class="fas fa-bell"></i></div>
+                    <div><p class="text-xs text-muted font-medium">إجمالي الإشعارات</p><p class="text-xl md:text-2xl font-bold text-gold" id="totalNotifications">0</p></div>
+                </div>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="stat-icon bg-amber-50/10 text-amber-400"><i class="fas fa-circle"></i></div>
+                    <div><p class="text-xs text-muted font-medium">غير مقروءة</p><p class="text-xl md:text-2xl font-bold text-amber-400" id="unreadNotifications">0</p></div>
+                </div>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="stat-icon bg-emerald-50/10 text-emerald-400"><i class="fas fa-clock"></i></div>
+                    <div><p class="text-xs text-muted font-medium">التذكيرات</p><p class="text-xl md:text-2xl font-bold text-emerald-400" id="totalReminders">0</p></div>
+                </div>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="stat-icon bg-red-50/10 text-red-400"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div><p class="text-xs text-muted font-medium">متأخرة</p><p class="text-xl md:text-2xl font-bold text-red-400" id="overdueReminders">0</p></div>
+                </div>
+            </div>
+        </div>
 
-      // ============================================================
-      //  GENERATE SYSTEM NOTIFICATIONS
-      // ============================================================
-      function generateSystemNotifications() {
-        notifications = [];
-        const offers = loadData("masarOffersDataV6");
-        const requests = loadData("masarRequestsDataV4");
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-4">
+            <button class="tab-btn active" data-tab="notifications" onclick="switchTab('notifications')"><i class="fas fa-bell ml-1"></i> الإشعارات <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full mr-1" id="notifBadge">0</span></button>
+            <button class="tab-btn" data-tab="reminders" onclick="switchTab('reminders')"><i class="fas fa-clock ml-1"></i> التذكيرات <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full mr-1" id="reminderBadge">0</span></button>
+        </div>
 
-        // 1. العروض المتأخرة
-        offers.forEach((o) => {
-          if (o.stageId === 2 && o.statusDate) {
-            const days = Math.floor(
-              (new Date() - new Date(o.statusDate)) / (1000 * 60 * 60 * 24),
-            );
-            if (days >= 2) {
-              notifications.push({
-                id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-                type: "system",
-                title: `⏰ عرض متأخر: ${o.id}`,
-                message: `بانتظار رد المدير منذ ${days} أيام`,
-                time: new Date().toISOString(),
-                read: false,
-                link: "offers.html",
-                linkId: o.id,
-              });
-            }
-          }
-          // مستندات ناقصة
-          if (
-            o.documents &&
-            Object.values(o.documents).some((v) => v === false)
-          ) {
-            const missing = Object.entries(o.documents)
-              .filter(([k, v]) => !v)
-              .map(([k]) => k)
-              .join("، ");
-            notifications.push({
-              id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-              type: "system",
-              title: `📄 مستند ناقص: ${o.id}`,
-              message: `المستندات الناقصة: ${missing}`,
-              time: new Date().toISOString(),
-              read: false,
-              link: "offers.html",
-              linkId: o.id,
-            });
-          }
-        });
+        <!-- Notifications Tab -->
+        <div id="tab-notifications" class="tab-content active">
+            <div class="bg-surface rounded-2xl border border-line p-4 md:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-btn active" data-filter="all" onclick="filterNotifications('all')">الكل</button>
+                        <button class="filter-btn" data-filter="unread" onclick="filterNotifications('unread')">غير مقروءة</button>
+                        <button class="filter-btn" data-filter="read" onclick="filterNotifications('read')">مقروءة</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="markAllRead()" class="btn btn-outline btn-sm">تحديد الكل كمقروء</button>
+                        <button onclick="clearAllNotifications()" class="btn btn-danger btn-sm">حذف الكل</button>
+                    </div>
+                </div>
+                <div id="notificationsList"></div>
+            </div>
+        </div>
 
-        // 2. الطلبات في مرحلة المعاينة بدون موعد
-        requests.forEach((r) => {
-          if (r.stageId === 4 && !r.appointmentDate) {
-            notifications.push({
-              id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-              type: "system",
-              title: `📅 طلب بدون موعد: ${r.id}`,
-              message: `تم اختيار العرض ولكن لم يتم تحديد موعد المعاينة`,
-              time: new Date().toISOString(),
-              read: false,
-              link: "requests.html",
-              linkId: r.id,
-            });
-          }
-          if (
-            r.stageId === 4 &&
-            r.appointmentDate &&
-            r.appointmentDate < new Date().toISOString().slice(0, 10)
-          ) {
-            notifications.push({
-              id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-              type: "system",
-              title: `⏰ معاينة متأخرة: ${r.id}`,
-              message: `موعد المعاينة ${r.appointmentDate} ${r.appointmentTime || ""} لم يتم تأكيده`,
-              time: new Date().toISOString(),
-              read: false,
-              link: "requests.html",
-              linkId: r.id,
-            });
-          }
-          if (r.stageId === 2 && r.createdAt) {
-            const days = Math.floor(
-              (new Date() - new Date(r.createdAt)) / (1000 * 60 * 60 * 24),
-            );
-            if (days >= 3) {
-              notifications.push({
-                id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-                type: "system",
-                title: `🔍 طلب قيد المطابقة: ${r.id}`,
-                message: `جاري البحث عن عرض مطابق منذ ${days} أيام`,
-                time: new Date().toISOString(),
-                read: false,
-                link: "requests.html",
-                linkId: r.id,
-              });
-            }
-          }
-        });
+        <!-- Reminders Tab -->
+        <div id="tab-reminders" class="tab-content">
+            <div class="bg-surface rounded-2xl border border-line p-4 md:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button class="filter-btn active" data-filter="all" onclick="filterReminders('all')">الكل</button>
+                        <button class="filter-btn" data-filter="pending" onclick="filterReminders('pending')">قيد الانتظار</button>
+                        <button class="filter-btn" data-filter="done" onclick="filterReminders('done')">منتهية</button>
+                    </div>
+                    <button onclick="openAddReminder()" class="btn btn-gold btn-sm"><i class="fas fa-plus"></i> تذكير جديد</button>
+                </div>
+                <div id="remindersList"></div>
+            </div>
+        </div>
+    </div>
 
-        // 3. تقرير الأسبوع
-        const day = new Date().getDay();
-        if (day === 4) {
-          notifications.push({
-            id: "n" + Date.now() + Math.random().toString(36).slice(2, 4),
-            type: "system",
-            title: "📊 تقرير الأسبوع",
-            message: "اليوم موعد تسليم تقرير الأسبوع",
-            time: new Date().toISOString(),
-            read: false,
-            link: "#",
-            linkId: null,
-          });
-        }
+    <!-- Modal: إضافة / تعديل تذكير -->
+    <div class="modal-overlay" id="reminderModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('reminderModal')">✕</button>
+            <div class="modal-title" id="reminderModalTitle">إضافة تذكير جديد</div>
+            <form id="reminderForm">
+                <input type="hidden" id="editReminderId" value="" />
+                <div class="grid-2">
+                    <div class="field full-width"><label>العنوان *</label><input type="text" id="remTitle" required placeholder="مثال: متابعة عرض ع-١٢٣" /></div>
+                    <div class="field"><label>التاريخ *</label><input type="date" id="remDate" required /></div>
+                    <div class="field"><label>الوقت</label><input type="time" id="remTime" /></div>
+                    <div class="field full-width"><label>الملاحظات</label><textarea id="remNotes" rows="3" placeholder="تفاصيل التذكير..."></textarea></div>
+                    <div class="field full-width"><label>الربط مع (اختياري)</label>
+                        <select id="remLinkType"><option value="">لا يوجد ربط</option><option value="offer">عرض</option><option value="request">طلب</option></select>
+                    </div>
+                    <div class="field full-width" id="remLinkIdContainer" style="display:none;"><label>رقم العرض/الطلب</label><input type="text" id="remLinkId" placeholder="مثال: ع-١٢٣ أو ط-١٠١" /></div>
+                </div>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('reminderModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-gold">💾 حفظ التذكير</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-        // Limit notifications
-        if (notifications.length > 50) {
-          notifications = notifications.slice(0, 50);
-        }
-        saveNotifications();
-      }
+<script src="sidebar.js"></script>
+<script src="api.js"></script>
+<script src="global.js"></script>
+<script>
+// ============================================================
+// ALERTS & REMINDERS - كامل مع جميع المميزات
+// ============================================================
 
-      // ============================================================
-      //  HELPERS
-      // ============================================================
-      function loadData(key) {
-        const data = localStorage.getItem(key);
-        if (data) {
-          try {
-            return JSON.parse(data);
-          } catch (e) {}
-        }
-        return [];
-      }
+let notifications = [];
+let reminders = [];
+let currentNotifFilter = 'all';
+let currentReminderFilter = 'all';
+let isAuthChecked = false;
 
-      function fmtDate(d) {
-        if (!d) return "-";
-        return new Date(d).toLocaleDateString("ar-SA", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-      }
+// ============================================================
+// AUTH - محسنة
+// ============================================================
+async function checkAuth() {
+    if (isAuthChecked && API.isAuthenticated()) {
+        return true;
+    }
 
-      function fmtTime(d) {
-        if (!d) return "";
+    const token = localStorage.getItem('masar_token');
+    const overlay = document.getElementById('loginOverlay');
+    const mainContent = document.getElementById('mainContent');
+
+    if (token) {
         try {
-          return new Date(d).toLocaleTimeString("ar-SA", {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-        } catch (e) {
-          return "";
-        }
-      }
-
-      function fmtDateTime(d) {
-        if (!d) return "-";
-        return fmtDate(d) + " " + fmtTime(d);
-      }
-
-      function toast(msg, type) {
-        const el = document.getElementById("toast");
-        const icon = el.querySelector("i");
-        const text = document.getElementById("toastMessage");
-        text.textContent = msg;
-        if (type === "error") {
-          icon.className = "fas fa-exclamation-circle text-red-400";
-        } else if (type === "success") {
-          icon.className = "fas fa-check-circle text-emerald-400";
-        } else {
-          icon.className = "fas fa-info-circle text-blue-400";
-        }
-        el.classList.add("show");
-        clearTimeout(el._timer);
-        el._timer = setTimeout(() => el.classList.remove("show"), 3500);
-      }
-
-      function generateId(prefix) {
-        return (
-          prefix +
-          Date.now().toString(36) +
-          Math.random().toString(36).slice(2, 6)
-        );
-      }
-
-      // ============================================================
-      //  NOTIFICATIONS RENDER
-      // ============================================================
-      function renderNotifications() {
-        let filtered = [...notifications];
-        if (currentNotifFilter === "unread") {
-          filtered = filtered.filter((n) => !n.read);
-        } else if (currentNotifFilter === "read") {
-          filtered = filtered.filter((n) => n.read);
-        }
-        // Sort newest first
-        filtered.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-        const container = document.getElementById("notificationsList");
-        const badge = document.getElementById("notifBadge");
-        const unread = notifications.filter((n) => !n.read).length;
-        badge.textContent = unread;
-
-        document.getElementById("totalNotifications").textContent =
-          notifications.length;
-        document.getElementById("unreadNotifications").textContent = unread;
-
-        if (filtered.length === 0) {
-          container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">🔔</div>
-                        <p>لا توجد إشعارات</p>
-                        <p class="text-sm">ستظهر هنا الإشعارات القادمة من النظام</p>
-                    </div>
-                `;
-          return;
-        }
-
-        container.innerHTML = filtered
-          .map(
-            (n) => `
-                <div class="notif-item ${n.read ? "" : "unread"}">
-                    <div class="notif-icon">${n.title.split(" ")[0] || "📢"}</div>
-                    <div class="notif-content">
-                        <div class="notif-title">${n.title}</div>
-                        <div class="notif-message">${n.message}</div>
-                        <div class="notif-time">${fmtDateTime(n.time)}</div>
-                    </div>
-                    <div class="notif-actions">
-                        ${n.link && n.link !== "#" ? `<button onclick="window.location.href='${n.link}'" title="فتح"><i class="fas fa-external-link-alt"></i></button>` : ""}
-                        ${!n.read ? `<button onclick="markRead('${n.id}')" title="تحديد كمقروء"><i class="fas fa-check"></i></button>` : ""}
-                        <button class="danger" onclick="deleteNotification('${n.id}')" title="حذف"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `,
-          )
-          .join("");
-
-        // Update filter buttons
-        document
-          .querySelectorAll("#tab-notifications .filter-btn")
-          .forEach((btn) => {
-            btn.className =
-              "filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] " +
-              (btn.dataset.filter === currentNotifFilter
-                ? "bg-[#1e3a5f] text-white"
-                : "bg-white text-[#4b5563] hover:bg-[#f8fafc]");
-          });
-      }
-
-      function filterNotifications(filter) {
-        currentNotifFilter = filter;
-        renderNotifications();
-      }
-
-      function markRead(id) {
-        const n = notifications.find((x) => x.id === id);
-        if (n) {
-          n.read = true;
-          saveNotifications();
-          renderNotifications();
-          renderStats();
-          toast("✅ تم تحديد الإشعار كمقروء", "success");
-        }
-      }
-
-      function markAllRead() {
-        notifications.forEach((n) => (n.read = true));
-        saveNotifications();
-        renderNotifications();
-        renderStats();
-        toast("✅ تم تحديد جميع الإشعارات كمقروءة", "success");
-      }
-
-      function deleteNotification(id) {
-        notifications = notifications.filter((n) => n.id !== id);
-        saveNotifications();
-        renderNotifications();
-        renderStats();
-      }
-
-      function clearAllNotifications() {
-        if (!confirm("هل أنت متأكد من حذف جميع الإشعارات؟")) return;
-        notifications = [];
-        saveNotifications();
-        renderNotifications();
-        renderStats();
-        toast("🗑️ تم حذف جميع الإشعارات", "info");
-      }
-
-      // ============================================================
-      //  REMINDERS RENDER
-      // ============================================================
-      function renderReminders() {
-        let filtered = [...reminders];
-        if (currentReminderFilter === "pending") {
-          filtered = filtered.filter((r) => !r.done);
-        } else if (currentReminderFilter === "done") {
-          filtered = filtered.filter((r) => r.done);
-        }
-        // Sort by date (soonest first) then pending first
-        filtered.sort((a, b) => {
-          if (a.done !== b.done) return a.done ? 1 : -1;
-          return new Date(a.date) - new Date(b.date);
-        });
-
-        const container = document.getElementById("remindersList");
-        const badge = document.getElementById("reminderBadge");
-        const pending = reminders.filter((r) => !r.done).length;
-        badge.textContent = pending;
-
-        document.getElementById("totalReminders").textContent =
-          reminders.length;
-        const overdue = reminders.filter(
-          (r) => !r.done && r.date < new Date().toISOString().slice(0, 10),
-        ).length;
-        document.getElementById("overdueReminders").textContent = overdue;
-
-        if (filtered.length === 0) {
-          container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">⏰</div>
-                        <p>لا توجد تذكيرات</p>
-                        <p class="text-sm">أضف تذكيراً جديداً لتلقي إشعارات بالمهام المهمة</p>
-                    </div>
-                `;
-          return;
-        }
-
-        container.innerHTML = filtered
-          .map(
-            (r) => `
-                <div class="reminder-item ${r.done ? "done" : ""}">
-                    <div class="reminder-header">
-                        <div class="reminder-title">${r.title}</div>
-                        <div class="reminder-date">${fmtDate(r.date)} ${r.time || ""}</div>
-                    </div>
-                    ${r.notes ? `<div class="reminder-notes">${r.notes}</div>` : ""}
-                    ${r.linkId ? `<div class="text-xs text-gray-400 mt-1">🔗 مرتبط بـ ${r.linkId}</div>` : ""}
-                    <div class="reminder-actions">
-                        ${!r.done ? `<button class="done-btn" onclick="toggleReminderDone('${r.id}')">✅ تم الإنجاز</button>` : `<button class="done-btn" onclick="toggleReminderDone('${r.id}')" style="background:#e5e9f0;color:#6b7a93;">↩️ إعادة فتح</button>`}
-                        <button class="edit-btn" onclick="editReminder('${r.id}')"><i class="fas fa-pen"></i> تعديل</button>
-                        <button class="delete-btn" onclick="deleteReminder('${r.id}')"><i class="fas fa-trash"></i> حذف</button>
-                    </div>
-                </div>
-            `,
-          )
-          .join("");
-
-        // Update filter buttons
-        document
-          .querySelectorAll("#tab-reminders .filter-btn")
-          .forEach((btn) => {
-            btn.className =
-              "filter-btn text-xs font-bold px-3 py-1.5 rounded-full border border-[#e5e9f0] " +
-              (btn.dataset.filter === currentReminderFilter
-                ? "bg-[#1e3a5f] text-white"
-                : "bg-white text-[#4b5563] hover:bg-[#f8fafc]");
-          });
-      }
-
-      function filterReminders(filter) {
-        currentReminderFilter = filter;
-        renderReminders();
-      }
-
-      function toggleReminderDone(id) {
-        const r = reminders.find((x) => x.id === id);
-        if (r) {
-          r.done = !r.done;
-          saveReminders();
-          renderReminders();
-          renderStats();
-          toast(
-            r.done ? "✅ تم إنجاز التذكير" : "↩️ تم إعادة فتح التذكير",
-            "success",
-          );
-        }
-      }
-
-      function deleteReminder(id) {
-        if (!confirm("هل أنت متأكد من حذف هذا التذكير؟")) return;
-        reminders = reminders.filter((r) => r.id !== id);
-        saveReminders();
-        renderReminders();
-        renderStats();
-        toast("🗑️ تم حذف التذكير", "info");
-      }
-
-      // ============================================================
-      //  REMINDER MODAL
-      // ============================================================
-      function openAddReminder() {
-        document.getElementById("reminderModalTitle").textContent =
-          "إضافة تذكير جديد";
-        document.getElementById("editReminderId").value = "";
-        document.getElementById("remTitle").value = "";
-        document.getElementById("remDate").value = new Date()
-          .toISOString()
-          .slice(0, 10);
-        document.getElementById("remTime").value = "";
-        document.getElementById("remNotes").value = "";
-        document.getElementById("remLinkType").value = "";
-        document.getElementById("remLinkId").value = "";
-        document.getElementById("remLinkIdContainer").style.display = "none";
-        document.getElementById("reminderModal").classList.add("active");
-      }
-
-      function editReminder(id) {
-        const r = reminders.find((x) => x.id === id);
-        if (!r) {
-          toast("التذكير غير موجود", "error");
-          return;
-        }
-        document.getElementById("reminderModalTitle").textContent =
-          "تعديل التذكير";
-        document.getElementById("editReminderId").value = id;
-        document.getElementById("remTitle").value = r.title;
-        document.getElementById("remDate").value = r.date;
-        document.getElementById("remTime").value = r.time || "";
-        document.getElementById("remNotes").value = r.notes || "";
-        document.getElementById("remLinkType").value = r.linkType || "";
-        document.getElementById("remLinkId").value = r.linkId || "";
-        document.getElementById("remLinkIdContainer").style.display = r.linkType
-          ? "block"
-          : "none";
-        document.getElementById("reminderModal").classList.add("active");
-      }
-
-      function closeModal(id) {
-        document.getElementById(id).classList.remove("active");
-      }
-
-      // Show/hide link ID field based on link type
-      document
-        .getElementById("remLinkType")
-        .addEventListener("change", function () {
-          const container = document.getElementById("remLinkIdContainer");
-          container.style.display = this.value ? "block" : "none";
-        });
-
-      function saveReminder(e) {
-        e.preventDefault();
-        const editId = document.getElementById("editReminderId").value;
-        const title = document.getElementById("remTitle").value.trim();
-        const date = document.getElementById("remDate").value;
-        const time = document.getElementById("remTime").value;
-        const notes = document.getElementById("remNotes").value.trim();
-        const linkType = document.getElementById("remLinkType").value;
-        const linkId = document.getElementById("remLinkId").value.trim();
-
-        if (!title || !date) {
-          toast("يرجى ملء العنوان والتاريخ", "error");
-          return;
-        }
-
-        if (editId) {
-          const r = reminders.find((x) => x.id === editId);
-          if (r) {
-            r.title = title;
-            r.date = date;
-            r.time = time;
-            r.notes = notes;
-            r.linkType = linkType;
-            r.linkId = linkId;
-            saveReminders();
-            toast("✅ تم تحديث التذكير", "success");
-          }
-        } else {
-          const newReminder = {
-            id: generateId("r"),
-            title: title,
-            date: date,
-            time: time,
-            notes: notes,
-            linkType: linkType,
-            linkId: linkId,
-            done: false,
-            createdAt: new Date().toISOString(),
-          };
-          reminders.push(newReminder);
-          saveReminders();
-          toast("✅ تم إضافة التذكير", "success");
-        }
-
-        closeModal("reminderModal");
-        renderReminders();
-        renderStats();
-      }
-
-      // ============================================================
-      //  STATS
-      // ============================================================
-      function renderStats() {
-        // Already updated inside render functions
-        // But we update the badges
-        const unread = notifications.filter((n) => !n.read).length;
-        document.getElementById("unreadNotifications").textContent = unread;
-        document.getElementById("totalNotifications").textContent =
-          notifications.length;
-        document.getElementById("totalReminders").textContent =
-          reminders.length;
-        const overdue = reminders.filter(
-          (r) => !r.done && r.date < new Date().toISOString().slice(0, 10),
-        ).length;
-        document.getElementById("overdueReminders").textContent = overdue;
-        document.getElementById("notifBadge").textContent = unread;
-        document.getElementById("reminderBadge").textContent = reminders.filter(
-          (r) => !r.done,
-        ).length;
-      }
-
-      // ============================================================
-      //  TAB SWITCH
-      // ============================================================
-      function switchTab(tab) {
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById("tab-" + tab).classList.add("active");
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((el) => el.classList.remove("active"));
-        document
-          .querySelector(`.tab-btn[data-tab="${tab}"]`)
-          .classList.add("active");
-        if (tab === "notifications") renderNotifications();
-        else renderReminders();
-      }
-
-      // ============================================================
-      //  CHECK FOR DUE REMINDERS (Background)
-      // ============================================================
-      function checkDueReminders() {
-        const now = new Date();
-        const today = now.toISOString().slice(0, 10);
-        const currentTime =
-          now.getHours().toString().padStart(2, "0") +
-          ":" +
-          now.getMinutes().toString().padStart(2, "0");
-
-        reminders.forEach((r) => {
-          if (r.done) return;
-          if (r.date === today && r.time && r.time <= currentTime) {
-            // Send notification
-            toast("🔔 تذكير: " + r.title, "info");
-            if (
-              "Notification" in window &&
-              Notification.permission === "granted"
-            ) {
-              new Notification("🔔 تذكير", {
-                body: r.title + (r.notes ? " - " + r.notes : ""),
-                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⏰</text></svg>',
-              });
+            const result = await API.auth.me();
+            if (result.status === 'success') {
+                API.token = token;
+                overlay.classList.remove('show');
+                mainContent.classList.add('visible');
+                isAuthChecked = true;
+                return true;
+            } else {
+                localStorage.removeItem('masar_token');
+                localStorage.removeItem('masar_user');
+                API.token = null;
             }
-            r.done = true;
-            saveReminders();
+        } catch (err) {
+            console.warn('خطأ في التحقق من التوكن:', err.message);
+            localStorage.removeItem('masar_token');
+            localStorage.removeItem('masar_user');
+            API.token = null;
+        }
+    }
+
+    overlay.classList.add('show');
+    mainContent.classList.remove('visible');
+    isAuthChecked = false;
+    return false;
+}
+
+// تسجيل الدخول
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('loginError');
+    errorEl.style.display = 'none';
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
+
+    try {
+        const result = await API.auth.login(email, password);
+        if (result.status === 'success') {
+            errorEl.style.display = 'none';
+            if (result.data?.user) {
+                localStorage.setItem('masar_user', JSON.stringify(result.data.user));
+            }
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+                loadData();
+            }
+        } else {
+            errorEl.textContent = result.message || 'فشل تسجيل الدخول';
+            errorEl.style.display = 'block';
+        }
+    } catch (err) {
+        errorEl.textContent = err.message || 'حدث خطأ في الاتصال';
+        errorEl.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+    }
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatDate(d) {
+    if (!d) return '-';
+    try {
+        const date = new Date(d);
+        return date.toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch (e) {
+        return d;
+    }
+}
+
+function formatTime(d) {
+    if (!d) return '';
+    try {
+        const date = new Date(d);
+        return date.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+        return '';
+    }
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadData() {
+    if (!API.isAuthenticated()) {
+        await checkAuth();
+        return;
+    }
+
+    try {
+        // تحميل التذكيرات من API
+        const remindersResult = await API.reminders.list();
+        if (remindersResult.status === 'success') {
+            reminders = remindersResult.data || [];
+        } else {
+            // إذا فشل API، استخدم التخزين المحلي
+            const localReminders = localStorage.getItem('masarRemindersLocal');
+            if (localReminders) {
+                try {
+                    reminders = JSON.parse(localReminders);
+                } catch (e) {}
+            }
+        }
+
+        // تحميل الإشعارات من لوحة التحكم
+        const dashboardResult = await API.reports.dashboard();
+        if (dashboardResult.status === 'success') {
+            notifications = dashboardResult.data.alerts || [];
+        }
+
+        renderNotifications();
+        renderReminders();
+        renderStats();
+    } catch (err) {
+        showToast(err.message || 'حدث خطأ في تحميل البيانات', 'error');
+    }
+}
+
+function saveRemindersLocally() {
+    localStorage.setItem('masarRemindersLocal', JSON.stringify(reminders));
+}
+
+// ============================================================
+// RENDER NOTIFICATIONS
+// ============================================================
+function renderNotifications() {
+    let filtered = [...notifications];
+    if (currentNotifFilter === 'unread') {
+        filtered = filtered.filter(n => !n.read);
+    } else if (currentNotifFilter === 'read') {
+        filtered = filtered.filter(n => n.read);
+    }
+    filtered.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+    const container = document.getElementById('notificationsList');
+    const badge = document.getElementById('notifBadge');
+    const unread = notifications.filter(n => !n.read).length;
+    badge.textContent = unread;
+
+    document.getElementById('totalNotifications').textContent = notifications.length;
+    document.getElementById('unreadNotifications').textContent = unread;
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10 text-muted">
+                <div class="text-4xl mb-3">🔔</div>
+                <p>لا توجد إشعارات</p>
+                <p class="text-sm">ستظهر هنا الإشعارات القادمة من النظام</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filtered.map(n => `
+        <div class="notif-item ${n.read ? '' : 'unread'}">
+            <div class="notif-icon">${n.icon || '📢'}</div>
+            <div class="notif-content">
+                <div class="notif-title">${n.title}</div>
+                <div class="notif-message">${n.message}</div>
+                <div class="notif-time">${formatDate(n.time)} ${formatTime(n.time)}</div>
+            </div>
+            <div class="notif-actions">
+                ${n.link ? `<button onclick="window.location.href='${n.link}'" title="فتح"><i class="fas fa-external-link-alt"></i></button>` : ''}
+                ${!n.read ? `<button onclick="markRead('${n.id}')" title="تحديد كمقروء"><i class="fas fa-check"></i></button>` : ''}
+                <button class="danger" onclick="deleteNotification('${n.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    `).join('');
+
+    document.querySelectorAll('#tab-notifications .filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === currentNotifFilter);
+    });
+}
+
+function filterNotifications(filter) {
+    currentNotifFilter = filter;
+    renderNotifications();
+}
+
+function markRead(id) {
+    const n = notifications.find(x => x.id === id);
+    if (n) {
+        n.read = true;
+        renderNotifications();
+        renderStats();
+        showToast('✅ تم تحديد الإشعار كمقروء', 'success');
+    }
+}
+
+function markAllRead() {
+    notifications.forEach(n => n.read = true);
+    renderNotifications();
+    renderStats();
+    showToast('✅ تم تحديد جميع الإشعارات كمقروءة', 'success');
+}
+
+function deleteNotification(id) {
+    notifications = notifications.filter(n => n.id !== id);
+    renderNotifications();
+    renderStats();
+}
+
+function clearAllNotifications() {
+    if (!confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) return;
+    notifications = [];
+    renderNotifications();
+    renderStats();
+    showToast('🗑️ تم حذف جميع الإشعارات', 'info');
+}
+
+// ============================================================
+// RENDER REMINDERS
+// ============================================================
+function renderReminders() {
+    let filtered = [...reminders];
+    if (currentReminderFilter === 'pending') {
+        filtered = filtered.filter(r => !r.done);
+    } else if (currentReminderFilter === 'done') {
+        filtered = filtered.filter(r => r.done);
+    }
+    filtered.sort((a, b) => {
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return new Date(a.reminder_time) - new Date(b.reminder_time);
+    });
+
+    const container = document.getElementById('remindersList');
+    const badge = document.getElementById('reminderBadge');
+    const pending = reminders.filter(r => !r.done).length;
+    badge.textContent = pending;
+
+    document.getElementById('totalReminders').textContent = reminders.length;
+    const now = new Date().toISOString();
+    const overdue = reminders.filter(r => !r.done && r.reminder_time && r.reminder_time < now).length;
+    document.getElementById('overdueReminders').textContent = overdue;
+
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-10 text-muted">
+                <div class="text-4xl mb-3">⏰</div>
+                <p>لا توجد تذكيرات</p>
+                <p class="text-sm">أضف تذكيراً جديداً لتلقي إشعارات بالمهام المهمة</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filtered.map(r => `
+        <div class="reminder-item ${r.done ? 'done' : ''}">
+            <div class="reminder-header">
+                <div class="reminder-title">${r.title}</div>
+                <div class="reminder-date">${formatDate(r.reminder_time)} ${formatTime(r.reminder_time)}</div>
+            </div>
+            ${r.notes ? `<div class="reminder-notes">${r.notes}</div>` : ''}
+            ${r.link_id ? `<div class="text-xs text-muted mt-1">🔗 مرتبط بـ ${r.link_id}</div>` : ''}
+            <div class="reminder-actions">
+                ${!r.done ? `<button class="done-btn" onclick="toggleReminderDone('${r.id}')">✅ تم الإنجاز</button>` : `<button class="done-btn" onclick="toggleReminderDone('${r.id}')" style="background:#1A2740;color:#8B96A8;">↩️ إعادة فتح</button>`}
+                <button class="edit-btn" onclick="editReminder('${r.id}')"><i class="fas fa-pen"></i> تعديل</button>
+                <button class="delete-btn" onclick="deleteReminder('${r.id}')"><i class="fas fa-trash"></i> حذف</button>
+            </div>
+        </div>
+    `).join('');
+
+    document.querySelectorAll('#tab-reminders .filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === currentReminderFilter);
+    });
+}
+
+function filterReminders(filter) {
+    currentReminderFilter = filter;
+    renderReminders();
+}
+
+async function toggleReminderDone(id) {
+    const r = reminders.find(x => x.id === id);
+    if (!r) return;
+    
+    try {
+        const result = await API.reminders.markDone(id);
+        if (result.status === 'success') {
+            r.done = !r.done;
+            saveRemindersLocally();
             renderReminders();
-          }
-        });
-      }
-
-      // ============================================================
-      //  KEYBOARD SHORTCUTS
-      // ============================================================
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          document
-            .querySelectorAll(".modal-overlay.active")
-            .forEach((el) => el.classList.remove("active"));
+            renderStats();
+            showToast(r.done ? '✅ تم إنجاز التذكير' : '↩️ تم إعادة فتح التذكير', 'success');
+        } else {
+            showToast(result.message || 'فشل تحديث التذكير', 'error');
         }
-        if ((e.ctrlKey || e.metaKey) && e.key === "n") {
-          e.preventDefault();
-          openAddReminder();
+    } catch (err) {
+        showToast(err.message || 'حدث خطأ', 'error');
+    }
+}
+
+async function deleteReminder(id) {
+    if (!confirm('هل أنت متأكد من حذف هذا التذكير؟')) return;
+    try {
+        const result = await API.reminders.delete(id);
+        if (result.status === 'success') {
+            reminders = reminders.filter(r => r.id !== id);
+            saveRemindersLocally();
+            renderReminders();
+            renderStats();
+            showToast('🗑️ تم حذف التذكير', 'info');
+        } else {
+            showToast(result.message || 'فشل حذف التذكير', 'error');
         }
-      });
+    } catch (err) {
+        showToast(err.message || 'حدث خطأ', 'error');
+    }
+}
 
-      // ============================================================
-      //  INIT
-      // ============================================================
-      loadNotifications();
-      loadReminders();
-      renderNotifications();
-      renderReminders();
-      renderStats();
+// ============================================================
+// REMINDER MODAL
+// ============================================================
+function openAddReminder() {
+    document.getElementById('reminderModalTitle').textContent = 'إضافة تذكير جديد';
+    document.getElementById('editReminderId').value = '';
+    document.getElementById('remTitle').value = '';
+    document.getElementById('remDate').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('remTime').value = '';
+    document.getElementById('remNotes').value = '';
+    document.getElementById('remLinkType').value = '';
+    document.getElementById('remLinkId').value = '';
+    document.getElementById('remLinkIdContainer').style.display = 'none';
+    document.getElementById('reminderModal').classList.add('active');
+}
 
-      // Check reminders every 30 seconds
-      setInterval(checkDueReminders, 30000);
+function editReminder(id) {
+    const r = reminders.find(x => x.id === id);
+    if (!r) { showToast('التذكير غير موجود', 'error'); return; }
+    document.getElementById('reminderModalTitle').textContent = 'تعديل التذكير';
+    document.getElementById('editReminderId').value = id;
+    document.getElementById('remTitle').value = r.title;
+    document.getElementById('remDate').value = r.reminder_time ? r.reminder_time.slice(0, 10) : '';
+    document.getElementById('remTime').value = r.reminder_time ? r.reminder_time.slice(11, 16) : '';
+    document.getElementById('remNotes').value = r.notes || '';
+    document.getElementById('remLinkType').value = r.link_type || '';
+    document.getElementById('remLinkId').value = r.link_id || '';
+    document.getElementById('remLinkIdContainer').style.display = r.link_type ? 'block' : 'none';
+    document.getElementById('reminderModal').classList.add('active');
+}
 
-      // Request notification permission
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
 
-      // ============================================================
-      //  GLOBALS
-      // ============================================================
-      window.switchTab = switchTab;
-      window.filterNotifications = filterNotifications;
-      window.filterReminders = filterReminders;
-      window.markRead = markRead;
-      window.markAllRead = markAllRead;
-      window.deleteNotification = deleteNotification;
-      window.clearAllNotifications = clearAllNotifications;
-      window.toggleReminderDone = toggleReminderDone;
-      window.deleteReminder = deleteReminder;
-      window.openAddReminder = openAddReminder;
-      window.editReminder = editReminder;
-      window.closeModal = closeModal;
-      window.saveReminder = saveReminder;
-      window.toast = toast;
-    </script>
-  </body>
+document.getElementById('remLinkType').addEventListener('change', function() {
+    document.getElementById('remLinkIdContainer').style.display = this.value ? 'block' : 'none';
+});
+
+document.getElementById('reminderForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const editId = document.getElementById('editReminderId').value;
+    const title = document.getElementById('remTitle').value.trim();
+    const date = document.getElementById('remDate').value;
+    const time = document.getElementById('remTime').value;
+    const notes = document.getElementById('remNotes').value.trim();
+    const linkType = document.getElementById('remLinkType').value;
+    const linkId = document.getElementById('remLinkId').value.trim();
+
+    if (!title || !date) {
+        showToast('يرجى ملء العنوان والتاريخ', 'error');
+        return;
+    }
+
+    const reminderTime = date + (time ? ' ' + time + ':00' : ' 00:00:00');
+
+    const data = {
+        title: title,
+        reminder_time: reminderTime,
+        notes: notes,
+        link_type: linkType,
+        link_id: linkId
+    };
+
+    try {
+        let result;
+        if (editId) {
+            result = await API.reminders.update(editId, data);
+        } else {
+            result = await API.reminders.create(data);
+        }
+
+        if (result.status === 'success') {
+            closeModal('reminderModal');
+            showToast('✅ تم حفظ التذكير', 'success');
+            await loadData();
+        } else {
+            showToast(result.message || 'فشل حفظ التذكير', 'error');
+        }
+    } catch (err) {
+        showToast(err.message || 'حدث خطأ', 'error');
+    }
+});
+
+// ============================================================
+// STATS
+// ============================================================
+function renderStats() {
+    const unread = notifications.filter(n => !n.read).length;
+    document.getElementById('unreadNotifications').textContent = unread;
+    document.getElementById('totalNotifications').textContent = notifications.length;
+    document.getElementById('totalReminders').textContent = reminders.length;
+    const now = new Date().toISOString();
+    const overdue = reminders.filter(r => !r.done && r.reminder_time && r.reminder_time < now).length;
+    document.getElementById('overdueReminders').textContent = overdue;
+    document.getElementById('notifBadge').textContent = unread;
+    document.getElementById('reminderBadge').textContent = reminders.filter(r => !r.done).length;
+}
+
+// ============================================================
+// TAB SWITCH
+// ============================================================
+function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+    if (tab === 'notifications') renderNotifications();
+    else renderReminders();
+}
+
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        openAddReminder();
+    }
+});
+
+// ============================================================
+// NOTIFICATION PERMISSION
+// ============================================================
+if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async function() {
+    const isAuth = await checkAuth();
+    if (isAuth) {
+        loadData();
+        setInterval(loadData, 60000);
+    }
+});
+
+// ============================================================
+// EXPOSE GLOBALS
+// ============================================================
+window.switchTab = switchTab;
+window.filterNotifications = filterNotifications;
+window.filterReminders = filterReminders;
+window.markRead = markRead;
+window.markAllRead = markAllRead;
+window.deleteNotification = deleteNotification;
+window.clearAllNotifications = clearAllNotifications;
+window.toggleReminderDone = toggleReminderDone;
+window.deleteReminder = deleteReminder;
+window.openAddReminder = openAddReminder;
+window.editReminder = editReminder;
+window.closeModal = closeModal;
+window.showToast = showToast;
+window.checkAuth = checkAuth;
+window.loadData = loadData;
+</script>
+</body>
 </html>

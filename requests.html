@@ -1,910 +1,329 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>مسار — الطلبات العقارية</title>
     <link rel="stylesheet" href="global.css" />
-
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
-      * {
-        font-family: "Tajawal", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: #f0f4fa;
-        min-height: 100vh;
-      }
-      .stat-card {
-        transition: all 0.25s ease;
-        border: 1px solid rgba(0, 0, 0, 0.04);
-      }
-      .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
-      }
-      .btn {
-        padding: 10px 28px;
-        border-radius: 40px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.95rem;
-      }
-      .btn-gold {
-        background: #1e3a5f;
-        color: #fff;
-      }
-      .btn-gold:hover {
-        background: #0f2a47;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(30, 58, 95, 0.25);
-      }
-      .btn-outline {
-        background: transparent;
-        color: #1e3a5f;
-        border: 2px solid #1e3a5f;
-      }
-      .btn-outline:hover {
-        background: #1e3a5f;
-        color: #fff;
-      }
-      .btn-sm {
-        padding: 6px 16px;
-        font-size: 0.8rem;
-      }
-      .btn-emerald {
-        background: #10b981;
-        color: #fff;
-      }
-      .btn-emerald:hover {
-        background: #059669;
-      }
-      .btn-danger {
-        background: #dc2626;
-        color: #fff;
-      }
-      .btn-danger:hover {
-        background: #b91c1c;
-      }
-      .btn-amber {
-        background: #f59e0b;
-        color: #fff;
-      }
-      .btn-amber:hover {
-        background: #d97706;
-      }
-      .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 14px;
-        border-radius: 30px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-      }
-      .status-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        flex-shrink: 0;
-      }
-      .status-dot.pulse {
-        animation: pulse-dot 1.8s ease-in-out infinite;
-      }
-      @keyframes pulse-dot {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.5;
-          transform: scale(1.3);
-        }
-      }
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        backdrop-filter: blur(4px);
-        z-index: 1000;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        overflow-y: auto;
-      }
-      .modal-overlay.active {
-        display: flex;
-      }
-      .modal-box {
-        background: #fff;
-        border-radius: 24px;
-        max-width: 860px;
-        width: 100%;
-        max-height: 92vh;
-        overflow-y: auto;
-        padding: 28px 32px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
-        animation: modalFadeIn 0.25s ease;
-        position: relative;
-      }
-      @keyframes modalFadeIn {
-        from {
-          opacity: 0;
-          transform: scale(0.95) translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1) translateY(0);
-        }
-      }
-      .modal-close {
-        position: sticky;
-        top: 0;
-        float: left;
-        background: none;
-        border: none;
-        font-size: 28px;
-        color: #9aa3b5;
-        cursor: pointer;
-        transition: color 0.2s;
-        line-height: 1;
-        z-index: 10;
-      }
-      .modal-close:hover {
-        color: #1f2937;
-      }
-      .modal-title {
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e3a5f;
-        margin-bottom: 20px;
-      }
-      .switch-group {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
-        background: #f1f5f9;
-        border-radius: 40px;
-        padding: 4px;
-        width: fit-content;
-        flex-wrap: wrap;
-      }
-      .switch-group button {
-        padding: 8px 24px;
-        border: none;
-        border-radius: 30px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: transparent;
-        color: #4b5563;
-      }
-      .switch-group button.active {
-        background: #1e3a5f;
-        color: #fff;
-        box-shadow: 0 4px 12px rgba(30, 58, 95, 0.25);
-      }
-      .switch-group button:hover:not(.active) {
-        background: #e2e8f0;
-      }
-      .smart-area {
-        background: #f8fafc;
-        border-radius: 16px;
-        padding: 16px;
-        margin-bottom: 16px;
-        border: 2px dashed #d1d9e6;
-      }
-      .smart-area textarea {
-        width: 100%;
-        border: 1px solid #e5e9f0;
-        border-radius: 12px;
-        padding: 12px;
-        font-size: 0.9rem;
-        min-height: 180px;
-        resize: vertical;
-        font-family: "Tajawal", sans-serif;
-        background: #fff;
-        transition: border 0.2s;
-      }
-      .smart-area textarea:focus {
-        outline: none;
-        border-color: #1e3a5f;
-      }
-      .smart-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 12px;
-        flex-wrap: wrap;
-      }
-      .smart-feedback {
-        margin-top: 10px;
-        font-size: 0.9rem;
-        color: #1f2937;
-        padding: 10px 14px;
-        background: #fff;
-        border-radius: 10px;
-        border: 1px solid #e5e9f0;
-        display: none;
-      }
-      .smart-feedback.show {
-        display: block;
-      }
-      .smart-feedback .error {
-        color: #dc2626;
-      }
-      .smart-feedback .success {
-        color: #10b981;
-      }
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .field label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #374151;
-      }
-      .field input,
-      .field select,
-      .field textarea {
-        border: 2px solid #e5e9f0;
-        border-radius: 12px;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-        transition: border 0.2s;
-        background: #fff;
-        width: 100%;
-        font-family: "Tajawal", sans-serif;
-      }
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        outline: none;
-        border-color: #1e3a5f;
-        box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.08);
-      }
-      .field.full-width {
-        grid-column: 1 / -1;
-      }
-      .toast {
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-        background: #1f2937;
-        color: #fff;
-        padding: 14px 28px;
-        border-radius: 14px;
-        font-weight: 500;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        gap: 12px;
-        animation: slideUp 0.3s ease;
-        max-width: 90%;
-      }
-      .toast.show {
-        display: flex;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .request-row {
-        transition: background 0.15s ease;
-        cursor: pointer;
-      }
-      .request-row:hover {
-        background: #f0f5ff !important;
-      }
-      .detail-section {
-        background: #fff;
-        border-radius: 16px;
-        border: 1px solid #e9edf4;
-        padding: 20px 24px;
-        margin-bottom: 20px;
-      }
-      .detail-section .section-title {
-        font-size: 18px;
-        font-weight: 800;
-        color: #1e3a5f;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .timeline {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding-right: 4px;
-      }
-      .timeline-item {
-        display: flex;
-        gap: 16px;
-        padding: 6px 0;
-      }
-      .timeline-dot {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        border: 2px solid #fff;
-        margin-top: 2px;
-        position: relative;
-        z-index: 2;
-      }
-      .timeline-dot.completed {
-        background: #10b981;
-      }
-      .timeline-dot.active {
-        background: #1e3a5f;
-        box-shadow: 0 0 0 4px rgba(30, 58, 95, 0.25);
-      }
-      .timeline-dot.active.delayed {
-        background: #dc2626;
-        box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.25);
-      }
-      .timeline-dot.pending {
-        background: #d1d9e6;
-      }
-      .timeline-line {
-        width: 3px;
-        flex: 1;
-        min-height: 24px;
-        margin: 0 7px;
-        border-radius: 4px;
-      }
-      .timeline-line.completed {
-        background: #10b981;
-      }
-      .timeline-line.pending {
-        background: #d1d9e6;
-      }
-      .timeline-line.delayed {
-        background: #dc2626;
-      }
-      .timeline-content {
-        flex: 1;
-        padding-bottom: 4px;
-      }
-      .timeline-content .stage-name {
-        font-weight: 700;
-        font-size: 0.95rem;
-        color: #1f2937;
-      }
-      .timeline-content .stage-date {
-        font-size: 0.75rem;
-        color: #9ca3af;
-        margin-top: 2px;
-      }
-      .log-entry {
-        padding: 6px 0;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 0.85rem;
-        color: #4b5563;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .log-entry .log-time {
-        color: #9ca3af;
-        font-size: 0.75rem;
-        white-space: nowrap;
-        min-width: 90px;
-      }
-      .hidden {
-        display: none !important;
-      }
-      .request-card-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      .request-card-item {
-        background: #fff;
-        border-radius: 16px;
-        border: 1px solid #e5e9f0;
-        padding: 16px;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-      .request-card-item:hover {
-        border-color: #1e3a5f;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      }
-      .request-card-item .top-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .request-card-item .req-id {
-        font-weight: 800;
-        font-size: 1.1rem;
-        color: #1e3a5f;
-      }
-      .request-card-item .req-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        font-size: 0.85rem;
-        color: #6b7a93;
-        margin-top: 6px;
-      }
-      .request-card-item .req-actions {
-        display: flex;
-        gap: 6px;
-        margin-top: 8px;
-        flex-wrap: wrap;
-      }
-      .request-card-item .req-actions button {
-        padding: 4px 12px;
-        border-radius: 20px;
-        border: none;
-        font-size: 0.75rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s;
-        background: #f1f5f9;
-        color: #4b5563;
-      }
-      .request-card-item .req-actions button:hover {
-        background: #1e3a5f;
-        color: #fff;
-      }
-      .request-card-item .req-actions button.danger:hover {
-        background: #dc2626;
-      }
-      @media (min-width: 769px) {
-        .request-card-list {
-          display: none;
-        }
-        .request-table-wrap {
-          display: block;
-        }
-      }
-      @media (max-width: 768px) {
-        .request-table-wrap {
-          display: none;
-        }
-        .request-card-list {
-          display: flex;
-        }
-        .grid-2 {
-          grid-template-columns: 1fr;
-        }
-        .modal-box {
-          padding: 16px 18px;
-          margin: 6px;
-          border-radius: 16px;
-        }
-        .switch-group button {
-          padding: 6px 14px;
-          font-size: 0.78rem;
-        }
-        .modal-title {
-          font-size: 20px;
-        }
-        .detail-section {
-          padding: 14px 16px;
-        }
-        .btn {
-          padding: 8px 18px;
-          font-size: 0.85rem;
-        }
-        .toast {
-          bottom: 16px;
-          left: 16px;
-          padding: 12px 18px;
-          font-size: 0.85rem;
-        }
-        .stat-card {
-          padding: 10px 12px;
-        }
-        .stat-card p:last-child {
-          font-size: 1.1rem;
-        }
-      }
-      @media (max-width: 480px) {
-        .modal-box {
-          padding: 12px 14px;
-        }
-        .request-card-item {
-          padding: 12px;
-        }
-      }
-      .map-picker-btn {
-        background: #eef2f6;
-        border: none;
-        border-radius: 40px;
-        padding: 8px 16px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: #1e3a5f;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin-top: 4px;
-      }
-      .map-picker-btn:hover {
-        background: #dce3ec;
-        transform: scale(0.97);
-      }
-      .match-card {
-        background: #f8fafc;
-        border: 1px solid #e5e9f0;
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        transition: all 0.2s;
-      }
-      .match-card:hover {
-        border-color: #1e3a5f;
-        background: #f0f5ff;
-      }
-      .match-score {
-        font-size: 0.8rem;
-        font-weight: 700;
-        padding: 2px 10px;
-        border-radius: 20px;
-      }
-      .match-score.high {
-        background: #10b981;
-        color: #fff;
-      }
-      .match-score.medium {
-        background: #f59e0b;
-        color: #fff;
-      }
-      .match-score.low {
-        background: #94a3b8;
-        color: #fff;
-      }
-      .force-action-modal {
-        background: #fff;
-        border-radius: 16px;
-        padding: 24px;
-        max-width: 600px;
-        width: 100%;
-        margin: 20px auto;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-        animation: modalFadeIn 0.25s ease;
-      }
-      .force-action-modal h3 {
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: #1e3a5f;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .force-action-modal p {
-        color: #4b5563;
-        font-size: 0.95rem;
-        margin-bottom: 16px;
-      }
-      .force-action-modal .btn-group {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        margin-top: 16px;
-      }
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+        * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
+        
+        /* ===== تنسيقات الواجهة المظلمة ===== */
+        .bg-surface { background: #121B2C; }
+        .bg-surface2 { background: #1A2740; }
+        .bg-surface3 { background: #22314C; }
+        .bg-bg { background: #0B121E; }
+        .text-muted { color: #8B96A8; }
+        .text-ink { color: #EDEAE2; }
+        .border-line { border-color: rgba(237, 234, 226, 0.08); }
+        .bg-gold { background: #C9A24B; }
+        .text-gold { color: #C9A24B; }
+        .bg-emerald { background: #1F7A5C; }
+        .text-emerald { color: #1F7A5C; }
+        .bg-terracotta { background: #C1543A; }
+        .text-terracotta { color: #C1543A; }
+        .bg-danger { background: #E05A4A; }
+        .text-danger { color: #E05A4A; }
+        
+        .stat-card { transition: all 0.25s ease; border: 1px solid rgba(237, 234, 226, 0.08); cursor: pointer; background: #121B2C; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+        
+        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn-gold { background: #C9A24B; color: #0B121E; }
+        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
+        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
+        .btn-emerald { background: #1F7A5C; color: #fff; }
+        .btn-emerald:hover { background: #123D30; }
+        .btn-amber { background: #C9A24B; color: #0B121E; }
+        .btn-amber:hover { background: #8A7433; }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .status-dot.pulse { animation: pulse-dot 1.8s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 24px; max-width: 860px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; position: relative; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: #8B96A8; cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: #EDEAE2; }
+        .modal-title { font-size: 24px; font-weight: 800; color: #EDEAE2; margin-bottom: 20px; }
+        
+        .switch-group { display: flex; gap: 8px; margin-bottom: 20px; background: #0F1830; border-radius: 40px; padding: 4px; width: fit-content; flex-wrap: wrap; border: 1px solid rgba(237, 234, 226, 0.08); }
+        .switch-group button { padding: 8px 24px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
+        .switch-group button.active { background: #C9A24B; color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
+        .switch-group button:hover:not(.active) { background: #1A2740; }
+        
+        .smart-area { background: #0F1830; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 2px dashed #22314C; }
+        .smart-area textarea { width: 100%; border: 1px solid #22314C; border-radius: 12px; padding: 12px; font-size: 0.9rem; min-height: 180px; resize: vertical; font-family: "Tajawal", sans-serif; background: #0B121E; color: #EDEAE2; transition: border 0.2s; }
+        .smart-area textarea:focus { outline: none; border-color: #C9A24B; }
+        .smart-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .smart-feedback { margin-top: 10px; font-size: 0.9rem; padding: 10px 14px; background: #0B121E; border-radius: 10px; border: 1px solid #22314C; display: none; }
+        .smart-feedback.show { display: block; }
+        .smart-feedback .error { color: #E05A4A; }
+        .smart-feedback .success { color: #1F7A5C; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .field { display: flex; flex-direction: column; gap: 4px; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        .field input::placeholder, .field textarea::placeholder { color: #5A6A7A; }
+        .field.full-width { grid-column: 1 / -1; }
+        
+        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .request-row { transition: background 0.15s ease; cursor: pointer; border-bottom: 1px solid rgba(237, 234, 226, 0.05); }
+        .request-row:hover { background: rgba(201, 162, 75, 0.05); }
+        
+        .detail-section { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 20px 24px; margin-bottom: 20px; }
+        .detail-section .section-title { font-size: 18px; font-weight: 800; color: #EDEAE2; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        
+        .timeline { display: flex; flex-direction: column; gap: 0; padding-right: 4px; }
+        .timeline-item { display: flex; gap: 16px; padding: 6px 0; }
+        .timeline-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 2px solid #0B121E; margin-top: 2px; position: relative; z-index: 2; }
+        .timeline-dot.completed { background: #C9A24B; }
+        .timeline-dot.active { background: #C9A24B; box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.3); }
+        .timeline-dot.pending { background: #22314C; }
+        .timeline-line { width: 3px; flex: 1; min-height: 24px; margin: 0 7px; border-radius: 4px; }
+        .timeline-line.completed { background: linear-gradient(180deg, #C9A24B 0%, #C9A24B 100%); }
+        .timeline-line.pending { background: #22314C; }
+        .timeline-content { flex: 1; padding-bottom: 4px; }
+        .timeline-content .stage-name { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
+        .timeline-content .stage-date { font-size: 0.75rem; color: #8B96A8; margin-top: 2px; }
+        
+        .log-entry { padding: 6px 0; border-bottom: 1px solid rgba(237, 234, 226, 0.05); font-size: 0.85rem; color: #8B96A8; display: flex; gap: 8px; flex-wrap: wrap; }
+        .log-entry .log-time { color: #5A6A7A; font-size: 0.75rem; white-space: nowrap; min-width: 90px; }
+        
+        .hidden { display: none !important; }
+        
+        .request-card-list { display: flex; flex-direction: column; gap: 12px; }
+        .request-card-item { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 16px; transition: all 0.2s; cursor: pointer; }
+        .request-card-item:hover { border-color: #C9A24B55; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        .request-card-item .top-row { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+        .request-card-item .req-id { font-weight: 800; font-size: 1.1rem; color: #EDEAE2; }
+        .request-card-item .req-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: #8B96A8; margin-top: 6px; }
+        .request-card-item .req-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .request-card-item .req-actions button { padding: 4px 12px; border-radius: 20px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: #1A2740; color: #8B96A8; }
+        .request-card-item .req-actions button:hover { background: #C9A24B; color: #0B121E; }
+        .request-card-item .req-actions button.danger:hover { background: #C1543A; color: #fff; }
+        
+        .chip { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+        .bg-emeraldSoft { background: #123D30; }
+        .bg-terracottaSoft { background: #3A1E19; }
+        
+        .match-card { background: #0F1830; border: 1px solid #22314C; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
+        .match-card:hover { border-color: #C9A24B; background: #1A2740; }
+        .match-score { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
+        .match-score.high { background: #1F7A5C; color: #fff; }
+        .match-score.medium { background: #C9A24B; color: #0B121E; }
+        .match-score.low { background: #22314C; color: #8B96A8; }
+        
+        @media (min-width: 769px) { .request-card-list { display: none; } .request-table-wrap { display: block; } }
+        @media (max-width: 768px) { .request-table-wrap { display: none; } .request-card-list { display: flex; } .grid-2 { grid-template-columns: 1fr; } .modal-box { padding: 16px 18px; margin: 6px; border-radius: 16px; } .switch-group button { padding: 6px 14px; font-size: 0.78rem; } }
+        
+        /* ===== شاشة الدخول ===== */
+        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+        #loginOverlay.show { display: flex !important; }
+        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
+        .login-box .field { margin-bottom: 16px; }
+        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
+        .login-box .btn { width: 100%; justify-content: center; }
+        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
+        
+        .loading-spinner { display: flex; justify-content: center; align-items: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #22314C; border-top-color: #C9A24B; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .main-content { display: none !important; }
+        .main-content.visible { display: block !important; }
+        
+        .force-action-modal { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 16px; padding: 24px; max-width: 600px; width: 100%; margin: 20px auto; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; }
+        .force-action-modal h3 { font-size: 1.2rem; font-weight: 800; color: #EDEAE2; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .force-action-modal p { color: #8B96A8; font-size: 0.95rem; margin-bottom: 16px; }
+        .force-action-modal .btn-group { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+        .force-action-modal .field label { color: #8B96A8; }
+        .force-action-modal .field input, .force-action-modal .field textarea { background: #0B121E; }
     </style>
-  </head>
-  <body>
-    <div id="sidebar-container"></div>
-    <div class="main-content">
-      <!-- TOAST -->
-      <div class="toast" id="toast">
-        <i class="fas fa-check-circle text-emerald-400"></i>
-        <span id="toastMessage">تم الإجراء بنجاح</span>
-      </div>
+</head>
+<body>
 
-      <!-- ===== PAGE WRAPPER ===== -->
-      <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2><i class="fas fa-lock ml-2"></i>تسجيل الدخول</h2>
+        <form id="loginForm">
+            <div class="field">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="loginEmail" value="admin@masar.sa" required />
+            </div>
+            <div class="field">
+                <label>كلمة المرور</label>
+                <input type="password" id="loginPassword" value="Admin.123" required />
+            </div>
+            <div id="loginError">خطأ في بيانات الدخول</div>
+            <button type="submit" class="btn btn-gold mt-2"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle text-emerald-400"></i>
+    <span id="toastMessage">تم الإجراء بنجاح</span>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar-container"></div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
         <!-- Header -->
-        <div
-          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-        >
-          <div>
-            <h1
-              class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight"
-            >
-              <i class="fas fa-clipboard-list ml-2 text-[#2d6a9f]"></i>الطلبات
-              العقارية
-            </h1>
-            <p class="text-sm text-gray-500 mt-1">
-              إدارة طلبات العملاء ومطابقتها مع العروض
-            </p>
-          </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <button
-              class="btn btn-outline btn-sm"
-              onclick="exportRequestsExcel()"
-            >
-              <i class="fas fa-file-excel ml-1"></i> تصدير
-            </button>
-            <button
-              onclick="openAddRequest()"
-              class="btn btn-gold text-sm md:text-base"
-            >
-              <i class="fas fa-plus"></i> إضافة طلب جديد
-            </button>
-          </div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight">
+                    <i class="fas fa-clipboard-list ml-2 text-gold"></i>الطلبات العقارية
+                </h1>
+                <p class="text-sm text-muted mt-1">إدارة طلبات العملاء ومطابقتها مع العروض</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+                <button class="btn btn-outline btn-sm" onclick="exportRequestsExcel()"><i class="fas fa-file-excel ml-1"></i> تصدير</button>
+                <button onclick="openAddRequest()" class="btn btn-gold text-sm md:text-base"><i class="fas fa-plus"></i> إضافة طلب جديد</button>
+            </div>
         </div>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
-          <div
-            class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm"
-          >
-            <p class="text-xs text-gray-400 font-medium">إجمالي الطلبات</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-[#1e3a5f] mt-1"
-              id="totalRequests"
-            >
-              0
-            </p>
-          </div>
-          <div
-            class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm"
-          >
-            <p class="text-xs text-gray-400 font-medium">قيد المطابقة</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-[#f59e0b] mt-1"
-              id="pendingRequests"
-            >
-              0
-            </p>
-          </div>
-          <div
-            class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm"
-          >
-            <p class="text-xs text-gray-400 font-medium">مكتملة</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-[#10b981] mt-1"
-              id="completedRequests"
-            >
-              0
-            </p>
-          </div>
-          <div
-            class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm"
-          >
-            <p class="text-xs text-gray-400 font-medium">🏞️ أراضي</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-[#1e3a5f] mt-1"
-              id="countLand"
-            >
-              0
-            </p>
-          </div>
-          <div
-            class="stat-card bg-white rounded-xl px-3 py-3 md:py-4 shadow-sm"
-          >
-            <p class="text-xs text-gray-400 font-medium">⛽ محطات / 🏬 مراكز</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-[#1e3a5f] mt-1"
-              id="countOther"
-            >
-              0
-            </p>
-          </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <p class="text-xs text-muted font-medium">إجمالي الطلبات</p>
+                <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="totalRequests">0</p>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <p class="text-xs text-muted font-medium">قيد المطابقة</p>
+                <p class="text-xl md:text-2xl font-bold text-amber-500 mt-1" id="pendingRequests">0</p>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <p class="text-xs text-muted font-medium">مكتملة</p>
+                <p class="text-xl md:text-2xl font-bold text-emerald-400 mt-1" id="completedRequests">0</p>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <p class="text-xs text-muted font-medium">🏞️ أراضي</p>
+                <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="countLand">0</p>
+            </div>
+            <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                <p class="text-xs text-muted font-medium">⛽ / 🏬 أخرى</p>
+                <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="countOther">0</p>
+            </div>
         </div>
 
         <!-- Search & Filters -->
-        <div
-          class="bg-white rounded-2xl shadow-sm border border-[#e9edf4] p-4 md:p-5 mb-6"
-        >
-          <div class="flex flex-col md:flex-row gap-3">
-            <div class="flex-1 relative">
-              <i
-                class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
-              ></i>
-              <input
-                type="text"
-                id="searchInput"
-                class="border-2 border-[#e5e9f0] rounded-full py-2.5 px-4 pr-12 w-full text-sm focus:outline-none focus:border-[#1e3a5f]"
-                placeholder="بحث في الطلبات..."
-                oninput="filterTable()"
-              />
+        <div class="bg-surface rounded-2xl border border-line p-4 md:p-5 mb-6">
+            <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-muted"></i>
+                    <input type="text" id="searchInput" class="border-2 border-line rounded-full py-2.5 px-4 pr-12 w-full text-sm focus:outline-none focus:border-gold bg-bg text-ink" placeholder="بحث..." oninput="filterTable()" />
+                </div>
+                <select id="typeFilter" class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()">
+                    <option value="all">كل الأنواع</option>
+                    <option value="أرض">أرض</option>
+                    <option value="محطة وقود">محطة وقود</option>
+                    <option value="مركز تجاري">مركز تجاري</option>
+                </select>
+                <select id="statusFilter" class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()">
+                    <option value="all">كل الحالات</option>
+                    <option value="جديد">جديد</option>
+                    <option value="مطابقة">جاري المطابقة</option>
+                    <option value="مختار">تم اختيار العرض</option>
+                    <option value="تنسيق">جدولة المعاينة</option>
+                    <option value="مغلق">مكتمل</option>
+                </select>
+                <div class="flex items-center gap-2 text-sm text-muted flex-wrap">
+                    <i class="far fa-calendar-alt"></i><span>من</span>
+                    <input type="date" id="dateFrom" class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()" />
+                    <span>إلى</span>
+                    <input type="date" id="dateTo" class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()" />
+                </div>
             </div>
-            <select
-              id="typeFilter"
-              class="border-2 border-[#e5e9f0] rounded-full px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1e3a5f]"
-              onchange="filterTable()"
-            >
-              <option value="all">كل الأنواع</option>
-              <option value="أرض">أرض</option>
-              <option value="محطة وقود">محطة وقود</option>
-              <option value="مركز تجاري">مركز تجاري</option>
-            </select>
-            <select
-              id="statusFilter"
-              class="border-2 border-[#e5e9f0] rounded-full px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-[#1e3a5f]"
-              onchange="filterTable()"
-            >
-              <option value="all">كل الحالات</option>
-              <option value="جديد">جديد</option>
-              <option value="مطابقة">جاري المطابقة</option>
-              <option value="مختار">تم اختيار العرض</option>
-              <option value="تنسيق">جدولة المعاينة</option>
-              <option value="مغلق">مكتمل</option>
-            </select>
-            <div
-              class="flex items-center gap-2 text-sm text-gray-500 flex-wrap"
-            >
-              <i class="far fa-calendar-alt"></i>
-              <span>من</span>
-              <input
-                type="date"
-                id="dateFrom"
-                class="border-2 border-[#e5e9f0] rounded-full px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#1e3a5f]"
-                onchange="filterTable()"
-              />
-              <span>إلى</span>
-              <input
-                type="date"
-                id="dateTo"
-                class="border-2 border-[#e5e9f0] rounded-full px-3 py-2 text-sm bg-white focus:outline-none focus:border-[#1e3a5f]"
-                onchange="filterTable()"
-              />
-            </div>
-          </div>
         </div>
 
         <!-- LIST VIEW -->
         <div id="listView">
-          <div
-            class="request-table-wrap bg-white rounded-2xl border border-[#e9edf4] overflow-hidden mb-5"
-          >
-            <div class="overflow-x-auto">
-              <table class="w-full min-w-[800px]">
-                <thead class="bg-[#f8fafc] border-b border-[#e5e9f0]">
-                  <tr>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      الطلب
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      العميل
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      النوع
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      الاتفاق
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      المرحلة
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      الحالة
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      التاريخ
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-gray-500"
-                    >
-                      الإجراءات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody id="requestsTableBody"></tbody>
-              </table>
+            <div class="request-table-wrap bg-surface rounded-2xl border border-line overflow-hidden mb-5">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[800px]">
+                        <thead class="bg-surface2 border-b border-line">
+                            <tr>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">الطلب</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">العميل</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">النوع</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">الاتفاق</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">المرحلة</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">الحالة</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">التاريخ</th>
+                                <th class="text-right px-3 py-3 text-xs font-bold text-muted">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody">
+                            <tr><td colspan="8" class="text-center py-12"><div class="loading-spinner"><div class="spinner"></div></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
-
-          <div class="request-card-list" id="requestsCardList"></div>
-
-          <div
-            class="flex items-center justify-between px-2 py-3 flex-wrap gap-2"
-          >
-            <span class="text-sm text-gray-500" id="paginationInfo"
-              >عرض 0-0 من 0</span
-            >
-            <div
-              class="flex items-center gap-2 flex-wrap"
-              id="paginationControls"
-            ></div>
-          </div>
+            <div class="request-card-list" id="requestsCardList"></div>
+            <div class="flex items-center justify-between px-2 py-3 flex-wrap gap-2">
+                <span class="text-sm text-muted" id="paginationInfo">عرض 0-0 من 0</span>
+                <div class="flex items-center gap-2 flex-wrap" id="paginationControls"></div>
+            </div>
         </div>
 
         <!-- DETAIL VIEW -->
         <div id="detailView" class="hidden">
-          <button class="btn btn-outline btn-sm mb-4" onclick="closeDetail()">
-            <i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة
-          </button>
-          <div id="detailContent"></div>
+            <button class="btn btn-outline btn-sm mb-4" onclick="closeDetail()"><i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة</button>
+            <div id="detailContent"></div>
         </div>
-      </div>
+    </div>
 
-      <!-- ===== MODAL: إضافة / تعديل طلب ===== -->
-      <div class="modal-overlay" id="requestModal">
+    <!-- ===== FORCE ACTION MODAL ===== -->
+    <div class="modal-overlay" id="forceActionModal">
+        <div class="force-action-modal">
+            <button class="modal-close" onclick="closeModal('forceActionModal')" style="position:relative;float:left;background:none;border:none;font-size:28px;color:#8B96A8;cursor:pointer;">✕</button>
+            <h3 id="forceActionTitle">🔍 مطابقة العروض</h3>
+            <p id="forceActionMessage">يتم البحث عن عروض مطابقة لمواصفات الطلب...</p>
+            <div id="forceActionBody"></div>
+            <div class="btn-group">
+                <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')">إغلاق</button>
+                <button class="btn btn-gold btn-sm" id="forceActionPrimaryBtn" onclick="executeForceAction()">تحديث المطابقة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: إضافة / تعديل طلب ===== -->
+    <div class="modal-overlay" id="requestModal">
         <div class="modal-box">
-          <button class="modal-close" onclick="closeModal('requestModal')">
-            ✕
-          </button>
-          <div class="modal-title" id="modalTitle">طلب جديد</div>
+            <button class="modal-close" onclick="closeModal('requestModal')">✕</button>
+            <div class="modal-title" id="modalTitle">طلب جديد</div>
 
-          <div class="switch-group">
-            <button
-              class="active"
-              data-mode="normal"
-              onclick="setMode('normal')"
-            >
-              إدخال عادي
-            </button>
-            <button data-mode="smart" onclick="setMode('smart')">
-              إدخال ذكي
-            </button>
-          </div>
+            <div class="switch-group">
+                <button class="active" data-mode="normal" onclick="setMode('normal')">إدخال عادي</button>
+                <button data-mode="smart" onclick="setMode('smart')">إدخال ذكي</button>
+            </div>
 
-          <div id="smartArea" class="smart-area hidden">
-            <label style="font-weight: 700; display: block; margin-bottom: 8px"
-              >الصق رسالة العميل مع الأجوبة بين [ ]</label
-            >
-            <textarea
-              id="smartInput"
-              placeholder="مثال:
+            <div id="smartArea" class="smart-area hidden">
+                <label style="font-weight:700;display:block;margin-bottom:8px;color:#8B96A8;">الصق رسالة العميل مع الأجوبة بين [ ]</label>
+                <textarea id="smartInput" placeholder="مثال:
         نوع العقار: [أرض]
         نوع الاتفاق: [بيع]
         المساحة: [500]
@@ -913,1798 +332,1421 @@
         المناطق المطلوبة: [حي النخيل، شارع الأمير سلطان]
         اسم العميل: [أحمد]
         رقم التواصل: [0501234567]
-        ملاحظات: [يحتاج تشطيب فاخر]"
-            ></textarea>
-            <div class="smart-actions">
-              <button class="btn btn-gold btn-sm" onclick="parseSmartInput()">
-                🔍 استخراج البيانات
-              </button>
-              <button
-                class="btn btn-outline btn-sm"
-                onclick="
-                  document.getElementById('smartInput').value = '';
-                  document
-                    .getElementById('smartFeedback')
-                    .classList.remove('show');
-                "
-              >
-                مسح
-              </button>
+        ملاحظات: [يحتاج تشطيب فاخر]"></textarea>
+                <div class="smart-actions">
+                    <button class="btn btn-gold btn-sm" onclick="parseSmartInput()">🔍 استخراج البيانات</button>
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('smartInput').value='';document.getElementById('smartFeedback').classList.remove('show');">مسح</button>
+                </div>
+                <div id="smartFeedback" class="smart-feedback"></div>
             </div>
-            <div id="smartFeedback" class="smart-feedback"></div>
-          </div>
 
-          <form id="requestForm" class="grid-2" style="margin-top: 16px">
-            <input type="hidden" id="editRequestId" value="" />
+            <form id="requestForm" class="grid-2" style="margin-top:16px">
+                <input type="hidden" id="editRequestId" value="" />
+                <div class="field"><label>نوع العقار *</label><select id="f_type" required><option value="">اختر</option><option value="أرض">أرض</option><option value="محطة وقود">محطة وقود</option><option value="مركز تجاري">مركز تجاري</option></select></div>
+                <div class="field"><label>نوع الاتفاق *</label><select id="f_agreement" required><option value="">اختر</option><option value="بيع">بيع</option><option value="إيجار">إيجار</option><option value="مشاركة أرباح">مشاركة أرباح</option><option value="فرنشايز">فرنشايز</option></select></div>
+                <div class="field"><label>المساحة (م²) *</label><input type="number" id="f_area" required placeholder="مثال: 500" /></div>
+                <div class="field"><label>الميزانية (ريال) *</label><input type="number" id="f_budget" required placeholder="مثال: 1500000" /></div>
+                <div class="field"><label>المدينة *</label><input type="text" id="f_city" required placeholder="مثال: الرياض" /></div>
+                <div class="field"><label>المناطق المطلوبة *</label><input type="text" id="f_districts" required placeholder="مثال: حي النخيل، شارع الأمير سلطان" /></div>
+                <div class="field"><label>اسم العميل *</label><input type="text" id="f_clientName" required placeholder="الاسم الكامل" /></div>
+                <div class="field"><label>رقم التواصل *</label><input type="tel" id="f_phone" required placeholder="مثال: 0501234567" /></div>
+                <div class="field full-width"><label>ملاحظات</label><textarea id="f_notes" rows="2" placeholder="تفاصيل إضافية عن الطلب (مواصفات، متطلبات...)"></textarea></div>
+            </form>
 
-            <div class="field">
-              <label>نوع العقار *</label>
-              <select id="f_type" required>
-                <option value="">اختر</option>
-                <option value="أرض">أرض</option>
-                <option value="محطة وقود">محطة وقود</option>
-                <option value="مركز تجاري">مركز تجاري</option>
-              </select>
+            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap">
+                <button class="btn btn-outline" onclick="closeModal('requestModal')">إلغاء</button>
+                <button class="btn btn-gold" onclick="saveRequest()">💾 حفظ الطلب</button>
             </div>
-            <div class="field">
-              <label>نوع الاتفاق *</label>
-              <select id="f_agreement" required>
-                <option value="">اختر</option>
-                <option value="بيع">بيع</option>
-                <option value="إيجار">إيجار</option>
-                <option value="مشاركة أرباح">مشاركة أرباح</option>
-                <option value="فرنشايز">فرنشايز</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>المساحة (م²) *</label>
-              <input
-                type="number"
-                id="f_area"
-                required
-                placeholder="مثال: 500"
-              />
-            </div>
-            <div class="field">
-              <label>الميزانية (ريال) *</label>
-              <input
-                type="number"
-                id="f_budget"
-                required
-                placeholder="مثال: 1500000"
-              />
-            </div>
-            <div class="field">
-              <label>المدينة *</label>
-              <input
-                type="text"
-                id="f_city"
-                required
-                placeholder="مثال: الرياض"
-              />
-            </div>
-            <div class="field ">
-              <label>المناطق / الشوارع المطلوبة *</label>
-              <input
-                type="text"
-                id="f_districts"
-                required
-                placeholder="مثال: حي النخيل، شارع الأمير سلطان"
-              />
-            </div>
-            <div class="field ">
-              <label>اسم العميل *</label>
-              <input
-                type="text"
-                id="f_clientName"
-                required
-                placeholder="الاسم الكامل"
-              />
-            </div>
-            <div class="field">
-              <label>رقم التواصل *</label>
-              <input
-                type="tel"
-                id="f_phone"
-                required
-                placeholder="مثال: 0501234567"
-              />
-            </div>
-            <div class="field full-width">
-              <label>ملاحظات</label>
-              <textarea
-                id="f_notes"
-                rows="2"
-                placeholder="تفاصيل إضافية عن الطلب (مواصفات، متطلبات...)"
-              ></textarea>
-            </div>
-          </form>
-
-          <div
-            style="
-              display: flex;
-              gap: 12px;
-              justify-content: flex-end;
-              margin-top: 24px;
-              flex-wrap: wrap;
-            "
-          >
-            <button
-              class="btn btn-outline"
-              onclick="closeModal('requestModal')"
-            >
-              إلغاء
-            </button>
-            <button class="btn btn-gold" onclick="saveRequest()">
-              💾 حفظ الطلب
-            </button>
-          </div>
         </div>
-      </div>
-
-      <!-- ===== FORCE ACTION MODAL (المطابقة والاختيار) ===== -->
-      <div class="modal-overlay" id="forceActionModal">
-        <div class="force-action-modal">
-          <button
-            class="modal-close"
-            onclick="closeModal('forceActionModal')"
-            style="
-              position: relative;
-              float: left;
-              background: none;
-              border: none;
-              font-size: 28px;
-              color: #9aa3b5;
-              cursor: pointer;
-            "
-          >
-            ✕
-          </button>
-          <h3 id="forceActionTitle">🔍 مطابقة العروض</h3>
-          <p id="forceActionMessage">
-            يتم البحث عن عروض مطابقة لمواصفات الطلب...
-          </p>
-          <div id="forceActionBody"></div>
-          <div class="btn-group">
-            <button
-              class="btn btn-outline btn-sm"
-              onclick="closeModal('forceActionModal')"
-            >
-              إغلاق
-            </button>
-            <button
-              class="btn btn-gold btn-sm"
-              id="forceActionPrimaryBtn"
-              onclick="executeForceAction()"
-            >
-              تحديث المطابقة
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
-    <script src="sidebar.js"></script>
-    <script src="global.js"></script>
-    <script>
-      // ============================================================
-      //  DATA & STATE
-      // ============================================================
-      const STAGES = [
-        { id: 1, name: "طلب جديد" },
-        { id: 2, name: "جاري المطابقة" },
-        { id: 3, name: "تم اختيار العرض" },
-        { id: 4, name: "جدولة المعاينة" },
-        { id: 5, name: "مكتمل ✅" },
-      ];
+</div>
 
-      const STATUS_MAP = {
-        1: {
-          label: "جديد",
-          color: "#f97316",
-          bg: "#fef3c7",
-          statusType: "جديد",
-        },
-        2: {
-          label: "جاري المطابقة",
-          color: "#3b82f6",
-          bg: "#dbeafe",
-          statusType: "مطابقة",
-        },
-        3: {
-          label: "تم اختيار العرض",
-          color: "#8b5cf6",
-          bg: "#ede9fe",
-          statusType: "مختار",
-        },
-        4: {
-          label: "جدولة المعاينة",
-          color: "#f59e0b",
-          bg: "#fef3c7",
-          statusType: "تنسيق",
-        },
-        5: {
-          label: "مكتمل ✅",
-          color: "#10b981",
-          bg: "#d1fae5",
-          statusType: "مغلق",
-        },
-      };
+<script src="sidebar.js"></script>
+<script src="api.js"></script>
+<script src="global.js"></script>
+<script>
+// ============================================================
+// REQUESTS - كامل مع جميع المميزات
+// ============================================================
 
-      let requests = [];
-      let currentPage = 1;
-      const PAGE_SIZE = 6;
-      let currentEditId = null;
-      let currentMode = "normal";
-      let forceActionData = { requestId: null, action: null };
+let requests = [];
+let currentPage = 1;
+const PAGE_SIZE = 6;
+let currentEditId = null;
+let currentMode = 'normal';
+let isAuthChecked = false;
 
-      // ============================================================
-      //  LOAD / SAVE (localStorage)
-      // ============================================================
-      function loadRequests() {
-        const saved = localStorage.getItem("masarRequestsDataV4");
-        if (saved) {
-          try {
-            requests = JSON.parse(saved);
-            return;
-          } catch (e) {}
+// ============================================================
+// STAGES
+// ============================================================
+const REQUEST_STAGES = [
+    { id: 1, name: 'طلب جديد' },
+    { id: 2, name: 'جاري المطابقة' },
+    { id: 3, name: 'تم اختيار العرض' },
+    { id: 4, name: 'جدولة المعاينة' },
+    { id: 5, name: 'مكتمل ✅' }
+];
+
+function getRequestStageName(id) {
+    const s = REQUEST_STAGES.find(s => s.id === id);
+    return s ? s.name : 'غير معروف';
+}
+
+const REQUEST_STATUS_MAP = {
+    1: { label: 'جديد', color: '#f97316', statusType: 'جديد' },
+    2: { label: 'جاري المطابقة', color: '#3b82f6', statusType: 'مطابقة' },
+    3: { label: 'تم اختيار العرض', color: '#8b5cf6', statusType: 'مختار' },
+    4: { label: 'جدولة المعاينة', color: '#f59e0b', statusType: 'تنسيق' },
+    5: { label: 'مكتمل ✅', color: '#10b981', statusType: 'مغلق' }
+};
+
+// ============================================================
+// AUTH - محسنة
+// ============================================================
+async function checkAuth() {
+    if (isAuthChecked && API.isAuthenticated()) {
+        return true;
+    }
+
+    const token = localStorage.getItem('masar_token');
+    const overlay = document.getElementById('loginOverlay');
+    const mainContent = document.getElementById('mainContent');
+
+    if (token) {
+        try {
+            const result = await API.auth.me();
+            if (result.status === 'success') {
+                API.token = token;
+                overlay.classList.remove('show');
+                mainContent.classList.add('visible');
+                isAuthChecked = true;
+                return true;
+            } else {
+                localStorage.removeItem('masar_token');
+                localStorage.removeItem('masar_user');
+                API.token = null;
+            }
+        } catch (err) {
+            console.warn('خطأ في التحقق من التوكن:', err.message);
+            localStorage.removeItem('masar_token');
+            localStorage.removeItem('masar_user');
+            API.token = null;
         }
-        // Sample data
-        requests = [
-          {
-            id: "ط-١٠١",
-            client: "أحمد محمد",
-            type: "أرض",
-            agreement: "بيع",
+    }
+
+    overlay.classList.add('show');
+    mainContent.classList.remove('visible');
+    isAuthChecked = false;
+    return false;
+}
+
+// تسجيل الدخول
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('loginError');
+    errorEl.style.display = 'none';
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
+
+    try {
+        const result = await API.auth.login(email, password);
+        if (result.status === 'success') {
+            errorEl.style.display = 'none';
+            if (result.data?.user) {
+                localStorage.setItem('masar_user', JSON.stringify(result.data.user));
+            }
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+                loadRequests();
+            }
+        } else {
+            errorEl.textContent = result.message || 'فشل تسجيل الدخول';
+            errorEl.style.display = 'block';
+        }
+    } catch (err) {
+        errorEl.textContent = err.message || 'حدث خطأ في الاتصال';
+        errorEl.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+    }
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getRequestStatusInfo(id) {
+    return REQUEST_STATUS_MAP[id] || { label: 'غير معروف', color: '#9ca3af', statusType: 'other' };
+}
+
+function generateRequestId() {
+    const nums = requests.filter(r => r.id && r.id.startsWith('ط-')).length;
+    return 'ط-' + String(nums + 1).padStart(3, '0');
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    const parts = d.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+}
+
+function formatMoney(n) {
+    return n ? Number(n).toLocaleString('en-US') + ' ريال' : '—';
+}
+
+function daysBetween(a, b) {
+    return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+
+function saveRequestsLocally() {
+    localStorage.setItem('masarRequestsLocal', JSON.stringify(requests));
+}
+
+function loadRequestsLocally() {
+    const saved = localStorage.getItem('masarRequestsLocal');
+    if (saved) {
+        try {
+            return JSON.parse(saved);
+        } catch (e) {}
+    }
+    return [];
+}
+
+// ============================================================
+// LOAD REQUESTS
+// ============================================================
+async function loadRequests() {
+    if (!API.isAuthenticated()) {
+        await checkAuth();
+        return;
+    }
+
+    try {
+        const data = await API.requests.list({ per_page: 100 });
+        if (data.status === 'success') {
+            requests = data.data.data || [];
+            const localRequests = loadRequestsLocally();
+            localRequests.forEach(local => {
+                const existing = requests.find(r => r.id === local.id);
+                if (existing) {
+                    if (local.log) existing.log = local.log;
+                    if (local.stage_id) existing.stage_id = local.stage_id;
+                    if (local.matched_offer_id) existing.matched_offer_id = local.matched_offer_id;
+                    if (local.appointmentDate) existing.appointmentDate = local.appointmentDate;
+                    if (local.appointmentTime) existing.appointmentTime = local.appointmentTime;
+                } else {
+                    requests.push(local);
+                }
+            });
+            renderTable();
+            updateStats();
+        } else {
+            requests = loadRequestsLocally();
+            if (requests.length === 0) {
+                requests = getSampleRequests();
+            }
+            renderTable();
+            updateStats();
+            showToast('تم تحميل البيانات من التخزين المحلي', 'info');
+        }
+    } catch (err) {
+        requests = loadRequestsLocally();
+        if (requests.length === 0) {
+            requests = getSampleRequests();
+        }
+        renderTable();
+        updateStats();
+        showToast('تم تحميل البيانات من التخزين المحلي', 'info');
+    }
+}
+
+function getSampleRequests() {
+    return [
+        {
+            id: 'ط-١٠١',
+            client_name: 'أحمد محمد',
+            property_type: 'أرض',
+            deal_type: 'بيع',
             area: 600,
             budget: 1800000,
-            city: "الرياض",
-            districts: "حي النخيل، شارع الأمير سلطان",
-            phone: "0501111111",
-            notes: "يفضل شارع رئيسي، تشطيب فاخر",
-            date: "2026-07-20",
-            stageId: 5,
-            matchedOfferId: "ع-١٢٣",
-            appointmentDate: null,
-            appointmentTime: null,
+            city: 'الرياض',
+            districts: 'حي النخيل، شارع الأمير سلطان',
+            contact_phone: '0501111111',
+            notes: 'يفضل شارع رئيسي، تشطيب فاخر',
+            created_at: '2026-07-20',
+            stage_id: 5,
+            matched_offer_id: 'ع-١٢٣',
             log: [
-              "2026-07-20 10:00 تم تسجيل الطلب",
-              "2026-07-20 10:05 جاري المطابقة مع العروض",
-              "2026-07-20 10:30 تم اختيار العرض ع-١٢٣",
-              "2026-07-21 09:00 بدء جدولة المعاينة",
-              "2026-07-22 14:00 تم تحديد موعد المعاينة",
-              "2026-07-23 11:00 تمت المعاينة وتم الاتفاق",
-              "2026-07-28 10:00 ✅ تم إتمام الصفقة وإغلاق الطلب",
-            ],
-          },
-          {
-            id: "ط-١٠٢",
-            client: "سعد القحطاني",
-            type: "محطة وقود",
-            agreement: "استثمار",
+                '2026-07-20 10:00 تم تسجيل الطلب',
+                '2026-07-20 10:05 جاري المطابقة مع العروض',
+                '2026-07-20 10:30 تم اختيار العرض ع-١٢٣',
+                '2026-07-21 09:00 بدء جدولة المعاينة',
+                '2026-07-22 14:00 تم تحديد موعد المعاينة',
+                '2026-07-23 11:00 تمت المعاينة وتم الاتفاق',
+                '2026-07-28 10:00 ✅ تم إتمام الصفقة وإغلاق الطلب'
+            ]
+        },
+        {
+            id: 'ط-١٠٢',
+            client_name: 'سعد القحطاني',
+            property_type: 'محطة وقود',
+            deal_type: 'استثمار',
             area: 800,
             budget: 2500000,
-            city: "جدة",
-            districts: "حي الشاطئ، طريق الملك",
-            phone: "0502222222",
-            notes: "قريبة من الطريق السريع",
-            date: "2026-07-22",
-            stageId: 2,
-            matchedOfferId: null,
-            appointmentDate: null,
-            appointmentTime: null,
+            city: 'جدة',
+            districts: 'حي الشاطئ، طريق الملك',
+            contact_phone: '0502222222',
+            notes: 'قريبة من الطريق السريع',
+            created_at: '2026-07-22',
+            stage_id: 2,
+            matched_offer_id: null,
             log: [
-              "2026-07-22 10:00 تم تسجيل الطلب",
-              "2026-07-22 10:05 جاري المطابقة مع العروض",
-            ],
-          },
-          {
-            id: "ط-١٠٣",
-            client: "فهد الدوسري",
-            type: "مركز تجاري",
-            agreement: "إيجار",
-            area: 1200,
-            budget: 3500000,
-            city: "الرياض",
-            districts: "حي العليا، طريق الملك فهد",
-            phone: "0503333333",
-            notes: "موقع مميز، مطلوب تشطيب فاخر",
-            date: "2026-07-18",
-            stageId: 4,
-            matchedOfferId: "ع-١٢٥",
-            appointmentDate: null,
-            appointmentTime: null,
-            log: [
-              "2026-07-18 10:00 تم تسجيل الطلب",
-              "2026-07-18 10:05 جاري المطابقة مع العروض",
-              "2026-07-18 11:00 تم اختيار العرض ع-١٢٥",
-              "2026-07-19 09:00 بدء جدولة المعاينة",
-            ],
-          },
-          {
-            id: "ط-١٠٤",
-            client: "ناصر الجبر",
-            type: "أرض",
-            agreement: "بيع",
-            area: 300,
-            budget: 980000,
-            city: "الدمام",
-            districts: "حي الشرق، الصناعية",
-            phone: "0504444444",
-            notes: "منطقة صناعية",
-            date: "2026-07-25",
-            stageId: 3,
-            matchedOfferId: "ع-١٢٦",
-            appointmentDate: null,
-            appointmentTime: null,
-            log: [
-              "2026-07-25 10:00 تم تسجيل الطلب",
-              "2026-07-25 10:05 جاري المطابقة مع العروض",
-              "2026-07-25 11:00 تم اختيار العرض ع-١٢٦",
-            ],
-          },
-          {
-            id: "ط-١٠٥",
-            client: "خالد الزهراني",
-            type: "محطة وقود",
-            agreement: "بيع",
-            area: 600,
-            budget: 1450000,
-            city: "جدة",
-            districts: "حي النزلة، طريق مكة",
-            phone: "0505555555",
-            notes: "عرض جديد",
-            date: "2026-07-28",
-            stageId: 1,
-            matchedOfferId: null,
-            appointmentDate: null,
-            appointmentTime: null,
-            log: ["2026-07-28 10:00 تم تسجيل الطلب"],
-          },
-        ];
-        saveRequests();
-      }
-
-      function saveRequests() {
-        localStorage.setItem("masarRequestsDataV4", JSON.stringify(requests));
-      }
-
-      // ============================================================
-      //  HELPERS
-      // ============================================================
-      function getStageName(id) {
-        const s = STAGES.find((s) => s.id === id);
-        return s ? s.name : "غير معروف";
-      }
-
-      function getStatus(id) {
-        return (
-          STATUS_MAP[id] || {
-            label: "غير معروف",
-            color: "#9ca3af",
-            bg: "#f3f4f6",
-            statusType: "other",
-          }
-        );
-      }
-
-      function generateId() {
-        const nums = requests.filter(
-          (o) => o.id && o.id.startsWith("ط-"),
-        ).length;
-        return "ط-" + String(nums + 1).padStart(3, "0");
-      }
-
-      function fmtDate(d) {
-        if (!d) return "-";
-        const parts = d.split("-");
-        return parts[2] + "/" + parts[1] + "/" + parts[0];
-      }
-
-      function fmtDateTime(d, t) {
-        if (!d) return "غير محدد";
-        return fmtDate(d) + " " + (t || "");
-      }
-
-      function fmtMoney(n) {
-        return n ? Number(n).toLocaleString("en-US") + " ريال" : "—";
-      }
-
-      function toast(msg, type) {
-        const el = document.getElementById("toast");
-        const icon = el.querySelector("i");
-        const text = document.getElementById("toastMessage");
-        text.textContent = msg;
-        if (type === "error") {
-          icon.className = "fas fa-exclamation-circle text-red-400";
-        } else if (type === "success") {
-          icon.className = "fas fa-check-circle text-emerald-400";
-        } else {
-          icon.className = "fas fa-info-circle text-blue-400";
+                '2026-07-22 10:00 تم تسجيل الطلب',
+                '2026-07-22 10:05 جاري المطابقة مع العروض'
+            ]
         }
-        el.classList.add("show");
-        clearTimeout(el._timer);
-        el._timer = setTimeout(() => el.classList.remove("show"), 4000);
-      }
+    ];
+}
 
-      // ============================================================
-      //  GET OFFERS FROM STORAGE
-      // ============================================================
-      function getOffers() {
-        const data = localStorage.getItem("masarOffersDataV6");
-        if (data) {
-          try {
-            return JSON.parse(data);
-          } catch (e) {}
-        }
-        return [];
-      }
+// ============================================================
+// SMART INPUT - الإدخال الذكي الكامل
+// ============================================================
+function parseSmartInput() {
+    const text = document.getElementById('smartInput').value;
+    const feedback = document.getElementById('smartFeedback');
+    if (!text.trim()) {
+        feedback.innerHTML = '<span class="error">⚠️ الرجاء لصق رسالة العميل أولاً.</span>';
+        feedback.classList.add('show');
+        return;
+    }
 
-      // ============================================================
-      //  MATCH ENGINE
-      // ============================================================
-      function findMatches(request) {
-        const offers = getOffers();
-        if (!offers || offers.length === 0) return [];
+    const pattern = /([^\n:]+):\s*\[([^\]]*)\]/g;
+    let match;
+    const extracted = {};
+    while ((match = pattern.exec(text)) !== null) {
+        const key = match[1].trim();
+        const value = match[2].trim();
+        if (value) extracted[key] = value;
+    }
 
-        const results = [];
+    const fieldMap = {
+        'نوع العقار': 'f_type',
+        'نوع الاتفاق': 'f_agreement',
+        'المساحة': 'f_area',
+        'الميزانية': 'f_budget',
+        'المدينة': 'f_city',
+        'المناطق المطلوبة': 'f_districts',
+        'اسم العميل': 'f_clientName',
+        'رقم التواصل': 'f_phone',
+        'ملاحظات': 'f_notes'
+    };
 
-        offers.forEach((o) => {
-          if (o.stageId >= 10 || o.stageId === 7) return;
-          if (o.type !== request.type) return;
-          if (o.dealType !== request.agreement) return;
-          if (o.city !== request.city) return;
-
-          let score = 0;
-          let matchDetails = [];
-
-          const reqDistricts = request.districts
-            ? request.districts.split(/[,،\s]+/).filter((s) => s.trim())
-            : [];
-          const offerDistrict = o.district || "";
-          let districtMatch = false;
-          reqDistricts.forEach((d) => {
-            if (offerDistrict.includes(d.trim())) {
-              districtMatch = true;
+    let filled = 0;
+    let missing = [];
+    for (const [key, fieldId] of Object.entries(fieldMap)) {
+        const el = document.getElementById(fieldId);
+        if (!el) continue;
+        if (extracted[key] !== undefined && extracted[key] !== '') {
+            const val = extracted[key];
+            if (el.tagName === 'SELECT') {
+                const options = Array.from(el.options).map(o => o.value);
+                const matched = options.find(o => o.toLowerCase() === val.toLowerCase());
+                if (matched) {
+                    el.value = matched;
+                    filled++;
+                } else {
+                    missing.push(key);
+                }
+            } else {
+                el.value = val;
+                filled++;
             }
-          });
-          if (districtMatch) {
-            score += 30;
-            matchDetails.push("المنطقة متطابقة");
-          } else if (
-            reqDistricts.some((d) => offerDistrict.includes(d.substring(0, 4)))
-          ) {
-            score += 15;
-            matchDetails.push("منطقة قريبة");
-          }
+        } else {
+            missing.push(key);
+        }
+    }
 
-          if (o.price && o.price <= request.budget * 1.1) {
+    let msg = '';
+    if (missing.length === 0) {
+        msg = `<span class="success">✅ تم ملء جميع الحقول بنجاح (${filled} حقل).</span>`;
+    } else {
+        msg = `<span class="error">⚠️ الحقول الناقصة: ${missing.join('، ')}. يرجى إكمالها يدوياً.</span>`;
+    }
+    feedback.innerHTML = msg;
+    feedback.classList.add('show');
+    if (missing.length === 0) {
+        showToast('تم استخراج البيانات بنجاح', 'success');
+        setMode('normal');
+    }
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.switch-group button').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    document.getElementById('smartArea').classList.toggle('hidden', mode !== 'smart');
+}
+
+// ============================================================
+// MATCH ENGINE - نظام المطابقة الذكي (محلي)
+// ============================================================
+function findMatches(request) {
+    // جلب العروض من التخزين المحلي
+    const offersData = localStorage.getItem('masarOffersLocal');
+    let offers = [];
+    if (offersData) {
+        try {
+            offers = JSON.parse(offersData);
+        } catch (e) {}
+    }
+
+    if (!offers || offers.length === 0) return [];
+
+    const results = [];
+
+    offers.forEach(o => {
+        const stages = o.track_type === 'company' ? 
+            [{ id: 10, name: 'مكتمل' }] : 
+            [{ id: 4, name: 'مكتمل' }];
+        if (o.stage_id >= 10 || o.stage_id === 7) return;
+        if (o.property_type !== request.property_type) return;
+        if (o.deal_type !== request.deal_type) return;
+        if (o.city !== request.city) return;
+
+        let score = 0;
+        let matchDetails = [];
+
+        // مطابقة المنطقة
+        const reqDistricts = request.districts ? request.districts.split(/[,،\s]+/).filter(s => s.trim()) : [];
+        const offerDistrict = o.district || '';
+        let districtMatch = false;
+        reqDistricts.forEach(d => {
+            if (offerDistrict.includes(d.trim())) {
+                districtMatch = true;
+            }
+        });
+        if (districtMatch) {
+            score += 30;
+            matchDetails.push('المنطقة متطابقة');
+        } else if (reqDistricts.some(d => offerDistrict.includes(d.substring(0, 4)))) {
+            score += 15;
+            matchDetails.push('منطقة قريبة');
+        }
+
+        // مطابقة السعر
+        if (o.price && o.price <= request.budget * 1.1) {
             const diff = Math.abs(o.price - request.budget) / request.budget;
             if (diff <= 0.1) {
-              score += 20;
-              matchDetails.push("سعر قريب");
+                score += 20;
+                matchDetails.push('سعر قريب');
             } else if (diff <= 0.2) {
-              score += 10;
-              matchDetails.push("سعر مقبول");
+                score += 10;
+                matchDetails.push('سعر مقبول');
             }
-          }
+        }
 
-          if (request.area && o.area) {
+        // مطابقة المساحة
+        if (request.area && o.area) {
             const diff = Math.abs(o.area - request.area) / request.area;
             if (diff <= 0.1) {
-              score += 20;
-              matchDetails.push("مساحة متطابقة");
+                score += 20;
+                matchDetails.push('مساحة متطابقة');
             } else if (diff <= 0.2) {
-              score += 10;
-              matchDetails.push("مساحة قريبة");
+                score += 10;
+                matchDetails.push('مساحة قريبة');
             }
-          }
+        }
 
-          if (request.notes && o.description) {
-            const keywords = request.notes
-              .split(/[,،\s]+/)
-              .filter((s) => s.trim().length > 2);
+        // مطابقة الملاحظات
+        if (request.notes && o.description) {
+            const keywords = request.notes.split(/[,،\s]+/).filter(s => s.trim().length > 2);
             let matchCount = 0;
-            keywords.forEach((k) => {
-              if (
-                o.description.includes(k) ||
-                (o.purpose && o.purpose.includes(k))
-              ) {
-                matchCount++;
-              }
+            keywords.forEach(k => {
+                if (o.description.includes(k) || (o.purpose && o.purpose.includes(k))) {
+                    matchCount++;
+                }
             });
             if (matchCount > 0) {
-              score += Math.min(matchCount * 3, 10);
-              matchDetails.push("مواصفات متطابقة");
+                score += Math.min(matchCount * 3, 10);
+                matchDetails.push('مواصفات متطابقة');
             }
-          }
+        }
 
-          score = Math.min(score, 100);
-          if (score >= 30) {
+        score = Math.min(score, 100);
+        if (score >= 30) {
             results.push({
-              offer: o,
-              score: score,
-              details: matchDetails,
+                offer: o,
+                score: score,
+                details: matchDetails
             });
-          }
-        });
-
-        return results.sort((a, b) => b.score - a.score);
-      }
-
-      // ============================================================
-      //  MODAL CONTROLS
-      // ============================================================
-      function openAddRequest() {
-        currentEditId = null;
-        document.getElementById("modalTitle").textContent = "طلب جديد";
-        document.getElementById("editRequestId").value = "";
-        document.getElementById("requestForm").reset();
-        document.getElementById("f_type").value = "";
-        document.getElementById("f_agreement").value = "";
-        document.getElementById("smartInput").value = "";
-        document.getElementById("smartFeedback").classList.remove("show");
-        setMode("normal");
-        document.getElementById("requestModal").classList.add("active");
-      }
-
-      function openEditRequest(id) {
-        const o = requests.find((x) => x.id === id);
-        if (!o) {
-          toast("الطلب غير موجود", "error");
-          return;
         }
-        currentEditId = id;
-        document.getElementById("modalTitle").textContent = "تعديل الطلب";
-        document.getElementById("editRequestId").value = id;
-        document.getElementById("f_type").value = o.type || "";
-        document.getElementById("f_agreement").value = o.agreement || "";
-        document.getElementById("f_area").value = o.area || "";
-        document.getElementById("f_budget").value = o.budget || "";
-        document.getElementById("f_city").value = o.city || "";
-        document.getElementById("f_districts").value = o.districts || "";
-        document.getElementById("f_clientName").value = o.client || "";
-        document.getElementById("f_phone").value = o.phone || "";
-        document.getElementById("f_notes").value = o.notes || "";
-        document.getElementById("smartInput").value = "";
-        document.getElementById("smartFeedback").classList.remove("show");
-        setMode("normal");
-        document.getElementById("requestModal").classList.add("active");
-      }
+    });
 
-      function closeModal(id) {
-        document.getElementById(id).classList.remove("active");
-        if (id === "forceActionModal") {
-          forceActionData = { requestId: null, action: null };
-        }
-      }
+    return results.sort((a, b) => b.score - a.score);
+}
 
-      document.querySelectorAll(".modal-overlay").forEach((el) => {
-        el.addEventListener("click", function (e) {
-          if (e.target === this) this.classList.remove("active");
-        });
-      });
+// ============================================================
+// FORCE ACTION MODAL - نظام المطابقة
+// ============================================================
+function showForceAction(requestId, actionType, message) {
+    const modal = document.getElementById('forceActionModal');
+    const title = document.getElementById('forceActionTitle');
+    const msg = document.getElementById('forceActionMessage');
+    const body = document.getElementById('forceActionBody');
+    const primaryBtn = document.getElementById('forceActionPrimaryBtn');
 
-      // ============================================================
-      //  MODE SWITCH
-      // ============================================================
-      function setMode(mode) {
-        currentMode = mode;
-        document.querySelectorAll(".switch-group button").forEach((b) => {
-          b.classList.toggle("active", b.dataset.mode === mode);
-        });
-        document
-          .getElementById("smartArea")
-          .classList.toggle("hidden", mode !== "smart");
-      }
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
-      // ============================================================
-      //  SMART PARSE
-      // ============================================================
-      function parseSmartInput() {
-        const text = document.getElementById("smartInput").value;
-        const feedback = document.getElementById("smartFeedback");
-        if (!text.trim()) {
-          feedback.innerHTML =
-            '<span class="error">⚠️ الرجاء لصق رسالة العميل أولاً.</span>';
-          feedback.classList.add("show");
-          return;
-        }
+    let titleText = '🔍 مطابقة العروض';
+    let messageText = message || 'عروض مطابقة للطلب:';
+    let bodyHtml = '';
+    let btnText = 'تحديث المطابقة';
 
-        const pattern = /([^\n:]+):\s*\[([^\]]*)\]/g;
-        let match;
-        const extracted = {};
-        while ((match = pattern.exec(text)) !== null) {
-          const key = match[1].trim();
-          const value = match[2].trim();
-          if (value) extracted[key] = value;
-        }
+    if (actionType === 'match_offers') {
+        titleText = '🔍 نتائج المطابقة';
+        messageText = `طلبات مطابقة للطلب <strong style="color:#C9A24B;">${r.id}</strong> — ${r.property_type} | ${r.deal_type} | ${r.city}`;
 
-        const fieldMap = {
-          "نوع العقار": "f_type",
-          "نوع الاتفاق": "f_agreement",
-          المساحة: "f_area",
-          الميزانية: "f_budget",
-          المدينة: "f_city",
-          "المناطق المطلوبة": "f_districts",
-          "اسم العميل": "f_clientName",
-          "رقم التواصل": "f_phone",
-          ملاحظات: "f_notes",
-        };
+        const matches = findMatches(r);
 
-        let filled = 0;
-        let missing = [];
-        for (const [key, fieldId] of Object.entries(fieldMap)) {
-          const el = document.getElementById(fieldId);
-          if (!el) continue;
-          if (extracted[key] !== undefined && extracted[key] !== "") {
-            const val = extracted[key];
-            if (el.tagName === "SELECT") {
-              const options = Array.from(el.options).map((o) => o.value);
-              const matched = options.find(
-                (o) => o.toLowerCase() === val.toLowerCase(),
-              );
-              if (matched) {
-                el.value = matched;
-                filled++;
-              } else {
-                missing.push(key);
-              }
-            } else {
-              el.value = val;
-              filled++;
-            }
-          } else {
-            missing.push(key);
-          }
-        }
-
-        let msg = "";
-        if (missing.length === 0) {
-          msg = `<span class="success">✅ تم ملء جميع الحقول بنجاح (${filled} حقل).</span>`;
-        } else {
-          msg = `<span class="error">⚠️ الحقول الناقصة: ${missing.join("، ")}. يرجى إكمالها يدوياً.</span>`;
-        }
-        feedback.innerHTML = msg;
-        feedback.classList.add("show");
-        if (missing.length === 0) toast("تم استخراج البيانات بنجاح", "success");
-      }
-
-      // ============================================================
-      //  SAVE REQUEST
-      // ============================================================
-      function saveRequest() {
-        const type = document.getElementById("f_type").value;
-        const agreement = document.getElementById("f_agreement").value;
-        const area = parseFloat(document.getElementById("f_area").value);
-        const budget = parseFloat(document.getElementById("f_budget").value);
-        const city = document.getElementById("f_city").value.trim();
-        const districts = document.getElementById("f_districts").value.trim();
-        const client = document.getElementById("f_clientName").value.trim();
-        const phone = document.getElementById("f_phone").value.trim();
-        const notes = document.getElementById("f_notes").value.trim();
-
-        if (
-          !type ||
-          !agreement ||
-          !area ||
-          isNaN(area) ||
-          !budget ||
-          isNaN(budget) ||
-          !city ||
-          !districts ||
-          !client ||
-          !phone
-        ) {
-          toast("يرجى ملء جميع الحقول المطلوبة (*)", "error");
-          return;
-        }
-
-        const editId = document.getElementById("editRequestId").value;
-
-        if (editId) {
-          const o = requests.find((x) => x.id === editId);
-          if (!o) {
-            toast("الطلب غير موجود", "error");
-            return;
-          }
-          o.type = type;
-          o.agreement = agreement;
-          o.area = area;
-          o.budget = budget;
-          o.city = city;
-          o.districts = districts;
-          o.client = client;
-          o.phone = phone;
-          o.notes = notes || "لا توجد ملاحظات";
-          if (!o.log) o.log = [];
-          o.log.push(
-            new Date().toISOString().slice(0, 16).replace("T", " ") +
-              " تم تعديل الطلب",
-          );
-          saveRequests();
-          closeModal("requestModal");
-          toast("✅ تم تحديث الطلب بنجاح", "success");
-          renderTable();
-          if (
-            !document.getElementById("detailView").classList.contains("hidden")
-          ) {
-            renderDetail(editId);
-          }
-          return;
-        }
-
-        const newRequest = {
-          id: generateId(),
-          client: client,
-          type: type,
-          agreement: agreement,
-          area: area,
-          budget: budget,
-          city: city,
-          districts: districts,
-          phone: phone,
-          notes: notes || "لا توجد ملاحظات",
-          date: new Date().toISOString().split("T")[0],
-          stageId: 1,
-          matchedOfferId: null,
-          appointmentDate: null,
-          appointmentTime: null,
-          log: [
-            new Date().toISOString().slice(0, 16).replace("T", " ") +
-              " تم تسجيل الطلب",
-          ],
-        };
-        requests.push(newRequest);
-        saveRequests();
-        closeModal("requestModal");
-        toast(`✅ تم إضافة الطلب ${newRequest.id}`, "success");
-        renderTable();
-
-        setTimeout(() => {
-          newRequest.stageId = 2;
-          if (!newRequest.log) newRequest.log = [];
-          newRequest.log.push(
-            new Date().toISOString().slice(0, 16).replace("T", " ") +
-              " جاري المطابقة مع العروض",
-          );
-          saveRequests();
-          renderTable();
-          showForceAction(newRequest.id, "match_offers", "عروض مطابقة للطلب:");
-        }, 600);
-      }
-
-      // ============================================================
-      //  FORCE ACTION MODAL (المطابقة والاختيار)
-      // ============================================================
-      function showForceAction(requestId, actionType, message) {
-        const modal = document.getElementById("forceActionModal");
-        const title = document.getElementById("forceActionTitle");
-        const msg = document.getElementById("forceActionMessage");
-        const body = document.getElementById("forceActionBody");
-        const primaryBtn = document.getElementById("forceActionPrimaryBtn");
-
-        forceActionData.requestId = requestId;
-        forceActionData.action = actionType;
-
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        let titleText = "🔍 مطابقة العروض";
-        let messageText = message || "عروض مطابقة للطلب:";
-        let bodyHtml = "";
-        let btnText = "تحديث المطابقة";
-
-        switch (actionType) {
-          case "match_offers":
-            titleText = "🔍 نتائج المطابقة";
-            messageText = `طلبات مطابقة للطلب <strong>${r.id}</strong> — ${r.type} | ${r.agreement} | ${r.city}`;
-
-            const matches = findMatches(r);
-
-            if (matches.length > 0) {
-              bodyHtml = `
-                            <div style="margin-bottom:12px;font-size:0.85rem;color:#6b7a93;">
-                                <i class="fas fa-info-circle ml-1"></i> تم العثور على ${matches.length} عرض مطابق. اختر العرض المناسب.
-                            </div>
-                            <div id="matchResults">
-                                ${matches
-                                  .map(
-                                    (m) => `
-                                    <div class="match-card">
-                                        <div style="flex:1;">
-                                            <div style="font-weight:700;">${m.offer.title || m.offer.type}</div>
-                                            <div style="font-size:0.85rem;color:#6b7a93;">
-                                                ${m.offer.city} - ${m.offer.district || ""} · ${m.offer.area} م² · ${fmtMoney(m.offer.price)}
-                                            </div>
-                                            <div style="font-size:0.75rem;color:#6b7a93;margin-top:4px;">
-                                                ${m.details.join(" • ")}
-                                            </div>
-                                        </div>
-                                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                                            <span class="match-score ${m.score >= 70 ? "high" : m.score >= 40 ? "medium" : "low"}">${m.score}%</span>
-                                            <button class="btn btn-outline btn-sm" onclick="shareOfferToClient('${requestId}','${m.offer.id}')">
-                                                <i class="fas fa-share-alt"></i> مشاركة
-                                            </button>
-                                            <button class="btn btn-gold btn-sm" onclick="selectOffer('${requestId}','${m.offer.id}')">
-                                                ✅ اختيار
-                                            </button>
-                                        </div>
-                                    </div>
-                                `,
-                                  )
-                                  .join("")}
-                            </div>
-                        `;
-              btnText = "🔄 تحديث المطابقة";
-            } else {
-              bodyHtml = `
-                            <div style="color:#6b7a93;text-align:center;padding:20px;">
-                                <i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
-                                <p>⚠️ لا توجد عروض مطابقة حالياً.</p>
-                                <p style="font-size:0.85rem;margin-top:8px;">يمكنك البحث خارج النظام، وإذا وجدت عرضاً جديداً، أضفه في صفحة العروض ثم عد للمطابقة.</p>
-                            </div>
-                            <div style="text-align:center;margin-top:12px;">
-                                <button class="btn btn-amber btn-sm" onclick="closeModal('forceActionModal'); window.location.href='offers.html'">
-                                    ➕ إضافة عرض جديد
-                                </button>
-                                <button class="btn btn-outline btn-sm" onclick="sendToExternalBroker('${requestId}')" style="margin-right:8px;">
-                                    📨 إرسال لوسيط خارجي
-                                </button>
-                            </div>
-                        `;
-              btnText = "🔄 تحديث المطابقة";
-            }
-            break;
-
-          case "offer_selected":
-            titleText = "✅ تم اختيار العرض";
-            const selectedOffer = getOffers().find(
-              (o) => o.id === r.matchedOfferId,
-            );
-            messageText = `تم ربط الطلب <strong>${r.id}</strong> بالعرض <strong>${selectedOffer?.id || "غير معروف"}</strong>`;
+        if (matches.length > 0) {
             bodyHtml = `
-                        <div style="background:#f0fdf4;border:1px solid #10b981;border-radius:12px;padding:12px;margin-bottom:12px;">
-                            <p style="font-size:0.9rem;color:#065f46;">
-                                <i class="fas fa-check-circle ml-1"></i> تم ربط الطلب بالعرض بنجاح. يمكنك الآن بدء مرحلة التنسيق.
-                            </p>
-                            ${
-                              selectedOffer
-                                ? `
-                            <div style="margin-top:8px;padding:12px;background:#fff;border-radius:8px;border:1px solid #e5e9f0;">
-                                <div style="font-weight:700;">${selectedOffer.title || selectedOffer.type}</div>
-                                <div style="font-size:0.85rem;color:#6b7a93;">${selectedOffer.city} - ${selectedOffer.district || ""} · ${selectedOffer.area} م² · ${fmtMoney(selectedOffer.price)}</div>
-                            </div>
-                            `
-                                : ""
-                            }
-                        </div>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn btn-gold btn-sm" onclick="advanceStage('${requestId}',4)">📅 جدولة المعاينة</button>
-                            <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')">إغلاق</button>
-                        </div>
-                    `;
-            btnText = "تحديث";
-            break;
-
-          default:
-            bodyHtml = '<p class="text-gray-500">لا توجد تفاصيل إضافية.</p>';
-        }
-
-        title.textContent = titleText;
-        msg.innerHTML = messageText;
-        body.innerHTML = bodyHtml;
-        primaryBtn.textContent = btnText;
-
-        primaryBtn.onclick = function () {
-          if (forceActionData.requestId) {
-            const req = requests.find(
-              (x) => x.id === forceActionData.requestId,
-            );
-            if (req) {
-              showForceAction(
-                forceActionData.requestId,
-                "match_offers",
-                "عروض مطابقة للطلب:",
-              );
-            }
-          }
-        };
-
-        modal.classList.add("active");
-      }
-
-      // ============================================================
-      //  OFFER SELECTION
-      // ============================================================
-      function selectOffer(requestId, offerId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        r.matchedOfferId = offerId;
-        r.stageId = 3;
-        if (!r.log) r.log = [];
-        r.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` ✅ تم اختيار العرض ${offerId}`,
-        );
-        saveRequests();
-        toast("✅ تم اختيار العرض بنجاح", "success");
-        closeModal("forceActionModal");
-        renderTable();
-        renderDetail(requestId);
-
-        setTimeout(() => {
-          showForceAction(requestId, "offer_selected", "تم اختيار العرض بنجاح");
-        }, 400);
-      }
-
-      // ============================================================
-      //  SHARE OFFER TO CLIENT (WhatsApp)
-      // ============================================================
-      function shareOfferToClient(requestId, offerId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        const offers = getOffers();
-        const o = offers.find((x) => x.id === offerId);
-        if (!o) {
-          toast("العرض غير موجود", "error");
-          return;
-        }
-
-        const clientPhone = r.phone || "966500000000";
-        const msg =
-          `📋 *عرض عقاري مطابق لطلبك*\n\n` +
-          `🏷️ *الطلب:* ${r.id}\n` +
-          `🏗️ *نوع العقار:* ${o.type}\n` +
-          `🤝 *نوع الاتفاق:* ${o.dealType || o.agreement}\n` +
-          `📍 *الموقع:* ${o.city} - ${o.district || ""}\n` +
-          `📐 *المساحة:* ${o.area} م²\n` +
-          `💰 *السعر:* ${fmtMoney(o.price)}\n` +
-          `📝 *المواصفات:* ${o.description || "لا توجد"}\n` +
-          `\nيرجى إعلامنا بقرارك.`;
-
-        window.open(
-          `https://wa.me/${clientPhone}?text=${encodeURIComponent(msg)}`,
-          "_blank",
-        );
-        toast("📱 تم فتح واتساب للعميل", "success");
-
-        if (!r.log) r.log = [];
-        r.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` 📤 تم مشاركة العرض ${offerId} مع العميل`,
-        );
-        saveRequests();
-      }
-
-      // ============================================================
-      //  SEND TO EXTERNAL BROKER
-      // ============================================================
-      function sendToExternalBroker(requestId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        const brokerPhone = "966500000000";
-        const msg =
-          `📋 *طلب عميل - ${r.id}*\n` +
-          `🏗️ *نوع العقار:* ${r.type}\n` +
-          `🤝 *نوع الاتفاق:* ${r.agreement}\n` +
-          `📍 *المدينة:* ${r.city}\n` +
-          `📍 *المناطق:* ${r.districts}\n` +
-          `📐 *المساحة:* ${r.area} م²\n` +
-          `💰 *الميزانية:* ${fmtMoney(r.budget)}\n` +
-          `📝 *ملاحظات:* ${r.notes || "لا توجد"}\n\n` +
-          `يرجى المساعدة في إيجاد عرض مناسب.`;
-
-        window.open(
-          `https://wa.me/${brokerPhone}?text=${encodeURIComponent(msg)}`,
-          "_blank",
-        );
-        toast("📨 تم فتح واتساب للوسيط الخارجي", "success");
-
-        if (!r.log) r.log = [];
-        r.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            " 📨 تم إرسال الطلب لوسيط خارجي",
-        );
-        saveRequests();
-        closeModal("forceActionModal");
-        renderTable();
-        renderDetail(requestId);
-        scheduleReminder(
-          requestId,
-          3,
-          "تذكير: الوسيط الخارجي لم يرد على الطلب " + r.id,
-        );
-      }
-
-      // ============================================================
-      //  APPOINTMENT FUNCTIONS (مرحلة التنسيق)
-      // ============================================================
-      function setAppointment(requestId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        const date = prompt(
-          "أدخل تاريخ المعاينة (YYYY-MM-DD):",
-          new Date().toISOString().slice(0, 10),
-        );
-        if (!date) return;
-        const time = prompt("أدخل وقت المعاينة (HH:MM):", "10:00");
-        if (!time) return;
-
-        r.appointmentDate = date;
-        r.appointmentTime = time;
-        if (!r.log) r.log = [];
-        r.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` 📅 تم تحديد موعد المعاينة: ${date} ${time}`,
-        );
-        saveRequests();
-        toast("✅ تم تسجيل موعد المعاينة", "success");
-        renderDetail(requestId);
-        renderTable();
-        // إلغاء التنبيهات اليومية بعد تحديد الموعد
-      }
-
-      function editAppointment(requestId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        const currentDate =
-          r.appointmentDate || new Date().toISOString().slice(0, 10);
-        const currentTime = r.appointmentTime || "10:00";
-        const date = prompt("تعديل تاريخ المعاينة (YYYY-MM-DD):", currentDate);
-        if (!date) return;
-        const time = prompt("تعديل وقت المعاينة (HH:MM):", currentTime);
-        if (!time) return;
-
-        r.appointmentDate = date;
-        r.appointmentTime = time;
-        if (!r.log) r.log = [];
-        r.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` ✏️ تم تعديل موعد المعاينة إلى: ${date} ${time}`,
-        );
-        saveRequests();
-        toast("✅ تم تعديل موعد المعاينة", "success");
-        renderDetail(requestId);
-        renderTable();
-      }
-
-      function confirmAppointment(requestId) {
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-
-        if (!r.appointmentDate || !r.appointmentTime) {
-          toast("⚠️ يرجى تحديد موعد المعاينة أولاً", "error");
-          return;
-        }
-
-        if (!confirm("هل تمت المعاينة بنجاح وحضر الطرفان؟")) return;
-
-        // بعد تأكيد الحضور، نعرض خيارين: تم الاتفاق أو لم يتم الاتفاق
-        const choice = confirm(
-          'هل تم الاتفاق مع صاحب العرض؟\nاضغط "موافق" إذا تم الاتفاق، "إلغاء" إذا لم يتم الاتفاق.',
-        );
-        if (choice) {
-          // تم الاتفاق → إغلاق الطلب والعرض
-          r.stageId = 5;
-          if (!r.log) r.log = [];
-          r.log.push(
-            new Date().toISOString().slice(0, 16).replace("T", " ") +
-              " ✅ تم الاتفاق وإتمام الصفقة (تم إغلاق الطلب والعرض)",
-          );
-          // إغلاق العرض المرتبط
-          if (r.matchedOfferId) {
-            const offers = getOffers();
-            const matchedOffer = offers.find(
-              (off) => off.id === r.matchedOfferId,
-            );
-            if (matchedOffer) {
-              matchedOffer.stageId = 10;
-              matchedOffer.status = "مباع";
-              if (!matchedOffer.log) matchedOffer.log = [];
-              matchedOffer.log.push(
-                new Date().toISOString().slice(0, 16).replace("T", " ") +
-                  ` ✅ تم إغلاق العرض المرتبط بالطلب ${r.id}`,
-              );
-              localStorage.setItem("masarOffersDataV6", JSON.stringify(offers));
-              toast(`✅ تم إغلاق العرض ${matchedOffer.id} تلقائياً`, "success");
-            }
-          }
-          saveRequests();
-          toast("🎉 تم إتمام الصفقة وإغلاق الطلب", "success");
-          renderDetail(requestId);
-          renderTable();
-        } else {
-          // لم يتم الاتفاق → فك الارتباط والعودة للمطابقة
-          r.stageId = 2;
-          r.matchedOfferId = null;
-          r.appointmentDate = null;
-          r.appointmentTime = null;
-          if (!r.log) r.log = [];
-          r.log.push(
-            new Date().toISOString().slice(0, 16).replace("T", " ") +
-              " 🔄 لم يتم الاتفاق، تم فك الارتباط بالعرض والعودة للمطابقة",
-          );
-          saveRequests();
-          toast("🔄 تم فك الارتباط والعودة للمطابقة", "info");
-          renderDetail(requestId);
-          renderTable();
-          // فتح المطابقة تلقائياً
-          setTimeout(() => {
-            showForceAction(
-              requestId,
-              "match_offers",
-              "ابحث عن عرض آخر للعميل.",
-            );
-          }, 600);
-        }
-      }
-
-      // ============================================================
-      //  REMINDER ENGINE (تذكير يومي بموعد المعاينة)
-      // ============================================================
-      function checkAppointments() {
-        const today = new Date().toISOString().slice(0, 10);
-        requests.forEach((r) => {
-          if (r.stageId === 4) {
-            // إذا لم يتم تحديد موعد، نذكّر يومياً
-            if (!r.appointmentDate || !r.appointmentTime) {
-              toast(
-                "🔔 تنبيه: الطلب " +
-                  r.id +
-                  " في مرحلة جدولة المعاينة ولم يتم تحديد موعد بعد. يرجى تحديد موعد.",
-                "info",
-              );
-              if (
-                "Notification" in window &&
-                Notification.permission === "granted"
-              ) {
-                new Notification("🔔 تذكير: جدولة المعاينة", {
-                  body: `الطلب ${r.id} - ${r.type} - ${r.client}`,
-                });
-              }
-            } else if (r.appointmentDate === today) {
-              toast(
-                `🔔 تذكير: اليوم موعد معاينة الطلب ${r.id} الساعة ${r.appointmentTime}`,
-                "info",
-              );
-              if (
-                "Notification" in window &&
-                Notification.permission === "granted"
-              ) {
-                new Notification("🔔 تذكير: معاينة اليوم", {
-                  body: `الطلب ${r.id} - ${r.appointmentTime}`,
-                });
-              }
-            }
-          }
-        });
-      }
-
-      // ============================================================
-      //  FILTER & PAGINATION
-      // ============================================================
-      function getFilteredRequests() {
-        const search = document
-          .getElementById("searchInput")
-          .value.trim()
-          .toLowerCase();
-        const type = document.getElementById("typeFilter").value;
-        const status = document.getElementById("statusFilter").value;
-        const from = document.getElementById("dateFrom").value;
-        const to = document.getElementById("dateTo").value;
-
-        let filtered = requests.filter((o) => {
-          if (type !== "all" && o.type !== type) return false;
-          if (status !== "all") {
-            const st = STATUS_MAP[o.stageId];
-            if (!st || st.statusType !== status) return false;
-          }
-          if (search) {
-            const match =
-              (o.id || "").includes(search) ||
-              (o.client || "").includes(search) ||
-              (o.type || "").includes(search) ||
-              (o.city || "").includes(search) ||
-              (o.districts || "").includes(search);
-            if (!match) return false;
-          }
-          if (from && o.date < from) return false;
-          if (to && o.date > to) return false;
-          return true;
-        });
-        filtered.sort((a, b) => b.date.localeCompare(a.date));
-        return filtered;
-      }
-
-      function renderTable() {
-        const filtered = getFilteredRequests();
-        const total = filtered.length;
-        const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PAGE_SIZE;
-        const end = Math.min(start + PAGE_SIZE, total);
-        const pageItems = filtered.slice(start, end);
-
-        const tbody = document.getElementById("requestsTableBody");
-        if (pageItems.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-gray-400"><i class="fas fa-inbox text-3xl block mb-2"></i> لا توجد طلبات مطابقة</td></tr>`;
-        } else {
-          tbody.innerHTML = pageItems
-            .map((o) => {
-              const st = STATUS_MAP[o.stageId] || {
-                label: "غير معروف",
-                color: "#9ca3af",
-              };
-              const stageName = getStageName(o.stageId);
-              const isPulse = o.stageId === 2 || o.stageId === 4;
-              return `
-                        <tr class="request-row border-b border-[#edf2f7]" onclick="openDetail('${o.id}')">
-                            <td class="px-3 py-3 font-bold text-[#1e3a5f] text-sm">${o.id}</td>
-                            <td class="px-3 py-3 text-sm">${o.client}</td>
-                            <td class="px-3 py-3 text-sm">${o.type}</td>
-                            <td class="px-3 py-3 text-sm">${o.agreement}</td>
-                            <td class="px-3 py-3 text-sm max-w-[120px] truncate" title="${stageName}">${stageName}</td>
-                            <td class="px-3 py-3">
-                                <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55;">
-                                    <span class="status-dot ${isPulse ? "pulse" : ""}" style="background:${st.color};"></span>
-                                    ${st.label}
-                                </span>
-                            </td>
-                            <td class="px-3 py-3 text-sm text-gray-500">${fmtDate(o.date)}</td>
-                            <td class="px-3 py-3">
-                                <div class="flex items-center gap-1">
-                                    <button class="text-gray-500 hover:text-[#1e3a5f] px-1" onclick="event.stopPropagation(); openDetail('${o.id}')" title="عرض التفاصيل"><i class="fas fa-eye"></i></button>
-                                    <button class="text-gray-500 hover:text-[#1e3a5f] px-1" onclick="event.stopPropagation(); openEditRequest('${o.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
-                                    <button class="text-gray-500 hover:text-red-500 px-1" onclick="event.stopPropagation(); deleteRequest('${o.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+                <div style="margin-bottom:12px;font-size:0.85rem;color:#8B96A8;">
+                    <i class="fas fa-info-circle ml-1"></i> تم العثور على ${matches.length} عرض مطابق. اختر العرض المناسب.
+                </div>
+                <div id="matchResults">
+                    ${matches.map(m => `
+                        <div class="match-card">
+                            <div style="flex:1;">
+                                <div style="font-weight:700;color:#EDEAE2;">${m.offer.title || m.offer.property_type}</div>
+                                <div style="font-size:0.85rem;color:#8B96A8;">
+                                    ${m.offer.city} - ${m.offer.district || ''} · ${m.offer.area} م² · ${formatMoney(m.offer.price)}
                                 </div>
-                            </td>
-                        </tr>
-                    `;
-            })
-            .join("");
-        }
-
-        const cardList = document.getElementById("requestsCardList");
-        if (pageItems.length === 0) {
-          cardList.innerHTML = `<div class="text-center py-12 text-gray-400"><i class="fas fa-inbox text-3xl block mb-2"></i> لا توجد طلبات</div>`;
-        } else {
-          cardList.innerHTML = pageItems
-            .map((o) => {
-              const st = STATUS_MAP[o.stageId] || {
-                label: "غير معروف",
-                color: "#9ca3af",
-              };
-              const stageName = getStageName(o.stageId);
-              const isPulse = o.stageId === 2 || o.stageId === 4;
-              const appointmentInfo =
-                o.stageId === 4 && o.appointmentDate
-                  ? ` 📅 ${fmtDate(o.appointmentDate)} ${o.appointmentTime || ""}`
-                  : "";
-              return `
-                        <div class="request-card-item" onclick="openDetail('${o.id}')">
-                            <div class="top-row">
-                                <span class="req-id">${o.id}</span>
-                                <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55; font-size:0.7rem;">
-                                    <span class="status-dot ${isPulse ? "pulse" : ""}" style="background:${st.color};"></span>
-                                    ${st.label}
-                                </span>
-                            </div>
-                            <div class="req-meta">
-                                <span><i class="far fa-user ml-1"></i> ${o.client}</span>
-                                <span><i class="fas fa-tag ml-1"></i> ${o.type}</span>
-                                <span><i class="fas fa-handshake ml-1"></i> ${o.agreement}</span>
-                                <span><i class="fas fa-map-marker-alt ml-1"></i> ${o.city}</span>
-                                <span><i class="fas fa-route ml-1"></i> ${stageName}</span>
-                            </div>
-                            <div style="font-size:0.8rem;color:#6b7a93;margin-top:4px">
-                                <i class="far fa-calendar ml-1"></i> ${fmtDate(o.date)}
-                                ${appointmentInfo ? `<span style="margin-right:12px;">${appointmentInfo}</span>` : ""}
-                                <span style="margin-right:12px"><i class="fas fa-phone ml-1"></i> ${o.phone}</span>
-                            </div>
-                            <div class="req-actions">
-                                <button onclick="event.stopPropagation(); openDetail('${o.id}')"><i class="fas fa-eye"></i> عرض</button>
-                                <button onclick="event.stopPropagation(); openEditRequest('${o.id}')"><i class="fas fa-pen"></i> تعديل</button>
-                                <button class="danger" onclick="event.stopPropagation(); deleteRequest('${o.id}')"><i class="fas fa-trash"></i> حذف</button>
-                            </div>
-                        </div>
-                    `;
-            })
-            .join("");
-        }
-
-        document.getElementById("paginationInfo").textContent =
-          `عرض ${total > 0 ? start + 1 : 0}-${end} من ${total}`;
-        const controls = document.getElementById("paginationControls");
-        let html = `<button class="px-3 py-1 border rounded-full ${currentPage === 1 ? "opacity-40 cursor-default" : ""}" onclick="goPage(${currentPage - 1})"><i class="fas fa-chevron-right"></i></button>`;
-        for (let i = 1; i <= totalPages; i++) {
-          html += `<button class="px-3 py-1 border rounded-full ${i === currentPage ? "bg-[#1e3a5f] text-white" : ""}" onclick="goPage(${i})">${i}</button>`;
-        }
-        html += `<button class="px-3 py-1 border rounded-full ${currentPage === totalPages ? "opacity-40 cursor-default" : ""}" onclick="goPage(${currentPage + 1})"><i class="fas fa-chevron-left"></i></button>`;
-        controls.innerHTML = html;
-
-        updateStats();
-      }
-
-      function goPage(p) {
-        const filtered = getFilteredRequests();
-        const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
-        if (p < 1 || p > totalPages) return;
-        currentPage = p;
-        renderTable();
-      }
-
-      function filterTable() {
-        currentPage = 1;
-        renderTable();
-      }
-
-      function updateStats() {
-        const total = requests.length;
-        document.getElementById("totalRequests").textContent = total;
-        const pending = requests.filter((o) => o.stageId === 2).length;
-        const completed = requests.filter((o) => o.stageId === 5).length;
-        document.getElementById("pendingRequests").textContent = pending;
-        document.getElementById("completedRequests").textContent = completed;
-
-        const land = requests.filter((o) => o.type === "أرض").length;
-        const other = requests.filter((o) => o.type !== "أرض").length;
-        document.getElementById("countLand").textContent = land;
-        document.getElementById("countOther").textContent = other;
-      }
-
-      function deleteRequest(id) {
-        if (!confirm(`هل أنت متأكد من حذف الطلب ${id}؟`)) return;
-        requests = requests.filter((o) => o.id !== id);
-        saveRequests();
-        renderTable();
-        toast(`تم حذف الطلب ${id}`, "success");
-      }
-
-      // ============================================================
-      //  DETAIL VIEW
-      // ============================================================
-      function openDetail(id) {
-        const o = requests.find((x) => x.id === id);
-        if (!o) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-        document.getElementById("listView").classList.add("hidden");
-        document.getElementById("detailView").classList.remove("hidden");
-        renderDetail(id);
-      }
-
-      function closeDetail() {
-        document.getElementById("detailView").classList.add("hidden");
-        document.getElementById("listView").classList.remove("hidden");
-        renderTable();
-      }
-
-      function renderDetail(id) {
-        const o = requests.find((x) => x.id === id);
-        if (!o) {
-          document.getElementById("detailContent").innerHTML =
-            '<div class="text-center py-12 text-gray-400">الطلب غير موجود</div>';
-          return;
-        }
-
-        const st = STATUS_MAP[o.stageId] || {
-          label: "غير معروف",
-          color: "#9ca3af",
-        };
-        const isDelayed = o.stageId === 2 || o.stageId === 4;
-        const isComplete = o.stageId === 5;
-
-        // العرض المرتبط
-        let matchedOfferHtml = "";
-        if (o.matchedOfferId) {
-          const offers = getOffers();
-          const matchedOffer = offers.find(
-            (off) => off.id === o.matchedOfferId,
-          );
-          if (matchedOffer) {
-            matchedOfferHtml = `
-                        <div style="background:#f0fdf4;border:1px solid #10b981;border-radius:12px;padding:12px;margin-bottom:12px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                                <div>
-                                    <span style="font-weight:700;color:#065f46;">🔗 مرتبط بالعرض</span>
-                                    <div style="font-weight:700;font-size:1.1rem;">${matchedOffer.id}</div>
-                                    <div style="font-size:0.85rem;color:#6b7a93;">${matchedOffer.title || matchedOffer.type} · ${matchedOffer.city} - ${matchedOffer.district || ""}</div>
-                                    <div style="font-size:0.85rem;color:#6b7a93;">${matchedOffer.area} م² · ${fmtMoney(matchedOffer.price)}</div>
+                                <div style="font-size:0.75rem;color:#8B96A8;margin-top:4px;">
+                                    ${m.details.join(' • ')}
                                 </div>
-                                <button class="btn btn-outline btn-sm" onclick="toast('جاري فتح تفاصيل العرض...'); window.location.href='offers.html'">
-                                    <i class="fas fa-external-link-alt ml-1"></i> عرض التفاصيل
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                <span class="match-score ${m.score >= 70 ? 'high' : m.score >= 40 ? 'medium' : 'low'}">${m.score}%</span>
+                                <button class="btn btn-outline btn-sm" onclick="shareOfferToClient('${requestId}','${m.offer.id}')" style="color:#EDEAE2;border-color:#22314C;">
+                                    <i class="fas fa-share-alt"></i> مشاركة
+                                </button>
+                                <button class="btn btn-gold btn-sm" onclick="selectOffer('${requestId}','${m.offer.id}')">
+                                    ✅ اختيار
                                 </button>
                             </div>
                         </div>
-                    `;
-          } else {
-            matchedOfferHtml = `<div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:12px;color:#92400e;">⚠️ العرض المرتبط غير موجود (ربما تم حذفه)</div>`;
-          }
-        }
-
-        // Appointment info
-        let appointmentHtml = "";
-        if (o.stageId === 4 || o.stageId === 3 || o.stageId === 5) {
-          if (o.appointmentDate) {
-            appointmentHtml = `
-                        <div style="background:#e0f2fe;border:1px solid #38bdf8;border-radius:12px;padding:12px;margin:12px 0;">
-                            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                                <div>
-                                    <span style="font-weight:700;color:#0369a1;">📅 موعد المعاينة</span>
-                                    <div style="font-weight:700;font-size:1.1rem;">${fmtDate(o.appointmentDate)} ${o.appointmentTime || ""}</div>
-                                </div>
-                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                    <button class="btn btn-outline btn-sm" onclick="editAppointment('${o.id}')"><i class="fas fa-pen"></i> تعديل</button>
-                                    <button class="btn btn-gold btn-sm" onclick="confirmAppointment('${o.id}')">✅ تأكيد الحضور</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-          } else if (o.stageId === 4) {
-            appointmentHtml = `
-                        <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:12px;margin:12px 0;">
-                            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                                <div>
-                                    <span style="font-weight:700;color:#92400e;">⏳ لم يتم تحديد موعد المعاينة بعد</span>
-                                </div>
-                                <button class="btn btn-gold btn-sm" onclick="setAppointment('${o.id}')">📅 تحديد موعد</button>
-                            </div>
-                        </div>
-                    `;
-          }
-        }
-
-        // Timeline
-        let timelineHtml = STAGES.map((s, idx) => {
-          const isCompleted = idx < o.stageId;
-          const isActive = idx === o.stageId - 1;
-          let dotClass = "pending";
-          let lineClass = "pending";
-          if (isCompleted) {
-            dotClass = "completed";
-            lineClass = "completed";
-          } else if (isActive) {
-            dotClass = isDelayed ? "delayed" : "active";
-            lineClass = isDelayed ? "delayed" : "pending";
-          }
-          return `
-                    <div class="timeline-item">
-                        <div style="display:flex;flex-direction:column;align-items:center;padding-top:2px">
-                            <div class="timeline-dot ${dotClass}"></div>
-                            ${idx < STAGES.length - 1 ? `<div class="timeline-line ${lineClass}"></div>` : ""}
-                        </div>
-                        <div class="timeline-content">
-                            <div class="stage-name">${s.name}</div>
-                            ${isActive ? `<div class="stage-date">🔵 المرحلة الحالية</div>` : ""}
-                        </div>
-                    </div>
-                `;
-        }).join("");
-
-        // Log
-        let logHtml =
-          (o.log || [])
-            .map(
-              (l) => `
-                <div class="log-entry">
-                    <span class="log-time">${l.slice(0, 16)}</span>
-                    <span>${l.slice(16)}</span>
-                </div>
-            `,
-            )
-            .join("") || '<div style="color:#9ca3af">لا توجد سجلات</div>';
-
-        // Action buttons
-        let actionsHtml = "";
-        if (!isComplete) {
-          if (o.stageId === 1 || o.stageId === 2) {
-            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="showForceAction('${o.id}','match_offers','عروض مطابقة للطلب:')">🔍 المطابقة</button>`;
-          }
-          if (o.stageId === 3) {
-            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="advanceStage('${o.id}',4)">📅 جدولة المعاينة</button>`;
-          }
-          if (o.stageId === 4) {
-            if (!o.appointmentDate) {
-              actionsHtml += `<button class="btn btn-gold btn-sm" onclick="setAppointment('${o.id}')">📅 تحديد موعد</button>`;
-            } else {
-              actionsHtml += `<button class="btn btn-outline btn-sm" onclick="editAppointment('${o.id}')"><i class="fas fa-pen"></i> تعديل الموعد</button>`;
-              actionsHtml += `<button class="btn btn-emerald btn-sm" onclick="confirmAppointment('${o.id}')">✅ تأكيد الحضور</button>`;
-            }
-          }
-          if (o.stageId === 2 || o.stageId === 3) {
-            actionsHtml += `<button class="btn btn-amber btn-sm" onclick="sendToExternalBroker('${o.id}')">📨 إرسال لوسيط</button>`;
-          }
-          actionsHtml += `<button class="btn btn-outline btn-sm" onclick="openEditRequest('${o.id}')"><i class="fas fa-pen"></i> تعديل</button>`;
-          if (o.stageId > 1) {
-            actionsHtml += `<button class="btn btn-outline btn-sm" onclick="regressStage('${o.id}')"><i class="fas fa-undo"></i> رجوع</button>`;
-          }
-        } else {
-          actionsHtml = `<span class="text-emerald-600 font-bold text-lg">✅ الطلب مكتمل</span>`;
-        }
-
-        const html = `
-                <div class="detail-section">
-                    <div class="flex flex-wrap justify-between items-start gap-4">
-                        <div>
-                            <h2 class="text-2xl font-extrabold text-[#1e3a5f]">${o.id} — ${o.type}</h2>
-                            <div class="flex flex-wrap items-center gap-3 mt-2 text-sm text-gray-500">
-                                <span><i class="far fa-user ml-1"></i> ${o.client}</span>
-                                <span><i class="far fa-phone ml-1"></i> ${o.phone}</span>
-                                <span><i class="far fa-calendar ml-1"></i> ${fmtDate(o.date)}</span>
-                                <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55;">
-                                    <span class="status-dot ${isDelayed ? "pulse" : ""}" style="background:${st.color};"></span>
-                                    ${st.label}
-                                </span>
-                                <span class="text-xs bg-[#f1f5f9] px-2 py-1 rounded-full">👤 شخصي</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            ${actionsHtml}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="detail-section">
-                        <div class="section-title"><i class="fas fa-info-circle text-[#2d6a9f]"></i> تفاصيل الطلب</div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><span class="text-sm text-gray-500">نوع العقار</span><div class="font-bold">${o.type}</div></div>
-                            <div><span class="text-sm text-gray-500">نوع الاتفاق</span><div class="font-bold">${o.agreement}</div></div>
-                            <div><span class="text-sm text-gray-500">المساحة</span><div class="font-bold">${o.area} م²</div></div>
-                            <div><span class="text-sm text-gray-500">الميزانية</span><div class="font-bold text-[#1e3a5f]">${fmtMoney(o.budget)}</div></div>
-                            <div><span class="text-sm text-gray-500">المدينة</span><div class="font-bold">${o.city}</div></div>
-                            <div class="col-span-2"><span class="text-sm text-gray-500">المناطق المطلوبة</span><div class="font-bold">${o.districts}</div></div>
-                            <div class="col-span-2"><span class="text-sm text-gray-500">ملاحظات</span><div class="text-sm">${o.notes || "لا توجد"}</div></div>
-                        </div>
-                    </div>
-
-                    <div class="detail-section">
-                        <div class="section-title"><i class="fas fa-user-tie text-[#2d6a9f]"></i> معلومات العميل</div>
-                        <div class="space-y-2">
-                            <div><span class="text-sm text-gray-500">الاسم</span><div class="font-bold">${o.client}</div></div>
-                            <div><span class="text-sm text-gray-500">رقم الجوال</span><div>${o.phone}</div></div>
-                        </div>
-                        <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e9f0;">
-                            <div class="section-title" style="font-size:15px;margin-bottom:8px;"><i class="fas fa-handshake text-[#2d6a9f]"></i> العرض المرتبط</div>
-                            ${matchedOfferHtml || '<div style="color:#6b7a93;">لا يوجد عرض مرتبط بعد</div>'}
-                            ${appointmentHtml}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="detail-section">
-                    <div class="section-title"><i class="fas fa-route text-[#2d6a9f]"></i> مسار الطلب</div>
-                    <div class="timeline">${timelineHtml}</div>
-                </div>
-
-                <div class="detail-section">
-                    <div class="section-title"><i class="fas fa-history text-[#2d6a9f]"></i> سجل النشاط</div>
-                    <div class="max-h-60 overflow-y-auto">${logHtml}</div>
+                    `).join('')}
                 </div>
             `;
-
-        document.getElementById("detailContent").innerHTML = html;
-      }
-
-      // ============================================================
-      //  STAGE ACTIONS
-      // ============================================================
-      function advanceStage(id, newStage) {
-        const o = requests.find((x) => x.id === id);
-        if (!o) {
-          toast("الطلب غير موجود", "error");
-          return;
+            btnText = '🔄 تحديث المطابقة';
+        } else {
+            bodyHtml = `
+                <div style="color:#8B96A8;text-align:center;padding:20px;">
+                    <i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px;color:#C9A24B;"></i>
+                    <p>⚠️ لا توجد عروض مطابقة حالياً.</p>
+                    <p style="font-size:0.85rem;margin-top:8px;">يمكنك البحث خارج النظام، وإذا وجدت عرضاً جديداً، أضفه في صفحة العروض ثم عد للمطابقة.</p>
+                </div>
+                <div style="text-align:center;margin-top:12px;">
+                    <button class="btn btn-amber btn-sm" onclick="closeModal('forceActionModal'); window.location.href='offers.html'">
+                        ➕ إضافة عرض جديد
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="sendToExternalBroker('${requestId}')" style="margin-right:8px;color:#EDEAE2;border-color:#22314C;">
+                        📨 إرسال لوسيط خارجي
+                    </button>
+                </div>
+            `;
+            btnText = '🔄 تحديث المطابقة';
         }
+    } else if (actionType === 'offer_selected') {
+        titleText = '✅ تم اختيار العرض';
+        const selectedOffer = findMatches(r).find(m => m.offer.id === r.matched_offer_id);
+        messageText = `تم ربط الطلب <strong style="color:#C9A24B;">${r.id}</strong> بالعرض <strong style="color:#C9A24B;">${r.matched_offer_id || 'غير معروف'}</strong>`;
+        bodyHtml = `
+            <div style="background:#0F1830;border:1px solid #1F7A5C;border-radius:12px;padding:12px;margin-bottom:12px;">
+                <p style="font-size:0.9rem;color:#1F7A5C;">
+                    <i class="fas fa-check-circle ml-1"></i> تم ربط الطلب بالعرض بنجاح. يمكنك الآن بدء مرحلة التنسيق.
+                </p>
+                ${selectedOffer ? `
+                <div style="margin-top:8px;padding:12px;background:#0B121E;border-radius:8px;border:1px solid #22314C;">
+                    <div style="font-weight:700;color:#EDEAE2;">${selectedOffer.offer.title || selectedOffer.offer.property_type}</div>
+                    <div style="font-size:0.85rem;color:#8B96A8;">${selectedOffer.offer.city} - ${selectedOffer.offer.district || ''} · ${selectedOffer.offer.area} م² · ${formatMoney(selectedOffer.offer.price)}</div>
+                </div>
+                ` : ''}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-gold btn-sm" onclick="advanceStage('${requestId}', 4)">📅 جدولة المعاينة</button>
+                <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')" style="color:#EDEAE2;border-color:#22314C;">إغلاق</button>
+            </div>
+        `;
+        btnText = 'تحديث';
+    }
 
-        if (newStage === 4 && !o.matchedOfferId) {
-          toast(
-            "⚠️ لا يمكن بدء جدولة المعاينة بدون اختيار عرض مطابق أولاً",
-            "error",
-          );
-          return;
+    title.textContent = titleText;
+    msg.innerHTML = messageText;
+    body.innerHTML = bodyHtml;
+    primaryBtn.textContent = btnText;
+
+    primaryBtn.onclick = function() {
+        if (requestId) {
+            showForceAction(requestId, 'match_offers', 'عروض مطابقة للطلب:');
         }
+    };
 
-        o.stageId = newStage;
-        const stageName = getStageName(newStage);
-        if (!o.log) o.log = [];
-        o.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` ➡️ ${stageName}`,
-        );
-        saveRequests();
-        toast(`✅ تم الانتقال إلى "${stageName}"`, "success");
-        renderDetail(id);
+    modal.classList.add('active');
+}
+
+function executeForceAction() {
+    // يتم تنفيذها عند الضغط على زر تحديث المطابقة
+}
+
+// ============================================================
+// OFFER SELECTION
+// ============================================================
+function selectOffer(requestId, offerId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    r.matched_offer_id = offerId;
+    r.stage_id = 3;
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ✅ تم اختيار العرض ${offerId}`);
+    saveRequestsLocally();
+    showToast('✅ تم اختيار العرض بنجاح', 'success');
+    closeModal('forceActionModal');
+    renderTable();
+    renderDetail(requestId);
+
+    setTimeout(() => {
+        showForceAction(requestId, 'offer_selected', 'تم اختيار العرض بنجاح');
+    }, 400);
+}
+
+function shareOfferToClient(requestId, offerId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    const offersData = localStorage.getItem('masarOffersLocal');
+    let offers = [];
+    if (offersData) {
+        try {
+            offers = JSON.parse(offersData);
+        } catch (e) {}
+    }
+    const o = offers.find(x => x.id === offerId);
+    if (!o) { showToast('العرض غير موجود', 'error'); return; }
+
+    const clientPhone = r.contact_phone || '966500000000';
+    const msg = `📋 *عرض عقاري مطابق لطلبك*\n\n` +
+        `🏷️ *الطلب:* ${r.id}\n` +
+        `🏗️ *نوع العقار:* ${o.property_type}\n` +
+        `🤝 *نوع الاتفاق:* ${o.deal_type || o.agreement}\n` +
+        `📍 *الموقع:* ${o.city} - ${o.district || ''}\n` +
+        `📐 *المساحة:* ${o.area} م²\n` +
+        `💰 *السعر:* ${formatMoney(o.price)}\n` +
+        `📝 *المواصفات:* ${o.description || 'لا توجد'}\n` +
+        `\nيرجى إعلامنا بقرارك.`;
+
+    window.open(`https://wa.me/${clientPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    showToast('📱 تم فتح واتساب للعميل', 'success');
+
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 📤 تم مشاركة العرض ${offerId} مع العميل`);
+    saveRequestsLocally();
+}
+
+function sendToExternalBroker(requestId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    const brokerPhone = '966500000000';
+    const msg = `📋 *طلب عميل - ${r.id}*\n` +
+        `🏗️ *نوع العقار:* ${r.property_type}\n` +
+        `🤝 *نوع الاتفاق:* ${r.deal_type}\n` +
+        `📍 *المدينة:* ${r.city}\n` +
+        `📍 *المناطق:* ${r.districts}\n` +
+        `📐 *المساحة:* ${r.area} م²\n` +
+        `💰 *الميزانية:* ${formatMoney(r.budget)}\n` +
+        `📝 *ملاحظات:* ${r.notes || 'لا توجد'}\n\n` +
+        `يرجى المساعدة في إيجاد عرض مناسب.`;
+
+    window.open(`https://wa.me/${brokerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    showToast('📨 تم فتح واتساب للوسيط الخارجي', 'success');
+
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 📨 تم إرسال الطلب لوسيط خارجي`);
+    saveRequestsLocally();
+    closeModal('forceActionModal');
+    renderTable();
+    renderDetail(requestId);
+    scheduleReminder(requestId, 3, 'تذكير: الوسيط الخارجي لم يرد على الطلب ' + r.id);
+}
+
+// ============================================================
+// APPOINTMENT FUNCTIONS
+// ============================================================
+function setAppointment(requestId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    const date = prompt('أدخل تاريخ المعاينة (YYYY-MM-DD):', new Date().toISOString().slice(0, 10));
+    if (!date) return;
+    const time = prompt('أدخل وقت المعاينة (HH:MM):', '10:00');
+    if (!time) return;
+
+    r.appointmentDate = date;
+    r.appointmentTime = time;
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 📅 تم تحديد موعد المعاينة: ${date} ${time}`);
+    r.stage_id = 4;
+    saveRequestsLocally();
+    showToast('✅ تم تسجيل موعد المعاينة', 'success');
+    renderDetail(requestId);
+    renderTable();
+}
+
+function editAppointment(requestId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    const currentDate = r.appointmentDate || new Date().toISOString().slice(0, 10);
+    const currentTime = r.appointmentTime || '10:00';
+    const date = prompt('تعديل تاريخ المعاينة (YYYY-MM-DD):', currentDate);
+    if (!date) return;
+    const time = prompt('تعديل وقت المعاينة (HH:MM):', currentTime);
+    if (!time) return;
+
+    r.appointmentDate = date;
+    r.appointmentTime = time;
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ✏️ تم تعديل موعد المعاينة إلى: ${date} ${time}`);
+    saveRequestsLocally();
+    showToast('✅ تم تعديل موعد المعاينة', 'success');
+    renderDetail(requestId);
+    renderTable();
+}
+
+function confirmAppointment(requestId) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    if (!r.appointmentDate || !r.appointmentTime) {
+        showToast('⚠️ يرجى تحديد موعد المعاينة أولاً', 'error');
+        return;
+    }
+
+    if (!confirm('هل تمت المعاينة بنجاح وحضر الطرفان؟')) return;
+
+    const choice = confirm('هل تم الاتفاق مع صاحب العرض؟\nاضغط "موافق" إذا تم الاتفاق، "إلغاء" إذا لم يتم الاتفاق.');
+    if (choice) {
+        // تم الاتفاق - إغلاق الطلب والعرض
+        r.stage_id = 5;
+        if (!r.log) r.log = [];
+        r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ✅ تم الاتفاق وإتمام الصفقة (تم إغلاق الطلب والعرض)`);
+        
+        // إغلاق العرض المرتبط
+        if (r.matched_offer_id) {
+            const offersData = localStorage.getItem('masarOffersLocal');
+            let offers = [];
+            if (offersData) {
+                try {
+                    offers = JSON.parse(offersData);
+                } catch (e) {}
+            }
+            const matchedOffer = offers.find(off => off.id === r.matched_offer_id);
+            if (matchedOffer) {
+                matchedOffer.stage_id = 10;
+                matchedOffer.status = 'مباع';
+                if (!matchedOffer.log) matchedOffer.log = [];
+                matchedOffer.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ✅ تم إغلاق العرض المرتبط بالطلب ${r.id}`);
+                localStorage.setItem('masarOffersLocal', JSON.stringify(offers));
+                showToast(`✅ تم إغلاق العرض ${matchedOffer.id} تلقائياً`, 'success');
+            }
+        }
+        saveRequestsLocally();
+        showToast('🎉 تم إتمام الصفقة وإغلاق الطلب', 'success');
+        renderDetail(requestId);
         renderTable();
-
-        if (newStage === 2) toast("🔍 جاري المطابقة مع العروض...", "info");
-        else if (newStage === 3)
-          toast("✅ تم اختيار العرض، يمكنك بدء التنسيق", "success");
-        else if (newStage === 4)
-          toast("📅 تم بدء مرحلة جدولة المعاينة", "info");
-      }
-
-      function regressStage(id) {
-        const o = requests.find((x) => x.id === id);
-        if (!o) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-        if (o.stageId <= 1) {
-          toast("لا يمكن الرجوع عن المرحلة الأولى", "error");
-          return;
-        }
-        o.stageId--;
-        const stageName = getStageName(o.stageId);
-        if (!o.log) o.log = [];
-        o.log.push(
-          new Date().toISOString().slice(0, 16).replace("T", " ") +
-            ` 🔄 رجوع إلى "${stageName}"`,
-        );
-        saveRequests();
-        toast(`↩️ تم الرجوع إلى "${stageName}"`, "info");
-        renderDetail(id);
+    } else {
+        // لم يتم الاتفاق - فك الارتباط والعودة للمطابقة
+        r.stage_id = 2;
+        r.matched_offer_id = null;
+        r.appointmentDate = null;
+        r.appointmentTime = null;
+        if (!r.log) r.log = [];
+        r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 🔄 لم يتم الاتفاق، تم فك الارتباط بالعرض والعودة للمطابقة`);
+        saveRequestsLocally();
+        showToast('🔄 تم فك الارتباط والعودة للمطابقة', 'info');
+        renderDetail(requestId);
         renderTable();
-      }
+        setTimeout(() => {
+            showForceAction(requestId, 'match_offers', 'ابحث عن عرض آخر للعميل.');
+        }, 600);
+    }
+}
 
-      // ============================================================
-      //  EXECUTE FORCE ACTION
-      // ============================================================
-      function executeForceAction() {
-        const requestId = forceActionData.requestId;
-        if (!requestId) {
-          toast("لا يوجد طلب محدد", "error");
-          return;
-        }
-        const r = requests.find((x) => x.id === requestId);
-        if (!r) {
-          toast("الطلب غير موجود", "error");
-          return;
-        }
-        showForceAction(requestId, "match_offers", "عروض مطابقة للطلب:");
-      }
+// ============================================================
+// REMINDER ENGINE
+// ============================================================
+function scheduleReminder(requestId, days, message) {
+    const r = requests.find(x => x.id === requestId);
+    if (!r) return;
+    const reminderDate = new Date();
+    reminderDate.setDate(reminderDate.getDate() + days);
+    const reminderKey = 'reminder_req_' + requestId + '_' + days;
+    localStorage.setItem(reminderKey, JSON.stringify({
+        requestId: requestId,
+        date: reminderDate.toISOString().slice(0, 10),
+        message: message,
+        done: false
+    }));
+}
 
-      // ============================================================
-      //  EXPORT EXCEL
-      // ============================================================
-      function exportRequestsExcel() {
-        if (requests.length === 0) {
-          toast("لا توجد بيانات", "error");
-          return;
+function checkReminders() {
+    const today = new Date().toISOString().slice(0, 10);
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('reminder_req_')) {
+            try {
+                const data = JSON.parse(localStorage.getItem(key));
+                if (!data.done && data.date <= today) {
+                    showToast('🔔 ' + data.message, 'info');
+                    data.done = true;
+                    localStorage.setItem(key, JSON.stringify(data));
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('🔔 تذكير', { body: data.message });
+                    }
+                }
+            } catch (e) {}
         }
-        const headers = [
-          "رقم الطلب",
-          "العميل",
-          "نوع العقار",
-          "نوع الاتفاق",
-          "المدينة",
-          "المناطق",
-          "المساحة",
-          "الميزانية",
-          "المرحلة",
-          "الحالة",
-          "التاريخ",
-          "موعد المعاينة",
-          "ملاحظات",
-        ];
-        const rows = requests.map((o) => {
-          const st = STATUS_MAP[o.stageId] || { label: "غير معروف" };
-          const appointment = o.appointmentDate
-            ? fmtDate(o.appointmentDate) + " " + (o.appointmentTime || "")
-            : "-";
-          return [
-            o.id,
-            o.client,
-            o.type,
-            o.agreement,
-            o.city || "",
-            o.districts || "",
-            o.area,
-            o.budget || 0,
-            getStageName(o.stageId),
-            st.label,
-            o.date,
-            appointment,
-            o.notes || "",
-          ];
-        });
-        let csv = "\uFEFF" + headers.join(",") + "\n";
-        rows.forEach((r) => {
-          csv +=
-            r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",") + "\n";
-        });
-        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `تقرير_الطلبات_${new Date().toISOString().slice(0, 10)}.csv`;
-        link.click();
-        toast("✅ تم تصدير التقرير", "success");
-      }
+    }
+}
 
-      // ============================================================
-      //  KEYBOARD
-      // ============================================================
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          document
-            .querySelectorAll(".modal-overlay.active")
-            .forEach((el) => el.classList.remove("active"));
-          if (
-            !document.getElementById("detailView").classList.contains("hidden")
-          )
-            closeDetail();
+// ============================================================
+// SAVE REQUEST
+// ============================================================
+function saveRequest() {
+    const editId = document.getElementById('editRequestId').value;
+    const propertyType = document.getElementById('f_type').value;
+    const dealType = document.getElementById('f_agreement').value;
+    const area = parseFloat(document.getElementById('f_area').value);
+    const budget = parseFloat(document.getElementById('f_budget').value);
+    const city = document.getElementById('f_city').value.trim();
+    const districts = document.getElementById('f_districts').value.trim();
+    const clientName = document.getElementById('f_clientName').value.trim();
+    const phone = document.getElementById('f_phone').value.trim();
+    const notes = document.getElementById('f_notes').value.trim();
+
+    if (!propertyType || !dealType || !area || isNaN(area) || !budget || isNaN(budget) || !city || !districts || !clientName || !phone) {
+        showToast('يرجى ملء جميع الحقول المطلوبة (*)', 'error');
+        return;
+    }
+
+    const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+
+    if (editId) {
+        const r = requests.find(x => x.id === editId);
+        if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+        r.property_type = propertyType;
+        r.deal_type = dealType;
+        r.area = area;
+        r.budget = budget;
+        r.city = city;
+        r.districts = districts;
+        r.client_name = clientName;
+        r.contact_phone = phone;
+        r.notes = notes || 'لا توجد ملاحظات';
+        if (!r.log) r.log = [];
+        r.log.push(now + ' ✏️ تم تعديل الطلب');
+        saveRequestsLocally();
+        closeModal('requestModal');
+        showToast('✅ تم تحديث الطلب بنجاح', 'success');
+        renderTable();
+        if (!document.getElementById('detailView').classList.contains('hidden')) {
+            renderDetail(editId);
         }
-        if ((e.ctrlKey || e.metaKey) && e.key === "n") {
-          e.preventDefault();
-          openAddRequest();
+        return;
+    }
+
+    const id = generateRequestId();
+    const newRequest = {
+        id: id,
+        client_name: clientName,
+        property_type: propertyType,
+        deal_type: dealType,
+        area: area,
+        budget: budget,
+        city: city,
+        districts: districts,
+        contact_phone: phone,
+        notes: notes || 'لا توجد ملاحظات',
+        created_at: new Date().toISOString().slice(0, 10),
+        stage_id: 1,
+        matched_offer_id: null,
+        appointmentDate: null,
+        appointmentTime: null,
+        log: [now + ' 📝 تم تسجيل الطلب']
+    };
+
+    requests.push(newRequest);
+    saveRequestsLocally();
+    closeModal('requestModal');
+    showToast(`✅ تم إضافة الطلب ${id}`, 'success');
+    renderTable();
+
+    setTimeout(() => {
+        newRequest.stage_id = 2;
+        if (!newRequest.log) newRequest.log = [];
+        newRequest.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 🔍 جاري المطابقة مع العروض`);
+        saveRequestsLocally();
+        renderTable();
+        showForceAction(id, 'match_offers', 'عروض مطابقة للطلب:');
+    }, 600);
+}
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+function renderTable() {
+    const filtered = getFilteredRequests();
+    const total = filtered.length;
+    const totalPages = Math.ceil(total / PAGE_SIZE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = Math.min(start + PAGE_SIZE, total);
+    const pageItems = filtered.slice(start, end);
+
+    const tbody = document.getElementById('requestsTableBody');
+    if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-12 text-muted"><i class="fas fa-inbox text-3xl block mb-2"></i> لا توجد طلبات</td></tr>`;
+    } else {
+        tbody.innerHTML = pageItems.map(r => {
+            const st = getRequestStatusInfo(r.stage_id);
+            const stageName = getRequestStageName(r.stage_id);
+            const isPulse = [2, 4].includes(r.stage_id);
+            return `
+                <tr class="request-row" onclick="openDetail('${r.id}')">
+                    <td class="px-3 py-3 font-bold text-gold text-sm">${r.id}</td>
+                    <td class="px-3 py-3 text-sm text-ink">${r.client_name || '-'}</td>
+                    <td class="px-3 py-3 text-sm text-ink">${r.property_type}</td>
+                    <td class="px-3 py-3 text-sm text-ink">${r.deal_type || '-'}</td>
+                    <td class="px-3 py-3 text-sm max-w-[120px] truncate text-muted" title="${stageName}">${stageName}</td>
+                    <td class="px-3 py-3">
+                        <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55;">
+                            <span class="status-dot ${isPulse ? 'pulse' : ''}" style="background:${st.color};"></span>
+                            ${st.label}
+                        </span>
+                    </td>
+                    <td class="px-3 py-3 text-sm text-muted">${formatDate(r.created_at)}</td>
+                    <td class="px-3 py-3">
+                        <div class="flex items-center gap-1">
+                            <button class="text-muted hover:text-gold px-1" onclick="event.stopPropagation(); openDetail('${r.id}')" title="عرض التفاصيل"><i class="fas fa-eye"></i></button>
+                            <button class="text-muted hover:text-gold px-1" onclick="event.stopPropagation(); openEditRequest('${r.id}')" title="تعديل"><i class="fas fa-pen"></i></button>
+                            <button class="text-muted hover:text-danger px-1" onclick="event.stopPropagation(); deleteRequest('${r.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    const cardList = document.getElementById('requestsCardList');
+    if (pageItems.length === 0) {
+        cardList.innerHTML = `<div class="text-center py-12 text-muted"><i class="fas fa-inbox text-3xl block mb-2"></i> لا توجد طلبات</div>`;
+    } else {
+        cardList.innerHTML = pageItems.map(r => {
+            const st = getRequestStatusInfo(r.stage_id);
+            const stageName = getRequestStageName(r.stage_id);
+            const isPulse = [2, 4].includes(r.stage_id);
+            const appointmentInfo = r.stage_id === 4 && r.appointmentDate ? 
+                ` 📅 ${formatDate(r.appointmentDate)} ${r.appointmentTime || ''}` : '';
+            return `
+                <div class="request-card-item" onclick="openDetail('${r.id}')">
+                    <div class="top-row">
+                        <span class="req-id">${r.id}</span>
+                        <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55; font-size:0.7rem;">
+                            <span class="status-dot ${isPulse ? 'pulse' : ''}" style="background:${st.color};"></span>
+                            ${st.label}
+                        </span>
+                    </div>
+                    <div class="req-meta">
+                        <span><i class="far fa-user ml-1"></i> ${r.client_name || '-'}</span>
+                        <span><i class="fas fa-tag ml-1"></i> ${r.property_type}</span>
+                        <span><i class="fas fa-handshake ml-1"></i> ${r.deal_type || '-'}</span>
+                        <span><i class="fas fa-map-marker-alt ml-1"></i> ${r.city}</span>
+                        <span><i class="fas fa-route ml-1"></i> ${stageName}</span>
+                    </div>
+                    <div style="font-size:0.8rem;color:#8B96A8;margin-top:4px">
+                        <i class="far fa-calendar ml-1"></i> ${formatDate(r.created_at)}
+                        ${appointmentInfo ? `<span style="margin-right:12px;">${appointmentInfo}</span>` : ''}
+                        <span style="margin-right:12px"><i class="fas fa-phone ml-1"></i> ${r.contact_phone || '-'}</span>
+                    </div>
+                    <div class="req-actions">
+                        <button onclick="event.stopPropagation(); openDetail('${r.id}')"><i class="fas fa-eye"></i> عرض</button>
+                        <button onclick="event.stopPropagation(); openEditRequest('${r.id}')"><i class="fas fa-pen"></i> تعديل</button>
+                        <button class="danger" onclick="event.stopPropagation(); deleteRequest('${r.id}')"><i class="fas fa-trash"></i> حذف</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    document.getElementById('paginationInfo').textContent = `عرض ${total > 0 ? start + 1 : 0}-${end} من ${total}`;
+    const controls = document.getElementById('paginationControls');
+    let html = `<button class="px-3 py-1 border border-line rounded-full ${currentPage === 1 ? 'opacity-40 cursor-default text-muted' : 'text-ink hover:bg-surface2'}" onclick="goPage(${currentPage - 1})"><i class="fas fa-chevron-right"></i></button>`;
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="px-3 py-1 border border-line rounded-full ${i === currentPage ? 'bg-gold text-bg' : 'text-ink hover:bg-surface2'}" onclick="goPage(${i})">${i}</button>`;
+    }
+    html += `<button class="px-3 py-1 border border-line rounded-full ${currentPage === totalPages ? 'opacity-40 cursor-default text-muted' : 'text-ink hover:bg-surface2'}" onclick="goPage(${currentPage + 1})"><i class="fas fa-chevron-left"></i></button>`;
+    controls.innerHTML = html;
+}
+
+function getFilteredRequests() {
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    const type = document.getElementById('typeFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    const from = document.getElementById('dateFrom').value;
+    const to = document.getElementById('dateTo').value;
+
+    let filtered = requests.filter(r => {
+        if (type !== 'all' && r.property_type !== type) return false;
+        if (status !== 'all') {
+            const st = getRequestStatusInfo(r.stage_id);
+            if (st.statusType !== status) return false;
         }
-      });
+        if (search) {
+            const match = (r.id || '').includes(search) ||
+                (r.client_name || '').includes(search) ||
+                (r.property_type || '').includes(search) ||
+                (r.city || '').includes(search) ||
+                (r.contact_phone || '').includes(search);
+            if (!match) return false;
+        }
+        if (from && r.created_at && r.created_at.slice(0, 10) < from) return false;
+        if (to && r.created_at && r.created_at.slice(0, 10) > to) return false;
+        return true;
+    });
+    return filtered;
+}
 
-      // ============================================================
-      //  INIT
-      // ============================================================
-      loadRequests();
-      renderTable();
-      setInterval(() => {
-        checkReminders();
-        checkAppointments();
-      }, 30000);
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
+function goPage(p) {
+    const filtered = getFilteredRequests();
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+    if (p < 1 || p > totalPages) return;
+    currentPage = p;
+    renderTable();
+}
 
-      // ============================================================
-      //  GLOBALS
-      // ============================================================
-      window.openDetail = openDetail;
-      window.closeDetail = closeDetail;
-      window.openAddRequest = openAddRequest;
-      window.openEditRequest = openEditRequest;
-      window.closeModal = closeModal;
-      window.saveRequest = saveRequest;
-      window.deleteRequest = deleteRequest;
-      window.exportRequestsExcel = exportRequestsExcel;
-      window.filterTable = filterTable;
-      window.goPage = goPage;
-      window.showForceAction = showForceAction;
-      window.selectOffer = selectOffer;
-      window.shareOfferToClient = shareOfferToClient;
-      window.sendToExternalBroker = sendToExternalBroker;
-      window.executeForceAction = executeForceAction;
-      window.advanceStage = advanceStage;
-      window.regressStage = regressStage;
-      window.setAppointment = setAppointment;
-      window.editAppointment = editAppointment;
-      window.confirmAppointment = confirmAppointment;
-      window.toast = toast;
-      window.setMode = setMode;
-      window.parseSmartInput = parseSmartInput;
-    </script>
-  </body>
+function filterTable() {
+    currentPage = 1;
+    renderTable();
+}
+
+function updateStats() {
+    const total = requests.length;
+    document.getElementById('totalRequests').textContent = total;
+    const pending = requests.filter(r => r.stage_id === 2).length;
+    const completed = requests.filter(r => r.stage_id === 5).length;
+    document.getElementById('pendingRequests').textContent = pending;
+    document.getElementById('completedRequests').textContent = completed;
+    const land = requests.filter(r => r.property_type === 'أرض').length;
+    const other = requests.filter(r => r.property_type !== 'أرض').length;
+    document.getElementById('countLand').textContent = land;
+    document.getElementById('countOther').textContent = other;
+}
+
+function deleteRequest(id) {
+    if (!confirm(`هل أنت متأكد من حذف الطلب ${id}؟`)) return;
+    requests = requests.filter(r => r.id !== id);
+    saveRequestsLocally();
+    renderTable();
+    showToast(`تم حذف الطلب ${id}`, 'success');
+}
+
+// ============================================================
+// DETAIL VIEW
+// ============================================================
+function openDetail(id) {
+    const r = requests.find(x => x.id === id);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+    document.getElementById('listView').classList.add('hidden');
+    document.getElementById('detailView').classList.remove('hidden');
+    renderDetail(id);
+}
+
+function renderDetail(id) {
+    const r = requests.find(x => x.id === id);
+    if (!r) {
+        document.getElementById('detailContent').innerHTML = '<div class="text-center py-12 text-muted">الطلب غير موجود</div>';
+        return;
+    }
+
+    const st = getRequestStatusInfo(r.stage_id);
+    const stageName = getRequestStageName(r.stage_id);
+    const isComplete = r.stage_id === 5;
+    const isDelayed = r.stage_id === 2 || r.stage_id === 4;
+
+    // Timeline
+    let timelineHtml = REQUEST_STAGES.map((s, idx) => {
+        const isCompleted = idx < r.stage_id;
+        const isActive = idx === r.stage_id - 1;
+        let dotClass = 'pending';
+        let lineClass = 'pending';
+        if (isCompleted) {
+            dotClass = 'completed';
+            lineClass = 'completed';
+        } else if (isActive) {
+            dotClass = isDelayed ? 'delayed' : 'active';
+            lineClass = isDelayed ? 'delayed' : 'pending';
+        }
+        return `
+            <div class="timeline-item">
+                <div style="display:flex;flex-direction:column;align-items:center;padding-top:2px">
+                    <div class="timeline-dot ${dotClass}"></div>
+                    ${idx < REQUEST_STAGES.length - 1 ? `<div class="timeline-line ${lineClass}"></div>` : ''}
+                </div>
+                <div class="timeline-content">
+                    <div class="stage-name">${s.name}</div>
+                    ${isActive ? `<div class="stage-date">🔵 المرحلة الحالية</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Log
+    let logHtml = (r.log || []).map(l => `
+        <div class="log-entry">
+            <span class="log-time">${l.slice(0, 16)}</span>
+            <span>${l.slice(16)}</span>
+        </div>
+    `).join('') || '<div style="color:#8B96A8;">لا توجد سجلات</div>';
+
+    // Action buttons
+    let actionsHtml = '';
+    if (!isComplete) {
+        if (r.stage_id === 1 || r.stage_id === 2) {
+            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="showForceAction('${r.id}','match_offers','عروض مطابقة للطلب:')">🔍 المطابقة</button>`;
+        }
+        if (r.stage_id === 3) {
+            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="advanceStage('${r.id}', 4)">📅 جدولة المعاينة</button>`;
+        }
+        if (r.stage_id === 4) {
+            if (!r.appointmentDate) {
+                actionsHtml += `<button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>`;
+            } else {
+                actionsHtml += `<button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل الموعد</button>`;
+                actionsHtml += `<button class="btn btn-emerald btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>`;
+            }
+        }
+        if (r.stage_id === 2 || r.stage_id === 3) {
+            actionsHtml += `<button class="btn btn-amber btn-sm" onclick="sendToExternalBroker('${r.id}')">📨 إرسال لوسيط</button>`;
+        }
+        actionsHtml += `<button class="btn btn-outline btn-sm" onclick="openEditRequest('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>`;
+        if (r.stage_id > 1) {
+            actionsHtml += `<button class="btn btn-outline btn-sm" onclick="regressStage('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-undo"></i> رجوع</button>`;
+        }
+    } else {
+        actionsHtml = `<span class="text-emerald-400 font-bold text-lg">✅ الطلب مكتمل</span>`;
+    }
+
+    // Matched offer info
+    let matchedOfferHtml = '';
+    if (r.matched_offer_id) {
+        const offersData = localStorage.getItem('masarOffersLocal');
+        let offers = [];
+        if (offersData) {
+            try {
+                offers = JSON.parse(offersData);
+            } catch (e) {}
+        }
+        const matchedOffer = offers.find(o => o.id === r.matched_offer_id);
+        matchedOfferHtml = `
+            <div style="background:#0F1830;border:1px solid #1F7A5C;border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <span style="font-weight:700;color:#1F7A5C;">🔗 مرتبط بالعرض</span>
+                        <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${r.matched_offer_id}</div>
+                        ${matchedOffer ? `
+                        <div style="font-size:0.85rem;color:#8B96A8;">${matchedOffer.title || matchedOffer.property_type} · ${matchedOffer.city} - ${matchedOffer.district || ''}</div>
+                        <div style="font-size:0.85rem;color:#8B96A8;">${matchedOffer.area} م² · ${formatMoney(matchedOffer.price)}</div>
+                        ` : ''}
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="showToast('جاري فتح تفاصيل العرض...'); window.location.href='offers.html'" style="color:#EDEAE2;border-color:#22314C;">
+                        <i class="fas fa-external-link-alt ml-1"></i> عرض التفاصيل
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Appointment info
+    let appointmentHtml = '';
+    if (r.stage_id === 4 || r.stage_id === 3 || r.stage_id === 5) {
+        if (r.appointmentDate) {
+            appointmentHtml = `
+                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div>
+                            <span style="font-weight:700;color:#C9A24B;">📅 موعد المعاينة</span>
+                            <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${formatDate(r.appointmentDate)} ${r.appointmentTime || ''}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>
+                            <button class="btn btn-gold btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (r.stage_id === 4) {
+            appointmentHtml = `
+                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div>
+                            <span style="font-weight:700;color:#C9A24B;">⏳ لم يتم تحديد موعد المعاينة بعد</span>
+                        </div>
+                        <button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    const html = `
+        <div class="detail-section">
+            <div class="flex flex-wrap justify-between items-start gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-gold">${r.id} — ${r.property_type}</h2>
+                    <div class="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted">
+                        <span><i class="far fa-user ml-1"></i> ${r.client_name || '-'}</span>
+                        <span><i class="far fa-phone ml-1"></i> ${r.contact_phone || '-'}</span>
+                        <span><i class="far fa-calendar ml-1"></i> ${formatDate(r.created_at)}</span>
+                        <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55;">
+                            <span class="status-dot ${isDelayed ? 'pulse' : ''}" style="background:${st.color};"></span>
+                            ${st.label}
+                        </span>
+                        <span class="text-xs bg-surface3 px-2 py-1 rounded-full">👤 شخصي</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">${actionsHtml}</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-info-circle text-gold"></i> تفاصيل الطلب</div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-sm text-muted">نوع العقار</span><div class="font-bold text-ink">${r.property_type}</div></div>
+                    <div><span class="text-sm text-muted">نوع الاتفاق</span><div class="font-bold text-ink">${r.deal_type || '-'}</div></div>
+                    <div><span class="text-sm text-muted">المساحة</span><div class="font-bold text-ink">${r.area || '-'} م²</div></div>
+                    <div><span class="text-sm text-muted">الميزانية</span><div class="font-bold text-gold">${formatMoney(r.budget)}</div></div>
+                    <div><span class="text-sm text-muted">المدينة</span><div class="font-bold text-ink">${r.city || '-'}</div></div>
+                    <div class="col-span-2"><span class="text-sm text-muted">المناطق المطلوبة</span><div class="font-bold text-ink">${r.districts || '-'}</div></div>
+                    <div class="col-span-2"><span class="text-sm text-muted">ملاحظات</span><div class="text-sm text-ink">${r.notes || '-'}</div></div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-user-tie text-gold"></i> معلومات العميل</div>
+                <div class="space-y-2">
+                    <div><span class="text-sm text-muted">الاسم</span><div class="font-bold text-ink">${r.client_name || '-'}</div></div>
+                    <div><span class="text-sm text-muted">رقم الجوال</span><div class="text-ink">${r.contact_phone || '-'}</div></div>
+                </div>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(237,234,226,0.08);">
+                    <div class="section-title" style="font-size:15px;margin-bottom:8px;"><i class="fas fa-handshake text-gold"></i> العرض المرتبط</div>
+                    ${matchedOfferHtml || '<div style="color:#8B96A8;">لا يوجد عرض مرتبط بعد</div>'}
+                    ${appointmentHtml}
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="section-title"><i class="fas fa-route text-gold"></i> مسار الطلب</div>
+            <div class="timeline">${timelineHtml}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="section-title"><i class="fas fa-history text-gold"></i> سجل النشاط</div>
+            <div class="max-h-60 overflow-y-auto">${logHtml}</div>
+        </div>
+    `;
+
+    document.getElementById('detailContent').innerHTML = html;
+}
+
+function closeDetail() {
+    document.getElementById('detailView').classList.add('hidden');
+    document.getElementById('listView').classList.remove('hidden');
+    renderTable();
+}
+
+// ============================================================
+// STAGE ACTIONS
+// ============================================================
+function advanceStage(id, newStage) {
+    const r = requests.find(x => x.id === id);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+
+    if (newStage === 4 && !r.matched_offer_id) {
+        showToast('⚠️ لا يمكن بدء جدولة المعاينة بدون اختيار عرض مطابق أولاً', 'error');
+        return;
+    }
+
+    r.stage_id = newStage;
+    const stageName = getRequestStageName(newStage);
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ➡️ ${stageName}`);
+    saveRequestsLocally();
+    showToast(`✅ تم الانتقال إلى "${stageName}"`, 'success');
+    renderDetail(id);
+    renderTable();
+
+    if (newStage === 2) showToast('🔍 جاري المطابقة مع العروض...', 'info');
+    else if (newStage === 3) showToast('✅ تم اختيار العرض، يمكنك بدء التنسيق', 'success');
+    else if (newStage === 4) showToast('📅 تم بدء مرحلة جدولة المعاينة', 'info');
+}
+
+function regressStage(id) {
+    const r = requests.find(x => x.id === id);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+    if (r.stage_id <= 1) { showToast('لا يمكن الرجوع عن المرحلة الأولى', 'error'); return; }
+    r.stage_id--;
+    const stageName = getRequestStageName(r.stage_id);
+    if (!r.log) r.log = [];
+    r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} 🔄 رجوع إلى "${stageName}"`);
+    saveRequestsLocally();
+    showToast(`↩️ تم الرجوع إلى "${stageName}"`, 'info');
+    renderDetail(id);
+    renderTable();
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openAddRequest() {
+    currentEditId = null;
+    document.getElementById('modalTitle').textContent = 'طلب جديد';
+    document.getElementById('editRequestId').value = '';
+    document.getElementById('requestForm').reset();
+    document.getElementById('f_type').value = '';
+    document.getElementById('f_agreement').value = '';
+    document.getElementById('smartInput').value = '';
+    document.getElementById('smartFeedback').classList.remove('show');
+    setMode('normal');
+    document.getElementById('requestModal').classList.add('active');
+}
+
+function openEditRequest(id) {
+    const r = requests.find(x => x.id === id);
+    if (!r) { showToast('الطلب غير موجود', 'error'); return; }
+    currentEditId = id;
+    document.getElementById('modalTitle').textContent = 'تعديل الطلب';
+    document.getElementById('editRequestId').value = id;
+    document.getElementById('f_type').value = r.property_type || '';
+    document.getElementById('f_agreement').value = r.deal_type || '';
+    document.getElementById('f_area').value = r.area || '';
+    document.getElementById('f_budget').value = r.budget || '';
+    document.getElementById('f_city').value = r.city || '';
+    document.getElementById('f_districts').value = r.districts || '';
+    document.getElementById('f_clientName').value = r.client_name || '';
+    document.getElementById('f_phone').value = r.contact_phone || '';
+    document.getElementById('f_notes').value = r.notes || '';
+    document.getElementById('smartInput').value = '';
+    document.getElementById('smartFeedback').classList.remove('show');
+    setMode('normal');
+    document.getElementById('requestModal').classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportRequestsExcel() {
+    if (requests.length === 0) {
+        showToast('لا توجد بيانات', 'error');
+        return;
+    }
+    const headers = ['رقم الطلب', 'العميل', 'نوع العقار', 'نوع الاتفاق', 'المدينة', 'المناطق', 'المساحة', 'الميزانية', 'المرحلة', 'الحالة', 'التاريخ', 'موعد المعاينة', 'ملاحظات'];
+    const rows = requests.map(r => {
+        const st = getRequestStatusInfo(r.stage_id);
+        const appointment = r.appointmentDate ? formatDate(r.appointmentDate) + ' ' + (r.appointmentTime || '') : '-';
+        return [r.id, r.client_name, r.property_type, r.deal_type, r.city || '', r.districts || '', r.area, r.budget || 0, getRequestStageName(r.stage_id), st.label, r.created_at, appointment, r.notes || ''];
+    });
+    let csv = '\uFEFF' + headers.join(',') + '\n';
+    rows.forEach(r => {
+        csv += r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',') + '\n';
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `تقرير_الطلبات_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    showToast('✅ تم تصدير التقرير', 'success');
+}
+
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
+        if (!document.getElementById('detailView').classList.contains('hidden')) closeDetail();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        openAddRequest();
+    }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async function() {
+    const isAuth = await checkAuth();
+    if (isAuth) {
+        loadRequests();
+        setInterval(checkReminders, 30000);
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    }
+});
+
+// ============================================================
+// EXPOSE GLOBALS
+// ============================================================
+window.openAddRequest = openAddRequest;
+window.openEditRequest = openEditRequest;
+window.closeModal = closeModal;
+window.saveRequest = saveRequest;
+window.deleteRequest = deleteRequest;
+window.openDetail = openDetail;
+window.closeDetail = closeDetail;
+window.advanceStage = advanceStage;
+window.regressStage = regressStage;
+window.filterTable = filterTable;
+window.goPage = goPage;
+window.exportRequestsExcel = exportRequestsExcel;
+window.showToast = showToast;
+window.checkAuth = checkAuth;
+window.setMode = setMode;
+window.parseSmartInput = parseSmartInput;
+window.showForceAction = showForceAction;
+window.selectOffer = selectOffer;
+window.shareOfferToClient = shareOfferToClient;
+window.sendToExternalBroker = sendToExternalBroker;
+window.setAppointment = setAppointment;
+window.editAppointment = editAppointment;
+window.confirmAppointment = confirmAppointment;
+window.loadRequests = loadRequests;
+</script>
+</body>
 </html>

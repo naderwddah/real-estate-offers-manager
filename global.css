@@ -1,5 +1,5 @@
 /* ============================================================
-   GLOBAL STYLES
+   GLOBAL STYLES - واجهة مظلمة مع جميع التنسيقات
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 
@@ -11,22 +11,147 @@
 }
 
 body {
-    background: #f0f4fa;
+    background: #0B121E;
     min-height: 100vh;
+    color: #EDEAE2;
     display: flex;
-    flex-direction: row; /* ترتيب أفقي افتراضي */
+    flex-direction: row;
 }
 
 /* ============================================================
-   SIDEBAR (Drawer)
+   COLORS - الواجهة المظلمة
    ============================================================ */
+.bg-surface { background: #121B2C; }
+.bg-surface2 { background: #1A2740; }
+.bg-surface3 { background: #22314C; }
+.bg-bg { background: #0B121E; }
+.text-muted { color: #8B96A8; }
+.text-ink { color: #EDEAE2; }
+.border-line { border-color: rgba(237, 234, 226, 0.08); }
+.bg-gold { background: #C9A24B; }
+.text-gold { color: #C9A24B; }
+.bg-emerald { background: #1F7A5C; }
+.text-emerald { color: #1F7A5C; }
+.bg-terracotta { background: #C1543A; }
+.text-terracotta { color: #C1543A; }
+.bg-danger { background: #E05A4A; }
+.text-danger { color: #E05A4A; }
+.bg-amber { background: #C9A24B; }
+.text-amber { color: #C9A24B; }
+.bg-emeraldSoft { background: #123D30; }
+.bg-terracottaSoft { background: #3A1E19; }
+.bg-dangerSoft { background: #3A1A14; }
 
-/* زر الهامبورجر (يظهر فقط في الشاشات الصغيرة) */
+/* ============================================================
+   LOGIN OVERLAY
+   ============================================================ */
+#loginOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 8, 14, 0.85);
+    display: none !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+#loginOverlay.show {
+    display: flex !important;
+}
+
+.login-box {
+    background: #121B2C;
+    border: 1px solid rgba(237, 234, 226, 0.08);
+    padding: 40px 30px;
+    border-radius: 24px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.3s ease;
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.login-box h2 {
+    color: #EDEAE2;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 24px;
+}
+.login-box .field {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.login-box .field label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #8B96A8;
+}
+.login-box .field input {
+    border: 2px solid #22314C;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    transition: border 0.2s;
+    background: #0B121E;
+    color: #EDEAE2;
+    width: 100%;
+    font-family: "Tajawal", sans-serif;
+}
+.login-box .field input:focus {
+    outline: none;
+    border-color: #C9A24B;
+}
+.login-box .btn {
+    width: 100%;
+    justify-content: center;
+}
+#loginError {
+    color: #E05A4A;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 8px;
+    display: none;
+}
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.main-content {
+    flex: 1;
+    padding: 24px 32px;
+    background: #0B121E;
+    min-height: 100vh;
+    display: none !important;
+}
+.main-content.visible {
+    display: block !important;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
 .hamburger-btn {
     display: none;
-    background: #1e3a5f;
-    color: #fff;
-    border: none;
+    background: #1A2740;
+    color: #EDEAE2;
+    border: 1px solid rgba(237, 234, 226, 0.08);
     font-size: 1.6rem;
     padding: 10px 16px;
     border-radius: 12px;
@@ -35,20 +160,19 @@ body {
     top: 16px;
     right: 16px;
     z-index: 1100;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     transition: 0.2s;
 }
 .hamburger-btn:hover {
-    background: #0f2a47;
+    background: #22314C;
     transform: scale(1.02);
 }
 
-/* حاوية السايد بار (الدراور) */
 #sidebar-container {
     width: 270px;
     min-height: 100vh;
-    background: #1e3a5f;
-    color: #fff;
+    background: #121B2C;
+    color: #EDEAE2;
     flex-shrink: 0;
     padding: 24px 0;
     display: flex;
@@ -59,28 +183,27 @@ body {
     overflow-y: auto;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
+    border-left: 1px solid rgba(237, 234, 226, 0.08);
 }
 
-/* الشعار */
 .sidebar-brand {
     padding: 0 24px 28px 24px;
     font-size: 24px;
     font-weight: 800;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(237, 234, 226, 0.08);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 .sidebar-brand i {
-    color: #fbbf24;
+    color: #C9A24B;
     font-size: 1.8rem;
 }
 .sidebar-brand span {
-    color: #fff;
+    color: #EDEAE2;
 }
 
-/* القائمة */
 .sidebar-menu {
     list-style: none;
     padding: 0 14px;
@@ -94,7 +217,7 @@ body {
     align-items: center;
     gap: 14px;
     padding: 12px 18px;
-    color: #cbd5e1;
+    color: #8B96A8;
     text-decoration: none;
     border-radius: 12px;
     font-weight: 500;
@@ -107,24 +230,23 @@ body {
     font-size: 1.2rem;
 }
 .sidebar-menu li a:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    color: #EDEAE2;
 }
 .sidebar-menu li a.active {
-    background: #fbbf24;
-    color: #1e3a5f;
+    background: #C9A24B;
+    color: #0B121E;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    box-shadow: 0 4px 12px rgba(201, 162, 75, 0.3);
 }
 .sidebar-menu li a.active i {
-    color: #1e3a5f;
+    color: #0B121E;
 }
 
-/* الطبقة الخلفية (Overlay) */
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 999;
     display: none;
     opacity: 0;
@@ -138,130 +260,74 @@ body {
 }
 
 /* ============================================================
-   MAIN CONTENT
-   ============================================================ */
-.main-content {
-    flex: 1;
-    padding: 24px 32px;
-    background: #f0f4fa;
-    min-height: 100vh;
-    transition: margin-right 0.3s ease;
-}
-
-/* ============================================================
-   TOAST (منقول كما هو)
+   TOAST
    ============================================================ */
 .toast {
     position: fixed;
     bottom: 30px;
     left: 30px;
-    background: #1f2937;
-    color: #fff;
+    background: #1A2740;
+    color: #EDEAE2;
     padding: 14px 28px;
     border-radius: 14px;
     font-weight: 500;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
     z-index: 9999;
     display: none;
     align-items: center;
     gap: 12px;
     animation: slideUp 0.3s ease;
     max-width: 90%;
+    border: 1px solid rgba(237, 234, 226, 0.08);
 }
 .toast.show {
     display: flex;
 }
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================================
-   RESPONSIVE BREAKPOINTS
+   RESPONSIVE
    ============================================================ */
-
-/* شاشات متوسطة (أقل من 1024px) – تقليل عرض السايد بار */
 @media (max-width: 1024px) {
-    #sidebar-container {
-        width: 230px;
-    }
-    .sidebar-brand {
-        font-size: 20px;
-        padding: 0 18px 22px 18px;
-    }
-    .sidebar-menu li a {
-        padding: 10px 14px;
-        font-size: 0.9rem;
-    }
+    #sidebar-container { width: 230px; }
+    .sidebar-brand { font-size: 20px; padding: 0 18px 22px 18px; }
+    .sidebar-menu li a { padding: 10px 14px; font-size: 0.9rem; }
 }
 
-/* شاشات صغيرة (أقل من 768px) – تفعيل وضع الدراور */
 @media (max-width: 768px) {
-    body {
-        flex-direction: column;
-    }
-
-    .hamburger-btn {
-        display: block;
-    }
-
+    body { flex-direction: column; }
+    .hamburger-btn { display: block; }
     #sidebar-container {
         position: fixed;
         top: 0;
-        right: -280px; /* مخفي خارج الشاشة */
+        right: -280px;
         width: 280px;
         height: 100vh;
         min-height: 100vh;
         border-radius: 0;
-        box-shadow: none;
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 20px 0;
         z-index: 1001;
     }
     #sidebar-container.open {
         transform: translateX(-280px);
-        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
+        box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
     }
-
     .main-content {
         padding: 16px 14px;
         margin-right: 0;
-        padding-top: 70px; /* مساحة لزر الهامبورجر */
+        padding-top: 70px;
     }
-
-    .sidebar-brand {
-        font-size: 20px;
-        padding: 0 18px 20px 18px;
-    }
-    .sidebar-menu li a {
-        padding: 10px 16px;
-        font-size: 0.9rem;
-    }
+    .sidebar-brand { font-size: 20px; padding: 0 18px 20px 18px; }
+    .sidebar-menu li a { padding: 10px 16px; font-size: 0.9rem; }
 }
 
-/* شاشات صغيرة جداً (أقل من 480px) */
 @media (max-width: 480px) {
-    #sidebar-container {
-        width: 260px;
-        right: -260px;
-    }
-    #sidebar-container.open {
-        transform: translateX(-260px);
-    }
-    .hamburger-btn {
-        top: 12px;
-        right: 12px;
-        font-size: 1.4rem;
-        padding: 8px 14px;
-    }
-    .main-content {
-        padding: 12px 10px;
-        padding-top: 65px;
-    }
+    #sidebar-container { width: 260px; right: -260px; }
+    #sidebar-container.open { transform: translateX(-260px); }
+    .hamburger-btn { top: 12px; right: 12px; font-size: 1.4rem; padding: 8px 14px; }
+    .main-content { padding: 12px 10px; padding-top: 65px; }
 }
