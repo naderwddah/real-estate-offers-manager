@@ -10,152 +10,136 @@
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
         * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
-        
-        /* ===== تنسيقات الواجهة المظلمة ===== */
-        .bg-surface { background: #121B2C; }
-        .bg-surface2 { background: #1A2740; }
-        .bg-surface3 { background: #22314C; }
-        .bg-bg { background: #0B121E; }
-        .text-muted { color: #8B96A8; }
-        .text-ink { color: #EDEAE2; }
-        .border-line { border-color: rgba(237, 234, 226, 0.08); }
-        .bg-gold { background: #C9A24B; }
-        .text-gold { color: #C9A24B; }
-        .bg-emerald { background: #1F7A5C; }
-        .text-emerald { color: #1F7A5C; }
-        .bg-terracotta { background: #C1543A; }
-        .text-terracotta { color: #C1543A; }
-        .bg-danger { background: #E05A4A; }
-        .text-danger { color: #E05A4A; }
-        
-        .stat-card { transition: all 0.25s ease; border: 1px solid rgba(237, 234, 226, 0.08); cursor: pointer; background: #121B2C; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
-        
+        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
+
+        .bg-surface { background: var(--bg-secondary); }
+        .bg-surface2 { background: var(--bg-surface); }
+        .bg-surface3 { background: var(--bg-surface2); }
+        .bg-bg { background: var(--bg-primary); }
+        .text-muted { color: var(--text-secondary); }
+        .text-ink { color: var(--text-primary); }
+        .border-line { border-color: var(--border-color); }
+        .bg-gold { background: var(--gold); }
+        .text-gold { color: var(--gold); }
+        .bg-emerald { background: var(--emerald); }
+        .text-emerald { color: var(--emerald); }
+        .bg-danger { background: var(--danger); }
+        .text-danger { color: var(--danger); }
+        .bg-emeraldSoft { background: var(--emerald-soft); }
+        .bg-terracottaSoft { background: var(--terracotta-soft); }
+
+        .stat-card { transition: all 0.25s ease; border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px var(--shadow-color); }
+
         .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .btn-gold { background: #C9A24B; color: #0B121E; }
-        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
-        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
-        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-gold { background: var(--gold); color: #0B121E; }
+        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
+        .btn-outline:hover { background: var(--bg-surface); color: var(--text-primary); }
         .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
-        .btn-emerald { background: #1F7A5C; color: #fff; }
-        .btn-emerald:hover { background: #123D30; }
-        .btn-amber { background: #C9A24B; color: #0B121E; }
-        .btn-amber:hover { background: #8A7433; }
-        
+        .btn-emerald { background: var(--emerald); color: #fff; }
+        .btn-emerald:hover { background: var(--emerald-soft); }
+        .btn-amber { background: var(--gold); color: #0B121E; }
+        .btn-amber:hover { background: var(--gold-soft); }
+
         .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
         .status-dot.pulse { animation: pulse-dot 1.8s ease-in-out infinite; }
         @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
-        
+
         .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 24px; max-width: 860px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; position: relative; }
+        .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 24px; max-width: 860px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px var(--shadow-color); animation: modalFadeIn 0.25s ease; position: relative; }
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: #8B96A8; cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
-        .modal-close:hover { color: #EDEAE2; }
-        .modal-title { font-size: 24px; font-weight: 800; color: #EDEAE2; margin-bottom: 20px; }
-        
-        .switch-group { display: flex; gap: 8px; margin-bottom: 20px; background: #0F1830; border-radius: 40px; padding: 4px; width: fit-content; flex-wrap: wrap; border: 1px solid rgba(237, 234, 226, 0.08); }
-        .switch-group button { padding: 8px 24px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
-        .switch-group button.active { background: #C9A24B; color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
-        .switch-group button:hover:not(.active) { background: #1A2740; }
-        
-        .smart-area { background: #0F1830; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 2px dashed #22314C; }
-        .smart-area textarea { width: 100%; border: 1px solid #22314C; border-radius: 12px; padding: 12px; font-size: 0.9rem; min-height: 180px; resize: vertical; font-family: "Tajawal", sans-serif; background: #0B121E; color: #EDEAE2; transition: border 0.2s; }
-        .smart-area textarea:focus { outline: none; border-color: #C9A24B; }
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-title { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; }
+
+        .switch-group { display: flex; gap: 8px; margin-bottom: 20px; background: var(--bg-primary); border-radius: 40px; padding: 4px; width: fit-content; flex-wrap: wrap; border: 1px solid var(--border-color); }
+        .switch-group button { padding: 8px 24px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); }
+        .switch-group button.active { background: var(--gold); color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
+        .switch-group button:hover:not(.active) { background: var(--bg-surface); }
+
+        .smart-area { background: var(--bg-primary); border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 2px dashed var(--border-light); }
+        .smart-area textarea { width: 100%; border: 1px solid var(--border-light); border-radius: 12px; padding: 12px; font-size: 0.9rem; min-height: 180px; resize: vertical; font-family: "Tajawal", sans-serif; background: var(--input-bg); color: var(--text-primary); transition: border 0.2s; }
+        .smart-area textarea:focus { outline: none; border-color: var(--gold); }
         .smart-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-        .smart-feedback { margin-top: 10px; font-size: 0.9rem; padding: 10px 14px; background: #0B121E; border-radius: 10px; border: 1px solid #22314C; display: none; }
+        .smart-feedback { margin-top: 10px; font-size: 0.9rem; padding: 10px 14px; background: var(--input-bg); border-radius: 10px; border: 1px solid var(--border-light); display: none; }
         .smart-feedback.show { display: block; }
-        .smart-feedback .error { color: #E05A4A; }
-        .smart-feedback .success { color: #1F7A5C; }
-        
+        .smart-feedback .error { color: var(--danger); }
+        .smart-feedback .success { color: var(--emerald); }
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .field { display: flex; flex-direction: column; gap: 4px; }
-        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
-        .field input::placeholder, .field textarea::placeholder { color: #5A6A7A; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
         .field.full-width { grid-column: 1 / -1; }
-        
-        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
         .toast.show { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .request-row { transition: background 0.15s ease; cursor: pointer; border-bottom: 1px solid rgba(237, 234, 226, 0.05); }
-        .request-row:hover { background: rgba(201, 162, 75, 0.05); }
-        
-        .detail-section { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 20px 24px; margin-bottom: 20px; }
-        .detail-section .section-title { font-size: 18px; font-weight: 800; color: #EDEAE2; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-        
+
+        .request-row { transition: background 0.15s ease; cursor: pointer; border-bottom: 1px solid var(--border-color); }
+        .request-row:hover { background: var(--hover-bg); }
+
+        .detail-section { background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px 24px; margin-bottom: 20px; }
+        .detail-section .section-title { font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+
         .timeline { display: flex; flex-direction: column; gap: 0; padding-right: 4px; }
         .timeline-item { display: flex; gap: 16px; padding: 6px 0; }
-        .timeline-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 2px solid #0B121E; margin-top: 2px; position: relative; z-index: 2; }
-        .timeline-dot.completed { background: #C9A24B; }
-        .timeline-dot.active { background: #C9A24B; box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.3); }
-        .timeline-dot.pending { background: #22314C; }
+        .timeline-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--bg-primary); margin-top: 2px; position: relative; z-index: 2; }
+        .timeline-dot.completed { background: var(--gold); }
+        .timeline-dot.active { background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.3); }
+        .timeline-dot.pending { background: var(--border-light); }
         .timeline-line { width: 3px; flex: 1; min-height: 24px; margin: 0 7px; border-radius: 4px; }
-        .timeline-line.completed { background: linear-gradient(180deg, #C9A24B 0%, #C9A24B 100%); }
-        .timeline-line.pending { background: #22314C; }
+        .timeline-line.completed { background: linear-gradient(180deg, var(--gold) 0%, var(--gold) 100%); }
+        .timeline-line.pending { background: var(--border-light); }
         .timeline-content { flex: 1; padding-bottom: 4px; }
-        .timeline-content .stage-name { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
-        .timeline-content .stage-date { font-size: 0.75rem; color: #8B96A8; margin-top: 2px; }
-        
-        .log-entry { padding: 6px 0; border-bottom: 1px solid rgba(237, 234, 226, 0.05); font-size: 0.85rem; color: #8B96A8; display: flex; gap: 8px; flex-wrap: wrap; }
-        .log-entry .log-time { color: #5A6A7A; font-size: 0.75rem; white-space: nowrap; min-width: 90px; }
-        
+        .timeline-content .stage-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+        .timeline-content .stage-date { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
+        .log-entry { padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; }
+        .log-entry .log-time { color: var(--text-muted); font-size: 0.75rem; white-space: nowrap; min-width: 90px; }
+
         .hidden { display: none !important; }
-        
+
         .request-card-list { display: flex; flex-direction: column; gap: 12px; }
-        .request-card-item { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 16px; transition: all 0.2s; cursor: pointer; }
-        .request-card-item:hover { border-color: #C9A24B55; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); }
+        .request-card-item { background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border-color); padding: 16px; transition: all 0.2s; cursor: pointer; }
+        .request-card-item:hover { border-color: var(--gold); box-shadow: 0 4px 12px var(--shadow-color); }
         .request-card-item .top-row { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-        .request-card-item .req-id { font-weight: 800; font-size: 1.1rem; color: #EDEAE2; }
-        .request-card-item .req-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: #8B96A8; margin-top: 6px; }
+        .request-card-item .req-id { font-weight: 800; font-size: 1.1rem; color: var(--text-primary); }
+        .request-card-item .req-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px; }
         .request-card-item .req-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-        .request-card-item .req-actions button { padding: 4px 12px; border-radius: 20px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: #1A2740; color: #8B96A8; }
-        .request-card-item .req-actions button:hover { background: #C9A24B; color: #0B121E; }
-        .request-card-item .req-actions button.danger:hover { background: #C1543A; color: #fff; }
-        
+        .request-card-item .req-actions button { padding: 4px 12px; border-radius: 20px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: var(--bg-surface); color: var(--text-secondary); }
+        .request-card-item .req-actions button:hover { background: var(--gold); color: #0B121E; }
+        .request-card-item .req-actions button.danger:hover { background: var(--danger); color: #fff; }
+
         .chip { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
-        .bg-emeraldSoft { background: #123D30; }
-        .bg-terracottaSoft { background: #3A1E19; }
-        
-        .match-card { background: #0F1830; border: 1px solid #22314C; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
-        .match-card:hover { border-color: #C9A24B; background: #1A2740; }
+
+        .match-card { background: var(--bg-primary); border: 1px solid var(--border-light); border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
+        .match-card:hover { border-color: var(--gold); background: var(--bg-surface); }
         .match-score { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
-        .match-score.high { background: #1F7A5C; color: #fff; }
-        .match-score.medium { background: #C9A24B; color: #0B121E; }
-        .match-score.low { background: #22314C; color: #8B96A8; }
-        
+        .match-score.high { background: var(--emerald); color: #fff; }
+        .match-score.medium { background: var(--gold); color: #0B121E; }
+        .match-score.low { background: var(--border-light); color: var(--text-secondary); }
+
         @media (min-width: 769px) { .request-card-list { display: none; } .request-table-wrap { display: block; } }
         @media (max-width: 768px) { .request-table-wrap { display: none; } .request-card-list { display: flex; } .grid-2 { grid-template-columns: 1fr; } .modal-box { padding: 16px 18px; margin: 6px; border-radius: 16px; } .switch-group button { padding: 6px 14px; font-size: 0.78rem; } }
-        
-        /* ===== شاشة الدخول ===== */
-        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
-        #loginOverlay.show { display: flex !important; }
-        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
-        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
-        .login-box .field { margin-bottom: 16px; }
-        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
-        .login-box .btn { width: 100%; justify-content: center; }
-        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
-        
+
         .loading-spinner { display: flex; justify-content: center; align-items: center; padding: 40px; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #22314C; border-top-color: #C9A24B; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border-light); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
+
         .main-content { display: none !important; }
         .main-content.visible { display: block !important; }
-        
-        .force-action-modal { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 16px; padding: 24px; max-width: 600px; width: 100%; margin: 20px auto; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; }
-        .force-action-modal h3 { font-size: 1.2rem; font-weight: 800; color: #EDEAE2; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-        .force-action-modal p { color: #8B96A8; font-size: 0.95rem; margin-bottom: 16px; }
-        .force-action-modal .btn-group { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
-        .force-action-modal .field label { color: #8B96A8; }
-        .force-action-modal .field input, .force-action-modal .field textarea { background: #0B121E; }
+
+        .force-action-modal { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; max-width: 600px; width: 100%; margin: 20px auto; box-shadow: 0 20px 50px var(--shadow-color); animation: modalFadeIn 0.25s ease; }
+
+        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+        #loginOverlay.show { display: flex !important; }
+        .login-box { background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px var(--shadow-color); }
     </style>
 </head>
 <body>
@@ -165,14 +149,8 @@
     <div class="login-box">
         <h2><i class="fas fa-lock ml-2"></i>تسجيل الدخول</h2>
         <form id="loginForm">
-            <div class="field">
-                <label>البريد الإلكتروني</label>
-                <input type="email" id="loginEmail" value="admin@masar.sa" required />
-            </div>
-            <div class="field">
-                <label>كلمة المرور</label>
-                <input type="password" id="loginPassword" value="Admin.123" required />
-            </div>
+            <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" value="admin@masar.sa" required /></div>
+            <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" value="Admin.123" required /></div>
             <div id="loginError">خطأ في بيانات الدخول</div>
             <button type="submit" class="btn btn-gold mt-2"><i class="fas fa-sign-in-alt"></i> دخول</button>
         </form>
@@ -299,7 +277,7 @@
     <!-- ===== FORCE ACTION MODAL ===== -->
     <div class="modal-overlay" id="forceActionModal">
         <div class="force-action-modal">
-            <button class="modal-close" onclick="closeModal('forceActionModal')" style="position:relative;float:left;background:none;border:none;font-size:28px;color:#8B96A8;cursor:pointer;">✕</button>
+            <button class="modal-close" onclick="closeModal('forceActionModal')" style="position:relative;float:left;background:none;border:none;font-size:28px;color:var(--text-secondary);cursor:pointer;">✕</button>
             <h3 id="forceActionTitle">🔍 مطابقة العروض</h3>
             <p id="forceActionMessage">يتم البحث عن عروض مطابقة لمواصفات الطلب...</p>
             <div id="forceActionBody"></div>
@@ -322,7 +300,7 @@
             </div>
 
             <div id="smartArea" class="smart-area hidden">
-                <label style="font-weight:700;display:block;margin-bottom:8px;color:#8B96A8;">الصق رسالة العميل مع الأجوبة بين [ ]</label>
+                <label style="font-weight:700;display:block;margin-bottom:8px;color:var(--text-secondary);">الصق رسالة العميل مع الأجوبة بين [ ]</label>
                 <textarea id="smartInput" placeholder="مثال:
         نوع العقار: [أرض]
         نوع الاتفاق: [بيع]
@@ -401,13 +379,57 @@ const REQUEST_STATUS_MAP = {
 };
 
 // ============================================================
-// AUTH - محسنة
+// HELPERS
+// ============================================================
+function formatDate(d) {
+    if (!d) return '-';
+    try {
+        const date = typeof d === 'string' ? new Date(d) : new Date(d);
+        if (isNaN(date.getTime())) return d;
+        return date.toLocaleDateString('ar-SA', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return d;
+    }
+}
+
+function formatMoney(n) {
+    if (!n && n !== 0) return '—';
+    return Number(n).toLocaleString('en-US') + ' ريال';
+}
+
+function getRequestStatusInfo(id) {
+    return REQUEST_STATUS_MAP[id] || { label: 'غير معروف', color: '#9ca3af', statusType: 'other' };
+}
+
+function generateRequestId() {
+    const nums = requests.filter((r) => {
+        const id = r.display_id || r.id || '';
+        return String(id).startsWith('ط-');
+    }).length;
+    return 'ط-' + String(nums + 1).padStart(3, '0');
+}
+
+function saveRequestsLocally() {
+    localStorage.setItem('masarRequestsLocal', JSON.stringify(requests));
+}
+
+function loadRequestsLocally() {
+    const saved = localStorage.getItem('masarRequestsLocal');
+    if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+    }
+    return [];
+}
+
+// ============================================================
+// AUTH
 // ============================================================
 async function checkAuth() {
-    if (isAuthChecked && API.isAuthenticated()) {
-        return true;
-    }
-
+    if (isAuthChecked && API.isAuthenticated()) return true;
     const token = localStorage.getItem('masar_token');
     const overlay = document.getElementById('loginOverlay');
     const mainContent = document.getElementById('mainContent');
@@ -427,7 +449,6 @@ async function checkAuth() {
                 API.token = null;
             }
         } catch (err) {
-            console.warn('خطأ في التحقق من التوكن:', err.message);
             localStorage.removeItem('masar_token');
             localStorage.removeItem('masar_user');
             API.token = null;
@@ -440,7 +461,6 @@ async function checkAuth() {
     return false;
 }
 
-// تسجيل الدخول
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -478,46 +498,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 });
 
 // ============================================================
-// HELPERS
-// ============================================================
-function getRequestStatusInfo(id) {
-    return REQUEST_STATUS_MAP[id] || { label: 'غير معروف', color: '#9ca3af', statusType: 'other' };
-}
-
-function generateRequestId() {
-    const nums = requests.filter(r => r.id && r.id.startsWith('ط-')).length;
-    return 'ط-' + String(nums + 1).padStart(3, '0');
-}
-
-function formatDate(d) {
-    if (!d) return '-';
-    const parts = d.split('-');
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
-}
-
-function formatMoney(n) {
-    return n ? Number(n).toLocaleString('en-US') + ' ريال' : '—';
-}
-
-function daysBetween(a, b) {
-    return Math.round((new Date(b) - new Date(a)) / 86400000);
-}
-
-function saveRequestsLocally() {
-    localStorage.setItem('masarRequestsLocal', JSON.stringify(requests));
-}
-
-function loadRequestsLocally() {
-    const saved = localStorage.getItem('masarRequestsLocal');
-    if (saved) {
-        try {
-            return JSON.parse(saved);
-        } catch (e) {}
-    }
-    return [];
-}
-
-// ============================================================
 // LOAD REQUESTS
 // ============================================================
 async function loadRequests() {
@@ -532,7 +512,7 @@ async function loadRequests() {
             requests = data.data.data || [];
             const localRequests = loadRequestsLocally();
             localRequests.forEach(local => {
-                const existing = requests.find(r => r.id === local.id);
+                const existing = requests.find(r => String(r.id) === String(local.id));
                 if (existing) {
                     if (local.log) existing.log = local.log;
                     if (local.stage_id) existing.stage_id = local.stage_id;
@@ -547,18 +527,14 @@ async function loadRequests() {
             updateStats();
         } else {
             requests = loadRequestsLocally();
-            if (requests.length === 0) {
-                requests = getSampleRequests();
-            }
+            if (requests.length === 0) requests = getSampleRequests();
             renderTable();
             updateStats();
             showToast('تم تحميل البيانات من التخزين المحلي', 'info');
         }
     } catch (err) {
         requests = loadRequestsLocally();
-        if (requests.length === 0) {
-            requests = getSampleRequests();
-        }
+        if (requests.length === 0) requests = getSampleRequests();
         renderTable();
         updateStats();
         showToast('تم تحميل البيانات من التخزين المحلي', 'info');
@@ -581,15 +557,7 @@ function getSampleRequests() {
             created_at: '2026-07-20',
             stage_id: 5,
             matched_offer_id: 'ع-١٢٣',
-            log: [
-                '2026-07-20 10:00 تم تسجيل الطلب',
-                '2026-07-20 10:05 جاري المطابقة مع العروض',
-                '2026-07-20 10:30 تم اختيار العرض ع-١٢٣',
-                '2026-07-21 09:00 بدء جدولة المعاينة',
-                '2026-07-22 14:00 تم تحديد موعد المعاينة',
-                '2026-07-23 11:00 تمت المعاينة وتم الاتفاق',
-                '2026-07-28 10:00 ✅ تم إتمام الصفقة وإغلاق الطلب'
-            ]
+            log: ['2026-07-20 10:00 تم تسجيل الطلب', '2026-07-20 10:05 جاري المطابقة مع العروض', '2026-07-20 10:30 تم اختيار العرض ع-١٢٣', '2026-07-21 09:00 بدء جدولة المعاينة', '2026-07-22 14:00 تم تحديد موعد المعاينة', '2026-07-23 11:00 تمت المعاينة وتم الاتفاق', '2026-07-28 10:00 ✅ تم إتمام الصفقة وإغلاق الطلب']
         },
         {
             id: 'ط-١٠٢',
@@ -605,16 +573,13 @@ function getSampleRequests() {
             created_at: '2026-07-22',
             stage_id: 2,
             matched_offer_id: null,
-            log: [
-                '2026-07-22 10:00 تم تسجيل الطلب',
-                '2026-07-22 10:05 جاري المطابقة مع العروض'
-            ]
+            log: ['2026-07-22 10:00 تم تسجيل الطلب', '2026-07-22 10:05 جاري المطابقة مع العروض']
         }
     ];
 }
 
 // ============================================================
-// SMART INPUT - الإدخال الذكي الكامل
+// SMART INPUT
 // ============================================================
 function parseSmartInput() {
     const text = document.getElementById('smartInput').value;
@@ -694,105 +659,7 @@ function setMode(mode) {
 }
 
 // ============================================================
-// MATCH ENGINE - نظام المطابقة الذكي (محلي)
-// ============================================================
-function findMatches(request) {
-    // جلب العروض من التخزين المحلي
-    const offersData = localStorage.getItem('masarOffersLocal');
-    let offers = [];
-    if (offersData) {
-        try {
-            offers = JSON.parse(offersData);
-        } catch (e) {}
-    }
-
-    if (!offers || offers.length === 0) return [];
-
-    const results = [];
-
-    offers.forEach(o => {
-        const stages = o.track_type === 'company' ? 
-            [{ id: 10, name: 'مكتمل' }] : 
-            [{ id: 4, name: 'مكتمل' }];
-        if (o.stage_id >= 10 || o.stage_id === 7) return;
-        if (o.property_type !== request.property_type) return;
-        if (o.deal_type !== request.deal_type) return;
-        if (o.city !== request.city) return;
-
-        let score = 0;
-        let matchDetails = [];
-
-        // مطابقة المنطقة
-        const reqDistricts = request.districts ? request.districts.split(/[,،\s]+/).filter(s => s.trim()) : [];
-        const offerDistrict = o.district || '';
-        let districtMatch = false;
-        reqDistricts.forEach(d => {
-            if (offerDistrict.includes(d.trim())) {
-                districtMatch = true;
-            }
-        });
-        if (districtMatch) {
-            score += 30;
-            matchDetails.push('المنطقة متطابقة');
-        } else if (reqDistricts.some(d => offerDistrict.includes(d.substring(0, 4)))) {
-            score += 15;
-            matchDetails.push('منطقة قريبة');
-        }
-
-        // مطابقة السعر
-        if (o.price && o.price <= request.budget * 1.1) {
-            const diff = Math.abs(o.price - request.budget) / request.budget;
-            if (diff <= 0.1) {
-                score += 20;
-                matchDetails.push('سعر قريب');
-            } else if (diff <= 0.2) {
-                score += 10;
-                matchDetails.push('سعر مقبول');
-            }
-        }
-
-        // مطابقة المساحة
-        if (request.area && o.area) {
-            const diff = Math.abs(o.area - request.area) / request.area;
-            if (diff <= 0.1) {
-                score += 20;
-                matchDetails.push('مساحة متطابقة');
-            } else if (diff <= 0.2) {
-                score += 10;
-                matchDetails.push('مساحة قريبة');
-            }
-        }
-
-        // مطابقة الملاحظات
-        if (request.notes && o.description) {
-            const keywords = request.notes.split(/[,،\s]+/).filter(s => s.trim().length > 2);
-            let matchCount = 0;
-            keywords.forEach(k => {
-                if (o.description.includes(k) || (o.purpose && o.purpose.includes(k))) {
-                    matchCount++;
-                }
-            });
-            if (matchCount > 0) {
-                score += Math.min(matchCount * 3, 10);
-                matchDetails.push('مواصفات متطابقة');
-            }
-        }
-
-        score = Math.min(score, 100);
-        if (score >= 30) {
-            results.push({
-                offer: o,
-                score: score,
-                details: matchDetails
-            });
-        }
-    });
-
-    return results.sort((a, b) => b.score - a.score);
-}
-
-// ============================================================
-// FORCE ACTION MODAL - نظام المطابقة
+// FORCE ACTION MODAL
 // ============================================================
 function showForceAction(requestId, actionType, message) {
     const modal = document.getElementById('forceActionModal');
@@ -801,7 +668,7 @@ function showForceAction(requestId, actionType, message) {
     const body = document.getElementById('forceActionBody');
     const primaryBtn = document.getElementById('forceActionPrimaryBtn');
 
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     let titleText = '🔍 مطابقة العروض';
@@ -811,30 +678,82 @@ function showForceAction(requestId, actionType, message) {
 
     if (actionType === 'match_offers') {
         titleText = '🔍 نتائج المطابقة';
-        messageText = `طلبات مطابقة للطلب <strong style="color:#C9A24B;">${r.id}</strong> — ${r.property_type} | ${r.deal_type} | ${r.city}`;
+        messageText = `طلبات مطابقة للطلب <strong style="color:var(--gold);">${r.id}</strong> — ${r.property_type} | ${r.deal_type} | ${r.city}`;
 
-        const matches = findMatches(r);
+        // جلب العروض من التخزين المحلي
+        const offersData = localStorage.getItem('masarOffersLocal');
+        let offers = [];
+        if (offersData) {
+            try { offers = JSON.parse(offersData); } catch (e) {}
+        }
+
+        const matches = offers.filter(o => {
+            if (o.stage_id >= 10 || o.stage_id === 7) return false;
+            if (o.property_type !== r.property_type) return false;
+            if (o.deal_type !== r.deal_type) return false;
+            if (o.city !== r.city) return false;
+            
+            let score = 0;
+            const reqDistricts = r.districts ? r.districts.split(/[,،\s]+/).filter(s => s.trim()) : [];
+            const offerDistrict = o.district || '';
+            let districtMatch = false;
+            reqDistricts.forEach(d => {
+                if (offerDistrict.includes(d.trim())) districtMatch = true;
+            });
+            if (districtMatch) score += 40;
+            
+            if (o.price && o.price <= r.budget * 1.1) {
+                const diff = Math.abs(o.price - r.budget) / r.budget;
+                if (diff <= 0.1) score += 30;
+                else if (diff <= 0.2) score += 15;
+            }
+            
+            if (r.area && o.area) {
+                const diff = Math.abs(o.area - r.area) / r.area;
+                if (diff <= 0.1) score += 20;
+                else if (diff <= 0.2) score += 10;
+            }
+            
+            score = Math.min(score, 100);
+            return score >= 30;
+        }).map(o => {
+            let score = 0;
+            const reqDistricts = r.districts ? r.districts.split(/[,،\s]+/).filter(s => s.trim()) : [];
+            const offerDistrict = o.district || '';
+            reqDistricts.forEach(d => {
+                if (offerDistrict.includes(d.trim())) score += 40;
+            });
+            if (o.price && o.price <= r.budget * 1.1) {
+                const diff = Math.abs(o.price - r.budget) / r.budget;
+                if (diff <= 0.1) score += 30;
+                else if (diff <= 0.2) score += 15;
+            }
+            if (r.area && o.area) {
+                const diff = Math.abs(o.area - r.area) / r.area;
+                if (diff <= 0.1) score += 20;
+                else if (diff <= 0.2) score += 10;
+            }
+            score = Math.min(score, 100);
+            return { offer: o, score: score };
+        }).sort((a, b) => b.score - a.score);
 
         if (matches.length > 0) {
             bodyHtml = `
-                <div style="margin-bottom:12px;font-size:0.85rem;color:#8B96A8;">
+                <div style="margin-bottom:12px;font-size:0.85rem;color:var(--text-secondary);">
                     <i class="fas fa-info-circle ml-1"></i> تم العثور على ${matches.length} عرض مطابق. اختر العرض المناسب.
                 </div>
                 <div id="matchResults">
                     ${matches.map(m => `
                         <div class="match-card">
                             <div style="flex:1;">
-                                <div style="font-weight:700;color:#EDEAE2;">${m.offer.title || m.offer.property_type}</div>
-                                <div style="font-size:0.85rem;color:#8B96A8;">
+                                <div style="font-weight:700;color:var(--text-primary);">${m.offer.title || m.offer.property_type}</div>
+                                <div style="font-size:0.85rem;color:var(--text-secondary);">
                                     ${m.offer.city} - ${m.offer.district || ''} · ${m.offer.area} م² · ${formatMoney(m.offer.price)}
-                                </div>
-                                <div style="font-size:0.75rem;color:#8B96A8;margin-top:4px;">
-                                    ${m.details.join(' • ')}
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                                 <span class="match-score ${m.score >= 70 ? 'high' : m.score >= 40 ? 'medium' : 'low'}">${m.score}%</span>
-                                <button class="btn btn-outline btn-sm" onclick="shareOfferToClient('${requestId}','${m.offer.id}')" style="color:#EDEAE2;border-color:#22314C;">
+                                <button class="btn btn-outline btn-sm" onclick="shareOfferToClient('${requestId}','${m.offer.id}')" style="color:var(--text-primary);border-color:var(--border-light);">
                                     <i class="fas fa-share-alt"></i> مشاركة
                                 </button>
                                 <button class="btn btn-gold btn-sm" onclick="selectOffer('${requestId}','${m.offer.id}')">
@@ -848,8 +767,8 @@ function showForceAction(requestId, actionType, message) {
             btnText = '🔄 تحديث المطابقة';
         } else {
             bodyHtml = `
-                <div style="color:#8B96A8;text-align:center;padding:20px;">
-                    <i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px;color:#C9A24B;"></i>
+                <div style="color:var(--text-secondary);text-align:center;padding:20px;">
+                    <i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--gold);"></i>
                     <p>⚠️ لا توجد عروض مطابقة حالياً.</p>
                     <p style="font-size:0.85rem;margin-top:8px;">يمكنك البحث خارج النظام، وإذا وجدت عرضاً جديداً، أضفه في صفحة العروض ثم عد للمطابقة.</p>
                 </div>
@@ -857,7 +776,7 @@ function showForceAction(requestId, actionType, message) {
                     <button class="btn btn-amber btn-sm" onclick="closeModal('forceActionModal'); window.location.href='offers.html'">
                         ➕ إضافة عرض جديد
                     </button>
-                    <button class="btn btn-outline btn-sm" onclick="sendToExternalBroker('${requestId}')" style="margin-right:8px;color:#EDEAE2;border-color:#22314C;">
+                    <button class="btn btn-outline btn-sm" onclick="sendToExternalBroker('${requestId}')" style="margin-right:8px;color:var(--text-primary);border-color:var(--border-light);">
                         📨 إرسال لوسيط خارجي
                     </button>
                 </div>
@@ -866,23 +785,16 @@ function showForceAction(requestId, actionType, message) {
         }
     } else if (actionType === 'offer_selected') {
         titleText = '✅ تم اختيار العرض';
-        const selectedOffer = findMatches(r).find(m => m.offer.id === r.matched_offer_id);
-        messageText = `تم ربط الطلب <strong style="color:#C9A24B;">${r.id}</strong> بالعرض <strong style="color:#C9A24B;">${r.matched_offer_id || 'غير معروف'}</strong>`;
+        messageText = `تم ربط الطلب <strong style="color:var(--gold);">${r.id}</strong> بالعرض <strong style="color:var(--gold);">${r.matched_offer_id || 'غير معروف'}</strong>`;
         bodyHtml = `
-            <div style="background:#0F1830;border:1px solid #1F7A5C;border-radius:12px;padding:12px;margin-bottom:12px;">
-                <p style="font-size:0.9rem;color:#1F7A5C;">
+            <div style="background:var(--bg-primary);border:1px solid var(--emerald);border-radius:12px;padding:12px;margin-bottom:12px;">
+                <p style="font-size:0.9rem;color:var(--emerald);">
                     <i class="fas fa-check-circle ml-1"></i> تم ربط الطلب بالعرض بنجاح. يمكنك الآن بدء مرحلة التنسيق.
                 </p>
-                ${selectedOffer ? `
-                <div style="margin-top:8px;padding:12px;background:#0B121E;border-radius:8px;border:1px solid #22314C;">
-                    <div style="font-weight:700;color:#EDEAE2;">${selectedOffer.offer.title || selectedOffer.offer.property_type}</div>
-                    <div style="font-size:0.85rem;color:#8B96A8;">${selectedOffer.offer.city} - ${selectedOffer.offer.district || ''} · ${selectedOffer.offer.area} م² · ${formatMoney(selectedOffer.offer.price)}</div>
-                </div>
-                ` : ''}
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="btn btn-gold btn-sm" onclick="advanceStage('${requestId}', 4)">📅 جدولة المعاينة</button>
-                <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')" style="color:#EDEAE2;border-color:#22314C;">إغلاق</button>
+                <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')" style="color:var(--text-primary);border-color:var(--border-light);">إغلاق</button>
             </div>
         `;
         btnText = 'تحديث';
@@ -902,15 +814,13 @@ function showForceAction(requestId, actionType, message) {
     modal.classList.add('active');
 }
 
-function executeForceAction() {
-    // يتم تنفيذها عند الضغط على زر تحديث المطابقة
-}
+function executeForceAction() {}
 
 // ============================================================
 // OFFER SELECTION
 // ============================================================
 function selectOffer(requestId, offerId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     r.matched_offer_id = offerId;
@@ -929,17 +839,15 @@ function selectOffer(requestId, offerId) {
 }
 
 function shareOfferToClient(requestId, offerId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     const offersData = localStorage.getItem('masarOffersLocal');
     let offers = [];
     if (offersData) {
-        try {
-            offers = JSON.parse(offersData);
-        } catch (e) {}
+        try { offers = JSON.parse(offersData); } catch (e) {}
     }
-    const o = offers.find(x => x.id === offerId);
+    const o = offers.find(x => String(x.id) === String(offerId));
     if (!o) { showToast('العرض غير موجود', 'error'); return; }
 
     const clientPhone = r.contact_phone || '966500000000';
@@ -962,7 +870,7 @@ function shareOfferToClient(requestId, offerId) {
 }
 
 function sendToExternalBroker(requestId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     const brokerPhone = '966500000000';
@@ -985,14 +893,13 @@ function sendToExternalBroker(requestId) {
     closeModal('forceActionModal');
     renderTable();
     renderDetail(requestId);
-    scheduleReminder(requestId, 3, 'تذكير: الوسيط الخارجي لم يرد على الطلب ' + r.id);
 }
 
 // ============================================================
 // APPOINTMENT FUNCTIONS
 // ============================================================
 function setAppointment(requestId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     const date = prompt('أدخل تاريخ المعاينة (YYYY-MM-DD):', new Date().toISOString().slice(0, 10));
@@ -1012,7 +919,7 @@ function setAppointment(requestId) {
 }
 
 function editAppointment(requestId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     const currentDate = r.appointmentDate || new Date().toISOString().slice(0, 10);
@@ -1033,7 +940,7 @@ function editAppointment(requestId) {
 }
 
 function confirmAppointment(requestId) {
-    const r = requests.find(x => x.id === requestId);
+    const r = requests.find(x => String(x.id) === String(requestId));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     if (!r.appointmentDate || !r.appointmentTime) {
@@ -1045,21 +952,17 @@ function confirmAppointment(requestId) {
 
     const choice = confirm('هل تم الاتفاق مع صاحب العرض؟\nاضغط "موافق" إذا تم الاتفاق، "إلغاء" إذا لم يتم الاتفاق.');
     if (choice) {
-        // تم الاتفاق - إغلاق الطلب والعرض
         r.stage_id = 5;
         if (!r.log) r.log = [];
         r.log.push(`${new Date().toISOString().slice(0, 16).replace('T', ' ')} ✅ تم الاتفاق وإتمام الصفقة (تم إغلاق الطلب والعرض)`);
         
-        // إغلاق العرض المرتبط
         if (r.matched_offer_id) {
             const offersData = localStorage.getItem('masarOffersLocal');
             let offers = [];
             if (offersData) {
-                try {
-                    offers = JSON.parse(offersData);
-                } catch (e) {}
+                try { offers = JSON.parse(offersData); } catch (e) {}
             }
-            const matchedOffer = offers.find(off => off.id === r.matched_offer_id);
+            const matchedOffer = offers.find(off => String(off.id) === String(r.matched_offer_id));
             if (matchedOffer) {
                 matchedOffer.stage_id = 10;
                 matchedOffer.status = 'مباع';
@@ -1074,7 +977,6 @@ function confirmAppointment(requestId) {
         renderDetail(requestId);
         renderTable();
     } else {
-        // لم يتم الاتفاق - فك الارتباط والعودة للمطابقة
         r.stage_id = 2;
         r.matched_offer_id = null;
         r.appointmentDate = null;
@@ -1088,43 +990,6 @@ function confirmAppointment(requestId) {
         setTimeout(() => {
             showForceAction(requestId, 'match_offers', 'ابحث عن عرض آخر للعميل.');
         }, 600);
-    }
-}
-
-// ============================================================
-// REMINDER ENGINE
-// ============================================================
-function scheduleReminder(requestId, days, message) {
-    const r = requests.find(x => x.id === requestId);
-    if (!r) return;
-    const reminderDate = new Date();
-    reminderDate.setDate(reminderDate.getDate() + days);
-    const reminderKey = 'reminder_req_' + requestId + '_' + days;
-    localStorage.setItem(reminderKey, JSON.stringify({
-        requestId: requestId,
-        date: reminderDate.toISOString().slice(0, 10),
-        message: message,
-        done: false
-    }));
-}
-
-function checkReminders() {
-    const today = new Date().toISOString().slice(0, 10);
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('reminder_req_')) {
-            try {
-                const data = JSON.parse(localStorage.getItem(key));
-                if (!data.done && data.date <= today) {
-                    showToast('🔔 ' + data.message, 'info');
-                    data.done = true;
-                    localStorage.setItem(key, JSON.stringify(data));
-                    if ('Notification' in window && Notification.permission === 'granted') {
-                        new Notification('🔔 تذكير', { body: data.message });
-                    }
-                }
-            } catch (e) {}
-        }
     }
 }
 
@@ -1143,7 +1008,8 @@ function saveRequest() {
     const phone = document.getElementById('f_phone').value.trim();
     const notes = document.getElementById('f_notes').value.trim();
 
-    if (!propertyType || !dealType || !area || isNaN(area) || !budget || isNaN(budget) || !city || !districts || !clientName || !phone) {
+    if (!propertyType || !dealType || !area || isNaN(area) || !budget || isNaN(budget) || 
+        !city || !districts || !clientName || !phone) {
         showToast('يرجى ملء جميع الحقول المطلوبة (*)', 'error');
         return;
     }
@@ -1151,7 +1017,7 @@ function saveRequest() {
     const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
 
     if (editId) {
-        const r = requests.find(x => x.id === editId);
+        const r = requests.find(x => String(x.id) === String(editId));
         if (!r) { showToast('الطلب غير موجود', 'error'); return; }
         r.property_type = propertyType;
         r.deal_type = dealType;
@@ -1230,9 +1096,10 @@ function renderTable() {
             const st = getRequestStatusInfo(r.stage_id);
             const stageName = getRequestStageName(r.stage_id);
             const isPulse = [2, 4].includes(r.stage_id);
+            const displayId = r.display_id || r.id || '-';
             return `
                 <tr class="request-row" onclick="openDetail('${r.id}')">
-                    <td class="px-3 py-3 font-bold text-gold text-sm">${r.id}</td>
+                    <td class="px-3 py-3 font-bold text-gold text-sm">${displayId}</td>
                     <td class="px-3 py-3 text-sm text-ink">${r.client_name || '-'}</td>
                     <td class="px-3 py-3 text-sm text-ink">${r.property_type}</td>
                     <td class="px-3 py-3 text-sm text-ink">${r.deal_type || '-'}</td>
@@ -1282,7 +1149,7 @@ function renderTable() {
                         <span><i class="fas fa-map-marker-alt ml-1"></i> ${r.city}</span>
                         <span><i class="fas fa-route ml-1"></i> ${stageName}</span>
                     </div>
-                    <div style="font-size:0.8rem;color:#8B96A8;margin-top:4px">
+                    <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px">
                         <i class="far fa-calendar ml-1"></i> ${formatDate(r.created_at)}
                         ${appointmentInfo ? `<span style="margin-right:12px;">${appointmentInfo}</span>` : ''}
                         <span style="margin-right:12px"><i class="fas fa-phone ml-1"></i> ${r.contact_phone || '-'}</span>
@@ -1321,10 +1188,9 @@ function getFilteredRequests() {
             if (st.statusType !== status) return false;
         }
         if (search) {
-            const match = (r.id || '').includes(search) ||
-                (r.client_name || '').includes(search) ||
-                (r.property_type || '').includes(search) ||
-                (r.city || '').includes(search) ||
+            const displayId = r.display_id || r.id || '';
+            const match = displayId.includes(search) || (r.client_name || '').includes(search) ||
+                (r.property_type || '').includes(search) || (r.city || '').includes(search) ||
                 (r.contact_phone || '').includes(search);
             if (!match) return false;
         }
@@ -1363,7 +1229,7 @@ function updateStats() {
 
 function deleteRequest(id) {
     if (!confirm(`هل أنت متأكد من حذف الطلب ${id}؟`)) return;
-    requests = requests.filter(r => r.id !== id);
+    requests = requests.filter(r => String(r.id) !== String(id));
     saveRequestsLocally();
     renderTable();
     showToast(`تم حذف الطلب ${id}`, 'success');
@@ -1373,7 +1239,7 @@ function deleteRequest(id) {
 // DETAIL VIEW
 // ============================================================
 function openDetail(id) {
-    const r = requests.find(x => x.id === id);
+    const r = requests.find(x => String(x.id) === String(id));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
     document.getElementById('listView').classList.add('hidden');
     document.getElementById('detailView').classList.remove('hidden');
@@ -1381,7 +1247,7 @@ function openDetail(id) {
 }
 
 function renderDetail(id) {
-    const r = requests.find(x => x.id === id);
+    const r = requests.find(x => String(x.id) === String(id));
     if (!r) {
         document.getElementById('detailContent').innerHTML = '<div class="text-center py-12 text-muted">الطلب غير موجود</div>';
         return;
@@ -1392,7 +1258,6 @@ function renderDetail(id) {
     const isComplete = r.stage_id === 5;
     const isDelayed = r.stage_id === 2 || r.stage_id === 4;
 
-    // Timeline
     let timelineHtml = REQUEST_STAGES.map((s, idx) => {
         const isCompleted = idx < r.stage_id;
         const isActive = idx === r.stage_id - 1;
@@ -1419,15 +1284,13 @@ function renderDetail(id) {
         `;
     }).join('');
 
-    // Log
     let logHtml = (r.log || []).map(l => `
         <div class="log-entry">
             <span class="log-time">${l.slice(0, 16)}</span>
             <span>${l.slice(16)}</span>
         </div>
-    `).join('') || '<div style="color:#8B96A8;">لا توجد سجلات</div>';
+    `).join('') || '<div style="color:var(--text-secondary);">لا توجد سجلات</div>';
 
-    // Action buttons
     let actionsHtml = '';
     if (!isComplete) {
         if (r.stage_id === 1 || r.stage_id === 2) {
@@ -1440,44 +1303,31 @@ function renderDetail(id) {
             if (!r.appointmentDate) {
                 actionsHtml += `<button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>`;
             } else {
-                actionsHtml += `<button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل الموعد</button>`;
+                actionsHtml += `<button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:var(--text-primary);border-color:var(--border-light);"><i class="fas fa-pen"></i> تعديل الموعد</button>`;
                 actionsHtml += `<button class="btn btn-emerald btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>`;
             }
         }
         if (r.stage_id === 2 || r.stage_id === 3) {
             actionsHtml += `<button class="btn btn-amber btn-sm" onclick="sendToExternalBroker('${r.id}')">📨 إرسال لوسيط</button>`;
         }
-        actionsHtml += `<button class="btn btn-outline btn-sm" onclick="openEditRequest('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>`;
+        actionsHtml += `<button class="btn btn-outline btn-sm" onclick="openEditRequest('${r.id}')" style="color:var(--text-primary);border-color:var(--border-light);"><i class="fas fa-pen"></i> تعديل</button>`;
         if (r.stage_id > 1) {
-            actionsHtml += `<button class="btn btn-outline btn-sm" onclick="regressStage('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-undo"></i> رجوع</button>`;
+            actionsHtml += `<button class="btn btn-outline btn-sm" onclick="regressStage('${r.id}')" style="color:var(--text-primary);border-color:var(--border-light);"><i class="fas fa-undo"></i> رجوع</button>`;
         }
     } else {
         actionsHtml = `<span class="text-emerald-400 font-bold text-lg">✅ الطلب مكتمل</span>`;
     }
 
-    // Matched offer info
     let matchedOfferHtml = '';
     if (r.matched_offer_id) {
-        const offersData = localStorage.getItem('masarOffersLocal');
-        let offers = [];
-        if (offersData) {
-            try {
-                offers = JSON.parse(offersData);
-            } catch (e) {}
-        }
-        const matchedOffer = offers.find(o => o.id === r.matched_offer_id);
         matchedOfferHtml = `
-            <div style="background:#0F1830;border:1px solid #1F7A5C;border-radius:12px;padding:12px;margin-bottom:12px;">
+            <div style="background:var(--bg-primary);border:1px solid var(--emerald);border-radius:12px;padding:12px;margin-bottom:12px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
                     <div>
-                        <span style="font-weight:700;color:#1F7A5C;">🔗 مرتبط بالعرض</span>
-                        <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${r.matched_offer_id}</div>
-                        ${matchedOffer ? `
-                        <div style="font-size:0.85rem;color:#8B96A8;">${matchedOffer.title || matchedOffer.property_type} · ${matchedOffer.city} - ${matchedOffer.district || ''}</div>
-                        <div style="font-size:0.85rem;color:#8B96A8;">${matchedOffer.area} م² · ${formatMoney(matchedOffer.price)}</div>
-                        ` : ''}
+                        <span style="font-weight:700;color:var(--emerald);">🔗 مرتبط بالعرض</span>
+                        <div style="font-weight:700;font-size:1.1rem;color:var(--text-primary);">${r.matched_offer_id}</div>
                     </div>
-                    <button class="btn btn-outline btn-sm" onclick="showToast('جاري فتح تفاصيل العرض...'); window.location.href='offers.html'" style="color:#EDEAE2;border-color:#22314C;">
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='offers-detail.html?id=${r.matched_offer_id}'" style="color:var(--text-primary);border-color:var(--border-light);">
                         <i class="fas fa-external-link-alt ml-1"></i> عرض التفاصيل
                     </button>
                 </div>
@@ -1485,19 +1335,18 @@ function renderDetail(id) {
         `;
     }
 
-    // Appointment info
     let appointmentHtml = '';
     if (r.stage_id === 4 || r.stage_id === 3 || r.stage_id === 5) {
         if (r.appointmentDate) {
             appointmentHtml = `
-                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                <div style="background:var(--bg-primary);border:1px solid var(--gold);border-radius:12px;padding:12px;margin:12px 0;">
                     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                         <div>
-                            <span style="font-weight:700;color:#C9A24B;">📅 موعد المعاينة</span>
-                            <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${formatDate(r.appointmentDate)} ${r.appointmentTime || ''}</div>
+                            <span style="font-weight:700;color:var(--gold);">📅 موعد المعاينة</span>
+                            <div style="font-weight:700;font-size:1.1rem;color:var(--text-primary);">${formatDate(r.appointmentDate)} ${r.appointmentTime || ''}</div>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>
+                            <button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:var(--text-primary);border-color:var(--border-light);"><i class="fas fa-pen"></i> تعديل</button>
                             <button class="btn btn-gold btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>
                         </div>
                     </div>
@@ -1505,10 +1354,10 @@ function renderDetail(id) {
             `;
         } else if (r.stage_id === 4) {
             appointmentHtml = `
-                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                <div style="background:var(--bg-primary);border:1px solid var(--gold);border-radius:12px;padding:12px;margin:12px 0;">
                     <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
                         <div>
-                            <span style="font-weight:700;color:#C9A24B;">⏳ لم يتم تحديد موعد المعاينة بعد</span>
+                            <span style="font-weight:700;color:var(--gold);">⏳ لم يتم تحديد موعد المعاينة بعد</span>
                         </div>
                         <button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>
                     </div>
@@ -1557,9 +1406,9 @@ function renderDetail(id) {
                     <div><span class="text-sm text-muted">الاسم</span><div class="font-bold text-ink">${r.client_name || '-'}</div></div>
                     <div><span class="text-sm text-muted">رقم الجوال</span><div class="text-ink">${r.contact_phone || '-'}</div></div>
                 </div>
-                <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(237,234,226,0.08);">
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);">
                     <div class="section-title" style="font-size:15px;margin-bottom:8px;"><i class="fas fa-handshake text-gold"></i> العرض المرتبط</div>
-                    ${matchedOfferHtml || '<div style="color:#8B96A8;">لا يوجد عرض مرتبط بعد</div>'}
+                    ${matchedOfferHtml || '<div style="color:var(--text-secondary);">لا يوجد عرض مرتبط بعد</div>'}
                     ${appointmentHtml}
                 </div>
             </div>
@@ -1589,7 +1438,7 @@ function closeDetail() {
 // STAGE ACTIONS
 // ============================================================
 function advanceStage(id, newStage) {
-    const r = requests.find(x => x.id === id);
+    const r = requests.find(x => String(x.id) === String(id));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
 
     if (newStage === 4 && !r.matched_offer_id) {
@@ -1605,14 +1454,10 @@ function advanceStage(id, newStage) {
     showToast(`✅ تم الانتقال إلى "${stageName}"`, 'success');
     renderDetail(id);
     renderTable();
-
-    if (newStage === 2) showToast('🔍 جاري المطابقة مع العروض...', 'info');
-    else if (newStage === 3) showToast('✅ تم اختيار العرض، يمكنك بدء التنسيق', 'success');
-    else if (newStage === 4) showToast('📅 تم بدء مرحلة جدولة المعاينة', 'info');
 }
 
 function regressStage(id) {
-    const r = requests.find(x => x.id === id);
+    const r = requests.find(x => String(x.id) === String(id));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
     if (r.stage_id <= 1) { showToast('لا يمكن الرجوع عن المرحلة الأولى', 'error'); return; }
     r.stage_id--;
@@ -1642,7 +1487,7 @@ function openAddRequest() {
 }
 
 function openEditRequest(id) {
-    const r = requests.find(x => x.id === id);
+    const r = requests.find(x => String(x.id) === String(id));
     if (!r) { showToast('الطلب غير موجود', 'error'); return; }
     currentEditId = id;
     document.getElementById('modalTitle').textContent = 'تعديل الطلب';
@@ -1713,7 +1558,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const isAuth = await checkAuth();
     if (isAuth) {
         loadRequests();
-        setInterval(checkReminders, 30000);
+        setInterval(() => loadRequests(), 60000);
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
         }

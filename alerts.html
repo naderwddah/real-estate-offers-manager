@@ -10,119 +10,108 @@
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
         * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
+        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
         
-        /* ===== تنسيقات الواجهة المظلمة ===== */
-        .bg-surface { background: #121B2C; }
-        .bg-surface2 { background: #1A2740; }
-        .bg-surface3 { background: #22314C; }
-        .bg-bg { background: #0B121E; }
-        .text-muted { color: #8B96A8; }
-        .text-ink { color: #EDEAE2; }
-        .border-line { border-color: rgba(237, 234, 226, 0.08); }
-        .bg-gold { background: #C9A24B; }
-        .text-gold { color: #C9A24B; }
-        .bg-emerald { background: #1F7A5C; }
-        .text-emerald { color: #1F7A5C; }
-        .bg-terracotta { background: #C1543A; }
-        .text-terracotta { color: #C1543A; }
-        .bg-danger { background: #E05A4A; }
-        .text-danger { color: #E05A4A; }
-        
-        .stat-card { transition: all 0.25s ease; border: 1px solid rgba(237, 234, 226, 0.08); cursor: pointer; background: #121B2C; }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+        .bg-surface { background: var(--bg-secondary); }
+        .bg-surface2 { background: var(--bg-surface); }
+        .bg-surface3 { background: var(--bg-surface2); }
+        .bg-bg { background: var(--bg-primary); }
+        .text-muted { color: var(--text-secondary); }
+        .text-ink { color: var(--text-primary); }
+        .border-line { border-color: var(--border-color); }
+        .bg-gold { background: var(--gold); }
+        .text-gold { color: var(--gold); }
+        .bg-emerald { background: var(--emerald); }
+        .text-emerald { color: var(--emerald); }
+        .bg-danger { background: var(--danger); }
+        .text-danger { color: var(--danger); }
+
+        .stat-card { transition: all 0.25s ease; border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px var(--shadow-color); }
         .stat-card .stat-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        
+
         .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .btn-gold { background: #C9A24B; color: #0B121E; }
-        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
-        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
-        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-gold { background: var(--gold); color: #0B121E; }
+        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
+        .btn-outline:hover { background: var(--bg-surface); color: var(--text-primary); }
         .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
-        .btn-danger { background: #E05A4A; color: #fff; }
-        .btn-danger:hover { background: #C1543A; }
-        
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: var(--terracotta); }
+
         .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-        
+
         .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
         .modal-overlay.active { display: flex; }
-        .modal-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 24px; max-width: 600px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; position: relative; }
+        .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 24px; max-width: 600px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px var(--shadow-color); animation: modalFadeIn 0.25s ease; position: relative; }
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: #8B96A8; cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
-        .modal-close:hover { color: #EDEAE2; }
-        .modal-title { font-size: 24px; font-weight: 800; color: #EDEAE2; margin-bottom: 20px; }
-        
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-title { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; }
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .field { display: flex; flex-direction: column; gap: 4px; }
-        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
-        .field input::placeholder, .field textarea::placeholder { color: #5A6A7A; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
         .field.full-width { grid-column: 1 / -1; }
-        
-        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
         .toast.show { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .notif-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(237, 234, 226, 0.08); background: #121B2C; transition: all 0.2s; margin-bottom: 8px; }
-        .notif-item:hover { border-color: #C9A24B55; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-        .notif-item.unread { border-right: 4px solid #C9A24B; background: #1A2740; }
+
+        .notif-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-secondary); transition: all 0.2s; margin-bottom: 8px; }
+        .notif-item:hover { border-color: var(--gold); box-shadow: 0 2px 8px var(--shadow-color); }
+        .notif-item.unread { border-right: 4px solid var(--gold); background: var(--bg-surface); }
         .notif-item .notif-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
         .notif-item .notif-content { flex: 1; }
-        .notif-item .notif-title { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
-        .notif-item .notif-message { font-size: 0.85rem; color: #8B96A8; margin-top: 2px; }
-        .notif-item .notif-time { font-size: 0.7rem; color: #5A6A7A; margin-top: 4px; }
+        .notif-item .notif-title { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+        .notif-item .notif-message { font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px; }
+        .notif-item .notif-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
         .notif-item .notif-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: center; }
-        .notif-item .notif-actions button { background: none; border: none; cursor: pointer; color: #8B96A8; transition: color 0.2s; font-size: 0.9rem; padding: 4px 6px; }
-        .notif-item .notif-actions button:hover { color: #C9A24B; }
-        .notif-item .notif-actions button.danger:hover { color: #E05A4A; }
-        
-        .reminder-item { padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(237, 234, 226, 0.08); background: #121B2C; margin-bottom: 8px; transition: all 0.2s; }
-        .reminder-item:hover { border-color: #C9A24B55; }
-        .reminder-item.done { opacity: 0.5; background: #0F1830; }
+        .notif-item .notif-actions button { background: none; border: none; cursor: pointer; color: var(--text-secondary); transition: color 0.2s; font-size: 0.9rem; padding: 4px 6px; }
+        .notif-item .notif-actions button:hover { color: var(--gold); }
+        .notif-item .notif-actions button.danger:hover { color: var(--danger); }
+
+        .reminder-item { padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-secondary); margin-bottom: 8px; transition: all 0.2s; }
+        .reminder-item:hover { border-color: var(--gold); }
+        .reminder-item.done { opacity: 0.5; background: var(--bg-primary); }
         .reminder-item .reminder-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-        .reminder-item .reminder-title { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
-        .reminder-item .reminder-date { font-size: 0.75rem; color: #8B96A8; }
-        .reminder-item .reminder-notes { font-size: 0.85rem; color: #8B96A8; margin-top: 4px; }
+        .reminder-item .reminder-title { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+        .reminder-item .reminder-date { font-size: 0.75rem; color: var(--text-secondary); }
+        .reminder-item .reminder-notes { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
         .reminder-item .reminder-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
         .reminder-item .reminder-actions button { padding: 2px 12px; border-radius: 20px; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .reminder-item .reminder-actions .done-btn { background: #1F7A5C; color: #fff; }
-        .reminder-item .reminder-actions .done-btn:hover { background: #123D30; }
-        .reminder-item .reminder-actions .edit-btn { background: #1A2740; color: #EDEAE2; }
-        .reminder-item .reminder-actions .edit-btn:hover { background: #22314C; }
-        .reminder-item .reminder-actions .delete-btn { background: #3A1A14; color: #E05A4A; }
-        .reminder-item .reminder-actions .delete-btn:hover { background: #3A1E19; }
-        
-        .tab-btn { padding: 8px 20px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
-        .tab-btn.active { background: #C9A24B; color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
-        .tab-btn:hover:not(.active) { background: #1A2740; }
+        .reminder-item .reminder-actions .done-btn { background: var(--emerald); color: #fff; }
+        .reminder-item .reminder-actions .done-btn:hover { background: var(--emerald-soft); }
+        .reminder-item .reminder-actions .edit-btn { background: var(--bg-surface); color: var(--text-primary); }
+        .reminder-item .reminder-actions .edit-btn:hover { background: var(--bg-surface2); }
+        .reminder-item .reminder-actions .delete-btn { background: var(--danger-soft); color: var(--danger); }
+        .reminder-item .reminder-actions .delete-btn:hover { background: var(--terracotta-soft); }
+
+        .tab-btn { padding: 8px 20px; border: none; border-radius: 30px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); }
+        .tab-btn.active { background: var(--gold); color: #0B121E; box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25); }
+        .tab-btn:hover:not(.active) { background: var(--bg-surface); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        .filter-btn { padding: 4px 14px; border-radius: 20px; border: 1px solid #22314C; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: #8B96A8; }
-        .filter-btn.active { background: #C9A24B; color: #0B121E; border-color: #C9A24B; }
-        .filter-btn:hover:not(.active) { background: #1A2740; }
-        
+
+        .filter-btn { padding: 4px 14px; border-radius: 20px; border: 1px solid var(--border-light); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); }
+        .filter-btn.active { background: var(--gold); color: #0B121E; border-color: var(--gold); }
+        .filter-btn:hover:not(.active) { background: var(--bg-surface); }
+
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .modal-box { padding: 16px; } }
-        
-        /* ===== شاشة الدخول ===== */
+
+        .main-content { display: none !important; }
+        .main-content.visible { display: block !important; }
+
         #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
         #loginOverlay.show { display: flex !important; }
-        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
-        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
-        .login-box .field { margin-bottom: 16px; }
-        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
-        .login-box .btn { width: 100%; justify-content: center; }
-        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
+        .login-box { background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px var(--shadow-color); }
         
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .main-content { display: none !important; }
-        .main-content.visible { display: block !important; }
     </style>
 </head>
 <body>
@@ -193,8 +182,14 @@
 
         <!-- Tabs -->
         <div class="flex flex-wrap gap-2 mb-4">
-            <button class="tab-btn active" data-tab="notifications" onclick="switchTab('notifications')"><i class="fas fa-bell ml-1"></i> الإشعارات <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full mr-1" id="notifBadge">0</span></button>
-            <button class="tab-btn" data-tab="reminders" onclick="switchTab('reminders')"><i class="fas fa-clock ml-1"></i> التذكيرات <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full mr-1" id="reminderBadge">0</span></button>
+            <button class="tab-btn active" data-tab="notifications" onclick="switchTab('notifications')">
+                <i class="fas fa-bell ml-1"></i> الإشعارات 
+                <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full mr-1" id="notifBadge">0</span>
+            </button>
+            <button class="tab-btn" data-tab="reminders" onclick="switchTab('reminders')">
+                <i class="fas fa-clock ml-1"></i> التذكيرات 
+                <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full mr-1" id="reminderBadge">0</span>
+            </button>
         </div>
 
         <!-- Notifications Tab -->
@@ -243,10 +238,6 @@
                     <div class="field"><label>التاريخ *</label><input type="date" id="remDate" required /></div>
                     <div class="field"><label>الوقت</label><input type="time" id="remTime" /></div>
                     <div class="field full-width"><label>الملاحظات</label><textarea id="remNotes" rows="3" placeholder="تفاصيل التذكير..."></textarea></div>
-                    <div class="field full-width"><label>الربط مع (اختياري)</label>
-                        <select id="remLinkType"><option value="">لا يوجد ربط</option><option value="offer">عرض</option><option value="request">طلب</option></select>
-                    </div>
-                    <div class="field full-width" id="remLinkIdContainer" style="display:none;"><label>رقم العرض/الطلب</label><input type="text" id="remLinkId" placeholder="مثال: ع-١٢٣ أو ط-١٠١" /></div>
                 </div>
                 <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
                     <button type="button" class="btn btn-outline" onclick="closeModal('reminderModal')">إلغاء</button>
@@ -262,7 +253,7 @@
 <script src="global.js"></script>
 <script>
 // ============================================================
-// ALERTS & REMINDERS - كامل مع جميع المميزات
+// ALERTS & REMINDERS - كامل مع جميع المميزات (نسخة محسنة)
 // ============================================================
 
 let notifications = [];
@@ -272,13 +263,42 @@ let currentReminderFilter = 'all';
 let isAuthChecked = false;
 
 // ============================================================
-// AUTH - محسنة
+// HELPERS
+// ============================================================
+function formatDate(d) {
+    if (!d) return '-';
+    try {
+        const date = typeof d === 'string' ? new Date(d) : new Date(d);
+        if (isNaN(date.getTime())) return d;
+        return date.toLocaleDateString('ar-SA', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (e) {
+        return d;
+    }
+}
+
+function formatTime(d) {
+    if (!d) return '';
+    try {
+        const date = typeof d === 'string' ? new Date(d) : new Date(d);
+        if (isNaN(date.getTime())) return '';
+        return date.toLocaleTimeString('ar-SA', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        return '';
+    }
+}
+
+// ============================================================
+// AUTH
 // ============================================================
 async function checkAuth() {
-    if (isAuthChecked && API.isAuthenticated()) {
-        return true;
-    }
-
+    if (isAuthChecked && API.isAuthenticated()) return true;
     const token = localStorage.getItem('masar_token');
     const overlay = document.getElementById('loginOverlay');
     const mainContent = document.getElementById('mainContent');
@@ -298,7 +318,6 @@ async function checkAuth() {
                 API.token = null;
             }
         } catch (err) {
-            console.warn('خطأ في التحقق من التوكن:', err.message);
             localStorage.removeItem('masar_token');
             localStorage.removeItem('masar_user');
             API.token = null;
@@ -311,7 +330,6 @@ async function checkAuth() {
     return false;
 }
 
-// تسجيل الدخول
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -349,29 +367,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 });
 
 // ============================================================
-// HELPERS
-// ============================================================
-function formatDate(d) {
-    if (!d) return '-';
-    try {
-        const date = new Date(d);
-        return date.toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' });
-    } catch (e) {
-        return d;
-    }
-}
-
-function formatTime(d) {
-    if (!d) return '';
-    try {
-        const date = new Date(d);
-        return date.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
-        return '';
-    }
-}
-
-// ============================================================
 // LOAD DATA
 // ============================================================
 async function loadData() {
@@ -384,39 +379,63 @@ async function loadData() {
         // تحميل التذكيرات من API
         const remindersResult = await API.reminders.list();
         if (remindersResult.status === 'success') {
-            reminders = remindersResult.data || [];
+            // التأكد من أن reminders مصفوفة
+            const data = remindersResult.data || [];
+            reminders = Array.isArray(data) ? data : [];
         } else {
             // إذا فشل API، استخدم التخزين المحلي
             const localReminders = localStorage.getItem('masarRemindersLocal');
             if (localReminders) {
                 try {
-                    reminders = JSON.parse(localReminders);
-                } catch (e) {}
+                    const parsed = JSON.parse(localReminders);
+                    reminders = Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    reminders = [];
+                }
+            } else {
+                reminders = [];
             }
         }
 
         // تحميل الإشعارات من لوحة التحكم
         const dashboardResult = await API.reports.dashboard();
         if (dashboardResult.status === 'success') {
-            notifications = dashboardResult.data.alerts || [];
+            const alerts = dashboardResult.data.alerts || [];
+            notifications = Array.isArray(alerts) ? alerts : [];
+        } else {
+            notifications = [];
         }
 
         renderNotifications();
         renderReminders();
         renderStats();
     } catch (err) {
+        console.error('Error loading data:', err);
+        // التأكد من أن المتغيرات مصفوفات
+        reminders = Array.isArray(reminders) ? reminders : [];
+        notifications = Array.isArray(notifications) ? notifications : [];
+        renderNotifications();
+        renderReminders();
+        renderStats();
         showToast(err.message || 'حدث خطأ في تحميل البيانات', 'error');
     }
 }
 
 function saveRemindersLocally() {
-    localStorage.setItem('masarRemindersLocal', JSON.stringify(reminders));
+    if (Array.isArray(reminders)) {
+        localStorage.setItem('masarRemindersLocal', JSON.stringify(reminders));
+    }
 }
 
 // ============================================================
 // RENDER NOTIFICATIONS
 // ============================================================
 function renderNotifications() {
+    // التأكد من أن notifications مصفوفة
+    if (!Array.isArray(notifications)) {
+        notifications = [];
+    }
+
     let filtered = [...notifications];
     if (currentNotifFilter === 'unread') {
         filtered = filtered.filter(n => !n.read);
@@ -471,7 +490,11 @@ function filterNotifications(filter) {
 }
 
 function markRead(id) {
-    const n = notifications.find(x => x.id === id);
+    if (!Array.isArray(notifications)) {
+        notifications = [];
+        return;
+    }
+    const n = notifications.find(x => String(x.id) === String(id));
     if (n) {
         n.read = true;
         renderNotifications();
@@ -481,6 +504,10 @@ function markRead(id) {
 }
 
 function markAllRead() {
+    if (!Array.isArray(notifications)) {
+        notifications = [];
+        return;
+    }
     notifications.forEach(n => n.read = true);
     renderNotifications();
     renderStats();
@@ -488,13 +515,21 @@ function markAllRead() {
 }
 
 function deleteNotification(id) {
-    notifications = notifications.filter(n => n.id !== id);
+    if (!Array.isArray(notifications)) {
+        notifications = [];
+        return;
+    }
+    notifications = notifications.filter(n => String(n.id) !== String(id));
     renderNotifications();
     renderStats();
 }
 
 function clearAllNotifications() {
     if (!confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) return;
+    if (!Array.isArray(notifications)) {
+        notifications = [];
+        return;
+    }
     notifications = [];
     renderNotifications();
     renderStats();
@@ -505,6 +540,11 @@ function clearAllNotifications() {
 // RENDER REMINDERS
 // ============================================================
 function renderReminders() {
+    // التأكد من أن reminders مصفوفة
+    if (!Array.isArray(reminders)) {
+        reminders = [];
+    }
+
     let filtered = [...reminders];
     if (currentReminderFilter === 'pending') {
         filtered = filtered.filter(r => !r.done);
@@ -544,9 +584,9 @@ function renderReminders() {
                 <div class="reminder-date">${formatDate(r.reminder_time)} ${formatTime(r.reminder_time)}</div>
             </div>
             ${r.notes ? `<div class="reminder-notes">${r.notes}</div>` : ''}
-            ${r.link_id ? `<div class="text-xs text-muted mt-1">🔗 مرتبط بـ ${r.link_id}</div>` : ''}
             <div class="reminder-actions">
-                ${!r.done ? `<button class="done-btn" onclick="toggleReminderDone('${r.id}')">✅ تم الإنجاز</button>` : `<button class="done-btn" onclick="toggleReminderDone('${r.id}')" style="background:#1A2740;color:#8B96A8;">↩️ إعادة فتح</button>`}
+                ${!r.done ? `<button class="done-btn" onclick="toggleReminderDone('${r.id}')">✅ تم الإنجاز</button>` : 
+                    `<button class="done-btn" onclick="toggleReminderDone('${r.id}')" style="background:var(--bg-surface);color:var(--text-secondary);">↩️ إعادة فتح</button>`}
                 <button class="edit-btn" onclick="editReminder('${r.id}')"><i class="fas fa-pen"></i> تعديل</button>
                 <button class="delete-btn" onclick="deleteReminder('${r.id}')"><i class="fas fa-trash"></i> حذف</button>
             </div>
@@ -564,7 +604,11 @@ function filterReminders(filter) {
 }
 
 async function toggleReminderDone(id) {
-    const r = reminders.find(x => x.id === id);
+    if (!Array.isArray(reminders)) {
+        reminders = [];
+        return;
+    }
+    const r = reminders.find(x => String(x.id) === String(id));
     if (!r) return;
     
     try {
@@ -584,11 +628,15 @@ async function toggleReminderDone(id) {
 }
 
 async function deleteReminder(id) {
+    if (!Array.isArray(reminders)) {
+        reminders = [];
+        return;
+    }
     if (!confirm('هل أنت متأكد من حذف هذا التذكير؟')) return;
     try {
         const result = await API.reminders.delete(id);
         if (result.status === 'success') {
-            reminders = reminders.filter(r => r.id !== id);
+            reminders = reminders.filter(r => String(r.id) !== String(id));
             saveRemindersLocally();
             renderReminders();
             renderStats();
@@ -611,14 +659,15 @@ function openAddReminder() {
     document.getElementById('remDate').value = new Date().toISOString().slice(0, 10);
     document.getElementById('remTime').value = '';
     document.getElementById('remNotes').value = '';
-    document.getElementById('remLinkType').value = '';
-    document.getElementById('remLinkId').value = '';
-    document.getElementById('remLinkIdContainer').style.display = 'none';
     document.getElementById('reminderModal').classList.add('active');
 }
 
 function editReminder(id) {
-    const r = reminders.find(x => x.id === id);
+    if (!Array.isArray(reminders)) {
+        reminders = [];
+        return;
+    }
+    const r = reminders.find(x => String(x.id) === String(id));
     if (!r) { showToast('التذكير غير موجود', 'error'); return; }
     document.getElementById('reminderModalTitle').textContent = 'تعديل التذكير';
     document.getElementById('editReminderId').value = id;
@@ -626,19 +675,12 @@ function editReminder(id) {
     document.getElementById('remDate').value = r.reminder_time ? r.reminder_time.slice(0, 10) : '';
     document.getElementById('remTime').value = r.reminder_time ? r.reminder_time.slice(11, 16) : '';
     document.getElementById('remNotes').value = r.notes || '';
-    document.getElementById('remLinkType').value = r.link_type || '';
-    document.getElementById('remLinkId').value = r.link_id || '';
-    document.getElementById('remLinkIdContainer').style.display = r.link_type ? 'block' : 'none';
     document.getElementById('reminderModal').classList.add('active');
 }
 
 function closeModal(id) {
     document.getElementById(id).classList.remove('active');
 }
-
-document.getElementById('remLinkType').addEventListener('change', function() {
-    document.getElementById('remLinkIdContainer').style.display = this.value ? 'block' : 'none';
-});
 
 document.getElementById('reminderForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -647,8 +689,6 @@ document.getElementById('reminderForm').addEventListener('submit', async functio
     const date = document.getElementById('remDate').value;
     const time = document.getElementById('remTime').value;
     const notes = document.getElementById('remNotes').value.trim();
-    const linkType = document.getElementById('remLinkType').value;
-    const linkId = document.getElementById('remLinkId').value.trim();
 
     if (!title || !date) {
         showToast('يرجى ملء العنوان والتاريخ', 'error');
@@ -660,9 +700,7 @@ document.getElementById('reminderForm').addEventListener('submit', async functio
     const data = {
         title: title,
         reminder_time: reminderTime,
-        notes: notes,
-        link_type: linkType,
-        link_id: linkId
+        note: notes
     };
 
     try {
@@ -689,6 +727,10 @@ document.getElementById('reminderForm').addEventListener('submit', async functio
 // STATS
 // ============================================================
 function renderStats() {
+    // التأكد من أن المتغيرات مصفوفات
+    if (!Array.isArray(notifications)) notifications = [];
+    if (!Array.isArray(reminders)) reminders = [];
+
     const unread = notifications.filter(n => !n.read).length;
     document.getElementById('unreadNotifications').textContent = unread;
     document.getElementById('totalNotifications').textContent = notifications.length;

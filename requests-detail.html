@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>مسار — تفاصيل الطلب</title>
+    <link rel="stylesheet" href="global.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* نفس تنسيقات offers-detail.html */
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+        * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
+        
+        .bg-surface { background: #121B2C; }
+        .bg-surface2 { background: #1A2740; }
+        .bg-surface3 { background: #22314C; }
+        .bg-bg { background: #0B121E; }
+        .text-muted { color: #8B96A8; }
+        .text-ink { color: #EDEAE2; }
+        .border-line { border-color: rgba(237, 234, 226, 0.08); }
+        .bg-gold { background: #C9A24B; }
+        .text-gold { color: #C9A24B; }
+        .bg-emerald { background: #1F7A5C; }
+        .text-emerald { color: #1F7A5C; }
+        .bg-danger { background: #E05A4A; }
+        .text-danger { color: #E05A4A; }
+        
+        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn-gold { background: #C9A24B; color: #0B121E; }
+        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
+        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
+        .btn-emerald { background: #1F7A5C; color: #fff; }
+        .btn-emerald:hover { background: #123D30; }
+        .btn-danger { background: #E05A4A; color: #fff; }
+        .btn-danger:hover { background: #C1543A; }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .status-dot.pulse { animation: pulse-dot 1.8s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+        
+        .detail-section { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 20px 24px; margin-bottom: 20px; }
+        .detail-section .section-title { font-size: 18px; font-weight: 800; color: #EDEAE2; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        
+        .timeline { display: flex; flex-direction: column; gap: 0; padding-right: 4px; }
+        .timeline-item { display: flex; gap: 16px; padding: 6px 0; }
+        .timeline-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 2px solid #0B121E; margin-top: 2px; position: relative; z-index: 2; }
+        .timeline-dot.completed { background: #C9A24B; }
+        .timeline-dot.active { background: #C9A24B; box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.3); }
+        .timeline-dot.active.delayed { background: #C1543A; box-shadow: 0 0 0 4px rgba(193, 84, 58, 0.3); }
+        .timeline-dot.pending { background: #22314C; }
+        .timeline-line { width: 3px; flex: 1; min-height: 24px; margin: 0 7px; border-radius: 4px; }
+        .timeline-line.completed { background: linear-gradient(180deg, #C9A24B 0%, #C9A24B 100%); }
+        .timeline-line.pending { background: #22314C; }
+        .timeline-line.delayed { background: #C1543A; }
+        .timeline-content { flex: 1; padding-bottom: 4px; }
+        .timeline-content .stage-name { font-weight: 700; font-size: 0.95rem; color: #EDEAE2; }
+        .timeline-content .stage-date { font-size: 0.75rem; color: #8B96A8; margin-top: 2px; }
+        
+        .log-entry { padding: 6px 0; border-bottom: 1px solid rgba(237, 234, 226, 0.05); font-size: 0.85rem; color: #8B96A8; display: flex; gap: 8px; flex-wrap: wrap; }
+        .log-entry .log-time { color: #5A6A7A; font-size: 0.75rem; white-space: nowrap; min-width: 90px; }
+        
+        .chip { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+        .bg-emeraldSoft { background: #123D30; }
+        
+        .match-card { background: #0F1830; border: 1px solid #22314C; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
+        .match-card:hover { border-color: #C9A24B; background: #1A2740; }
+        .match-score { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
+        .match-score.high { background: #1F7A5C; color: #fff; }
+        .match-score.medium { background: #C9A24B; color: #0B121E; }
+        .match-score.low { background: #22314C; color: #8B96A8; }
+        
+        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); border-radius: 24px; max-width: 700px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.25s ease; position: relative; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: #8B96A8; cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: #EDEAE2; }
+        
+        .field { display: flex; flex-direction: column; gap: 4px; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        
+        .file-upload-area { border: 2px dashed #22314C; border-radius: 12px; padding: 16px; text-align: center; color: #8B96A8; cursor: pointer; transition: background 0.2s, border-color 0.2s; font-weight: 500; font-size: 0.9rem; }
+        .file-upload-area:hover { background: #0F1830; border-color: #C9A24B; }
+        
+        .main-content { display: none; }
+        .main-content.visible { display: block; }
+        
+        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+        #loginOverlay.show { display: flex !important; }
+        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
+        .login-box .field { margin-bottom: 16px; }
+        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
+        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
+        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
+        .login-box .btn { width: 100%; justify-content: center; }
+        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
+        
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) { .detail-section { padding: 14px 16px; } .btn { padding: 8px 18px; font-size: 0.85rem; } .modal-box { padding: 16px; } }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2><i class="fas fa-lock ml-2"></i>تسجيل الدخول</h2>
+        <form id="loginForm">
+            <div class="field"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" value="admin@masar.sa" required /></div>
+            <div class="field"><label>كلمة المرور</label><input type="password" id="loginPassword" value="Admin.123" required /></div>
+            <div id="loginError">خطأ في بيانات الدخول</div>
+            <button type="submit" class="btn btn-gold mt-2"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle text-emerald-400"></i>
+    <span id="toastMessage">تم الإجراء بنجاح</span>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar-container"></div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content" id="mainContent">
+    <div class="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+        <!-- Back Button -->
+        <button class="btn btn-outline btn-sm mb-4" onclick="goBack()">
+            <i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة
+        </button>
+        
+        <!-- Loading -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="spinner mx-auto"></div>
+            <p class="text-muted mt-4">جاري تحميل تفاصيل الطلب...</p>
+        </div>
+        
+        <!-- Detail Content -->
+        <div id="detailContent" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- ===== MATCH OFFERS MODAL ===== -->
+<div class="modal-overlay" id="matchModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal('matchModal')">✕</button>
+        <div class="modal-title">🔍 عروض مطابقة</div>
+        <div id="matchResults"></div>
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
+            <button class="btn btn-outline" onclick="closeModal('matchModal')">إغلاق</button>
+            <button class="btn btn-gold" onclick="refreshMatches()">🔄 تحديث المطابقة</button>
+        </div>
+    </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script src="api.js"></script>
+<script src="global.js"></script>
+<script>
+// ============================================================
+// REQUEST DETAIL - صفحة تفاصيل الطلب المستقلة
+// ============================================================
+
+let currentRequestId = null;
+let isAuthChecked = false;
+let currentMatches = [];
+
+// ============================================================
+// AUTH
+// ============================================================
+async function checkAuth() {
+    if (isAuthChecked && API.isAuthenticated()) {
+        return true;
+    }
+
+    const token = localStorage.getItem('masar_token');
+    const overlay = document.getElementById('loginOverlay');
+    const mainContent = document.getElementById('mainContent');
+
+    if (token) {
+        try {
+            const result = await API.auth.me();
+            if (result.status === 'success') {
+                API.token = token;
+                overlay.classList.remove('show');
+                mainContent.classList.add('visible');
+                isAuthChecked = true;
+                return true;
+            } else {
+                localStorage.removeItem('masar_token');
+                localStorage.removeItem('masar_user');
+                API.token = null;
+            }
+        } catch (err) {
+            console.warn('خطأ في التحقق من التوكن:', err.message);
+            localStorage.removeItem('masar_token');
+            localStorage.removeItem('masar_user');
+            API.token = null;
+        }
+    }
+
+    overlay.classList.add('show');
+    mainContent.classList.remove('visible');
+    isAuthChecked = false;
+    return false;
+}
+
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('loginError');
+    errorEl.style.display = 'none';
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
+
+    try {
+        const result = await API.auth.login(email, password);
+        if (result.status === 'success') {
+            errorEl.style.display = 'none';
+            if (result.data?.user) {
+                localStorage.setItem('masar_user', JSON.stringify(result.data.user));
+            }
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                showToast('✅ تم تسجيل الدخول بنجاح', 'success');
+                loadRequestDetail();
+            }
+        } else {
+            errorEl.textContent = result.message || 'فشل تسجيل الدخول';
+            errorEl.style.display = 'block';
+        }
+    } catch (err) {
+        errorEl.textContent = err.message || 'حدث خطأ في الاتصال';
+        errorEl.style.display = 'block';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+    }
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+const REQUEST_STAGES = [
+    { id: 1, name: 'طلب جديد' },
+    { id: 2, name: 'جاري المطابقة' },
+    { id: 3, name: 'تم اختيار العرض' },
+    { id: 4, name: 'جدولة المعاينة' },
+    { id: 5, name: 'مكتمل ✅' }
+];
+
+function getRequestStageName(id) {
+    const s = REQUEST_STAGES.find(s => s.id === id);
+    return s ? s.name : 'غير معروف';
+}
+
+function getRequestStatusInfo(id) {
+    const map = {
+        1: { label: 'جديد', color: '#f97316', statusType: 'جديد' },
+        2: { label: 'جاري المطابقة', color: '#3b82f6', statusType: 'مطابقة' },
+        3: { label: 'تم اختيار العرض', color: '#8b5cf6', statusType: 'مختار' },
+        4: { label: 'جدولة المعاينة', color: '#f59e0b', statusType: 'تنسيق' },
+        5: { label: 'مكتمل ✅', color: '#10b981', statusType: 'مغلق' }
+    };
+    return map[id] || { label: 'غير معروف', color: '#9ca3af', statusType: 'other' };
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    try {
+        const date = new Date(d);
+        return date.toLocaleDateString('ar-SA', { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch (e) {
+        return d;
+    }
+}
+
+function formatMoney(n) {
+    return n ? Number(n).toLocaleString('en-US') + ' ريال' : '—';
+}
+
+function goBack() {
+    window.history.back();
+}
+
+// ============================================================
+// LOAD REQUEST DETAIL
+// ============================================================
+async function loadRequestDetail() {
+    if (!API.isAuthenticated()) {
+        await checkAuth();
+        return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const requestId = params.get('id');
+    
+    if (!requestId) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('detailContent').style.display = 'block';
+        document.getElementById('detailContent').innerHTML = `
+            <div class="text-center py-12 text-muted">
+                <i class="fas fa-exclamation-circle text-4xl block mb-4"></i>
+                <p>لم يتم تحديد رقم الطلب</p>
+                <button class="btn btn-gold mt-4" onclick="goBack()">العودة للقائمة</button>
+            </div>
+        `;
+        return;
+    }
+
+    currentRequestId = requestId;
+
+    try {
+        const result = await API.requests.get(requestId);
+        
+        if (result.status === 'success') {
+            const request = result.data;
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+            renderRequestDetail(request);
+        } else {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('detailContent').style.display = 'block';
+            document.getElementById('detailContent').innerHTML = `
+                <div class="text-center py-12 text-muted">
+                    <i class="fas fa-exclamation-circle text-4xl block mb-4"></i>
+                    <p>${result.message || 'الطلب غير موجود'}</p>
+                    <button class="btn btn-gold mt-4" onclick="goBack()">العودة للقائمة</button>
+                </div>
+            `;
+        }
+    } catch (err) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('detailContent').style.display = 'block';
+        document.getElementById('detailContent').innerHTML = `
+            <div class="text-center py-12 text-muted">
+                <i class="fas fa-exclamation-triangle text-4xl block mb-4"></i>
+                <p>حدث خطأ في تحميل البيانات: ${err.message}</p>
+                <button class="btn btn-gold mt-4" onclick="loadRequestDetail()">🔄 إعادة المحاولة</button>
+            </div>
+        `;
+    }
+}
+
+// ============================================================
+// RENDER REQUEST DETAIL
+// ============================================================
+function renderRequestDetail(r) {
+    const st = getRequestStatusInfo(r.stage_id);
+    const stageName = getRequestStageName(r.stage_id);
+    const isComplete = r.stage_id === 5;
+    const isDelayed = r.stage_id === 2 || r.stage_id === 4;
+
+    // Timeline
+    let timelineHtml = REQUEST_STAGES.map((s, idx) => {
+        const isCompleted = idx < r.stage_id;
+        const isActive = idx === r.stage_id - 1;
+        let dotClass = 'pending';
+        let lineClass = 'pending';
+        if (isCompleted) {
+            dotClass = 'completed';
+            lineClass = 'completed';
+        } else if (isActive) {
+            dotClass = isDelayed ? 'delayed' : 'active';
+            lineClass = isDelayed ? 'delayed' : 'pending';
+        }
+        return `
+            <div class="timeline-item">
+                <div style="display:flex;flex-direction:column;align-items:center;padding-top:2px">
+                    <div class="timeline-dot ${dotClass}"></div>
+                    ${idx < REQUEST_STAGES.length - 1 ? `<div class="timeline-line ${lineClass}"></div>` : ''}
+                </div>
+                <div class="timeline-content">
+                    <div class="stage-name">${s.name}</div>
+                    ${isActive ? `<div class="stage-date">🔵 المرحلة الحالية</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Log
+    let logHtml = (r.log || []).map(l => `
+        <div class="log-entry">
+            <span class="log-time">${l.slice(0, 16)}</span>
+            <span>${l.slice(16)}</span>
+        </div>
+    `).join('') || '<div style="color:#8B96A8;">لا توجد سجلات</div>';
+
+    // Action buttons
+    let actionsHtml = '';
+    if (!isComplete) {
+        if (r.stage_id === 1 || r.stage_id === 2) {
+            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="findMatches('${r.id}')">🔍 المطابقة</button>`;
+        }
+        if (r.stage_id === 3) {
+            actionsHtml += `<button class="btn btn-gold btn-sm" onclick="advanceStage('${r.id}', 4)">📅 جدولة المعاينة</button>`;
+        }
+        if (r.stage_id === 4) {
+            if (!r.appointment_date) {
+                actionsHtml += `<button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>`;
+            } else {
+                actionsHtml += `<button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل الموعد</button>`;
+                actionsHtml += `<button class="btn btn-emerald btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>`;
+            }
+        }
+        if (r.stage_id === 2 || r.stage_id === 3) {
+            actionsHtml += `<button class="btn btn-amber btn-sm" onclick="sendToExternalBroker('${r.id}')">📨 إرسال لوسيط</button>`;
+        }
+        actionsHtml += `<button class="btn btn-outline btn-sm" onclick="openEditRequest('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>`;
+        if (r.stage_id > 1) {
+            actionsHtml += `<button class="btn btn-outline btn-sm" onclick="regressStage('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-undo"></i> رجوع</button>`;
+        }
+    } else {
+        actionsHtml = `<span class="text-emerald-400 font-bold text-lg">✅ الطلب مكتمل</span>`;
+    }
+
+    // Matched offer info
+    let matchedOfferHtml = '';
+    if (r.matched_offer_id) {
+        matchedOfferHtml = `
+            <div style="background:#0F1830;border:1px solid #1F7A5C;border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <span style="font-weight:700;color:#1F7A5C;">🔗 مرتبط بالعرض</span>
+                        <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${r.matched_offer_id}</div>
+                        <div style="font-size:0.85rem;color:#8B96A8;">${r.matched_offer?.title || r.matched_offer?.property_type || '-'}</div>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="window.location.href='offers-detail.html?id=${r.matched_offer_id}'" style="color:#EDEAE2;border-color:#22314C;">
+                        <i class="fas fa-external-link-alt ml-1"></i> عرض التفاصيل
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Appointment info
+    let appointmentHtml = '';
+    if (r.stage_id === 4 || r.stage_id === 3 || r.stage_id === 5) {
+        if (r.appointment_date) {
+            appointmentHtml = `
+                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div>
+                            <span style="font-weight:700;color:#C9A24B;">📅 موعد المعاينة</span>
+                            <div style="font-weight:700;font-size:1.1rem;color:#EDEAE2;">${formatDate(r.appointment_date)} ${r.appointment_time || ''}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm" onclick="editAppointment('${r.id}')" style="color:#EDEAE2;border-color:#22314C;"><i class="fas fa-pen"></i> تعديل</button>
+                            <button class="btn btn-gold btn-sm" onclick="confirmAppointment('${r.id}')">✅ تأكيد الحضور</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (r.stage_id === 4) {
+            appointmentHtml = `
+                <div style="background:#0F1830;border:1px solid #C9A24B;border-radius:12px;padding:12px;margin:12px 0;">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                        <div>
+                            <span style="font-weight:700;color:#C9A24B;">⏳ لم يتم تحديد موعد المعاينة بعد</span>
+                        </div>
+                        <button class="btn btn-gold btn-sm" onclick="setAppointment('${r.id}')">📅 تحديد موعد</button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    const html = `
+        <div class="detail-section">
+            <div class="flex flex-wrap justify-between items-start gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-gold">${r.display_id || r.id} — ${r.property_type}</h2>
+                    <div class="flex flex-wrap items-center gap-3 mt-2 text-sm text-muted">
+                        <span><i class="far fa-user ml-1"></i> ${r.client_name || r.contact?.name || '-'}</span>
+                        <span><i class="far fa-phone ml-1"></i> ${r.client_phone || r.contact?.phone || '-'}</span>
+                        <span><i class="far fa-calendar ml-1"></i> ${formatDate(r.request_date || r.created_at)}</span>
+                        <span class="status-badge" style="background:${st.color}22; color:${st.color}; border:1px solid ${st.color}55;">
+                            <span class="status-dot ${isDelayed ? 'pulse' : ''}" style="background:${st.color};"></span>
+                            ${st.label}
+                        </span>
+                        <span class="chip bg-surface3 text-muted">👤 شخصي</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">${actionsHtml}</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-info-circle text-gold"></i> تفاصيل الطلب</div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-sm text-muted">نوع العقار</span><div class="font-bold text-ink">${r.property_type}</div></div>
+                    <div><span class="text-sm text-muted">نوع الاتفاق</span><div class="font-bold text-ink">${r.deal_type || r.agreement_type || '-'}</div></div>
+                    <div><span class="text-sm text-muted">المساحة</span><div class="font-bold text-ink">${r.area || '-'} م²</div></div>
+                    <div><span class="text-sm text-muted">الميزانية</span><div class="font-bold text-gold">${formatMoney(r.budget)}</div></div>
+                    <div><span class="text-sm text-muted">المدينة</span><div class="font-bold text-ink">${r.city || '-'}</div></div>
+                    <div class="col-span-2"><span class="text-sm text-muted">المناطق المطلوبة</span><div class="font-bold text-ink">${r.districts || '-'}</div></div>
+                    <div class="col-span-2"><span class="text-sm text-muted">ملاحظات</span><div class="text-sm text-ink">${r.notes || '-'}</div></div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="section-title"><i class="fas fa-user-tie text-gold"></i> معلومات العميل</div>
+                <div class="space-y-2">
+                    <div><span class="text-sm text-muted">الاسم</span><div class="font-bold text-ink">${r.client_name || r.contact?.name || '-'}</div></div>
+                    <div><span class="text-sm text-muted">رقم الجوال</span><div class="text-ink">${r.client_phone || r.contact?.phone || '-'}</div></div>
+                </div>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(237,234,226,0.08);">
+                    <div class="section-title" style="font-size:15px;margin-bottom:8px;"><i class="fas fa-handshake text-gold"></i> العرض المرتبط</div>
+                    ${matchedOfferHtml || '<div style="color:#8B96A8;">لا يوجد عرض مرتبط بعد</div>'}
+                    ${appointmentHtml}
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="section-title"><i class="fas fa-route text-gold"></i> مسار الطلب</div>
+            <div class="timeline">${timelineHtml}</div>
+        </div>
+
+        <div class="detail-section">
+            <div class="section-title"><i class="fas fa-history text-gold"></i> سجل النشاط</div>
+            <div class="max-h-60 overflow-y-auto">${logHtml}</div>
+        </div>
+    `;
+
+    document.getElementById('detailContent').innerHTML = html;
+}
+
+// ============================================================
+// REQUEST ACTIONS
+// ============================================================
+function openEditRequest(id) {
+    window.location.href = `requests.html?edit=${id}`;
+}
+
+function advanceStage(id, newStage) {
+    API.requests.changeStage(id, newStage, 'تم التقدم للمرحلة التالية')
+        .then(result => {
+            if (result.status === 'success') {
+                showToast('✅ تم تغيير المرحلة', 'success');
+                loadRequestDetail();
+            } else {
+                showToast(result.message || 'فشل تغيير المرحلة', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+}
+
+function regressStage(id) {
+    const stageId = prompt('أدخل رقم المرحلة الجديدة (1-5):', '1');
+    if (!stageId) return;
+    
+    const newStage = parseInt(stageId);
+    if (isNaN(newStage) || newStage < 1 || newStage > 5) {
+        showToast('مرحلة غير صالحة', 'error');
+        return;
+    }
+    
+    API.requests.changeStage(id, newStage, 'تم الرجوع للمرحلة بواسطة المستخدم')
+        .then(result => {
+            if (result.status === 'success') {
+                showToast('✅ تم تغيير المرحلة', 'success');
+                loadRequestDetail();
+            } else {
+                showToast(result.message || 'فشل تغيير المرحلة', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+}
+
+// ============================================================
+// MATCHING
+// ============================================================
+async function findMatches(id) {
+    try {
+        const result = await API.requests.findMatches(id);
+        if (result.status === 'success') {
+            currentMatches = result.data.matches || [];
+            renderMatches(currentMatches, id);
+            document.getElementById('matchModal').classList.add('active');
+        } else {
+            showToast(result.message || 'فشل البحث عن عروض مطابقة', 'error');
+        }
+    } catch (err) {
+        showToast(err.message || 'حدث خطأ', 'error');
+    }
+}
+
+function renderMatches(matches, requestId) {
+    const container = document.getElementById('matchResults');
+    if (matches.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center;padding:20px;color:#8B96A8;">
+                <i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+                <p>⚠️ لا توجد عروض مطابقة حالياً.</p>
+                <p style="font-size:0.85rem;margin-top:8px;">يمكنك البحث خارج النظام، وإذا وجدت عرضاً جديداً، أضفه في صفحة العروض ثم عد للمطابقة.</p>
+                <button class="btn btn-gold btn-sm mt-4" onclick="window.location.href='offers.html'">➕ إضافة عرض جديد</button>
+                <button class="btn btn-outline btn-sm mt-4" onclick="sendToExternalBroker('${requestId}')" style="margin-right:8px;">📨 إرسال لوسيط خارجي</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = matches.map(m => `
+        <div class="match-card">
+            <div style="flex:1;">
+                <div style="font-weight:700;color:#EDEAE2;">${m.offer?.title || m.offer?.property_type || 'عرض'}</div>
+                <div style="font-size:0.85rem;color:#8B96A8;">
+                    ${m.offer?.city || ''} - ${m.offer?.district || ''} · ${m.offer?.area || ''} م² · ${formatMoney(m.offer?.price)}
+                </div>
+                <div style="font-size:0.75rem;color:#8B96A8;margin-top:4px;">
+                    ${m.details?.join(' • ') || ''}
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="match-score ${m.match_score >= 70 ? 'high' : m.match_score >= 40 ? 'medium' : 'low'}">${m.match_score || 0}%</span>
+                <button class="btn btn-outline btn-sm" onclick="shareOfferToClient('${requestId}','${m.offer?.id}')" style="color:#EDEAE2;border-color:#22314C;">
+                    <i class="fas fa-share-alt"></i> مشاركة
+                </button>
+                <button class="btn btn-gold btn-sm" onclick="selectOffer('${requestId}','${m.offer?.id}')">
+                    ✅ اختيار
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function refreshMatches() {
+    if (currentRequestId) {
+        findMatches(currentRequestId);
+    }
+}
+
+function selectOffer(requestId, offerId) {
+    API.requests.matchOffer(requestId, offerId)
+        .then(result => {
+            if (result.status === 'success') {
+                showToast('✅ تم اختيار العرض وربطه بالطلب', 'success');
+                closeModal('matchModal');
+                loadRequestDetail();
+            } else {
+                showToast(result.message || 'فشل ربط العرض بالطلب', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+}
+
+function shareOfferToClient(requestId, offerId) {
+    // فتح واتساب لمشاركة العرض مع العميل
+    API.requests.get(requestId)
+        .then(result => {
+            if (result.status === 'success') {
+                const request = result.data;
+                const clientPhone = request.client_phone || request.contact?.phone || '966500000000';
+                const msg = `📋 *عرض عقاري مطابق لطلبك*\n\n` +
+                    `🏷️ *الطلب:* ${request.display_id || request.id}\n` +
+                    `🏗️ *نوع العقار:* ${request.property_type}\n` +
+                    `📍 *المدينة:* ${request.city}\n` +
+                    `📝 *تم إرسال العرض عبر تطبيق مسار*\n\n` +
+                    `يرجى إعلامنا بقرارك.`;
+                window.open(`https://wa.me/${clientPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                showToast('📱 تم فتح واتساب للعميل', 'success');
+            } else {
+                showToast(result.message || 'فشل تحميل بيانات الطلب', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+}
+
+function sendToExternalBroker(requestId) {
+    const brokerPhone = '966500000000';
+    API.requests.get(requestId)
+        .then(result => {
+            if (result.status === 'success') {
+                const r = result.data;
+                const msg = `📋 *طلب عميل - ${r.display_id || r.id}*\n` +
+                    `🏗️ *نوع العقار:* ${r.property_type}\n` +
+                    `📍 *المدينة:* ${r.city}\n` +
+                    `📍 *المناطق:* ${r.districts}\n` +
+                    `📐 *المساحة:* ${r.area} م²\n` +
+                    `💰 *الميزانية:* ${formatMoney(r.budget)}\n` +
+                    `📝 *ملاحظات:* ${r.notes || 'لا توجد'}\n\n` +
+                    `يرجى المساعدة في إيجاد عرض مناسب.`;
+                window.open(`https://wa.me/${brokerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+                showToast('📨 تم فتح واتساب للوسيط الخارجي', 'success');
+            } else {
+                showToast(result.message || 'فشل تحميل بيانات الطلب', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+}
+
+// ============================================================
+// APPOINTMENT
+// ============================================================
+function setAppointment(id) {
+    const date = prompt('أدخل تاريخ المعاينة (YYYY-MM-DD):', new Date().toISOString().slice(0, 10));
+    if (!date) return;
+    const time = prompt('أدخل وقت المعاينة (HH:MM):', '10:00');
+    if (!time) return;
+
+    API.requests.update(id, { 
+        appointment_date: date, 
+        appointment_time: time,
+        stage_id: 4
+    })
+    .then(result => {
+        if (result.status === 'success') {
+            showToast('✅ تم تسجيل موعد المعاينة', 'success');
+            loadRequestDetail();
+        } else {
+            showToast(result.message || 'فشل تسجيل الموعد', 'error');
+        }
+    })
+    .catch(err => {
+        showToast(err.message || 'حدث خطأ', 'error');
+    });
+}
+
+function editAppointment(id) {
+    const date = prompt('تعديل تاريخ المعاينة (YYYY-MM-DD):', new Date().toISOString().slice(0, 10));
+    if (!date) return;
+    const time = prompt('تعديل وقت المعاينة (HH:MM):', '10:00');
+    if (!time) return;
+
+    API.requests.update(id, { 
+        appointment_date: date, 
+        appointment_time: time
+    })
+    .then(result => {
+        if (result.status === 'success') {
+            showToast('✅ تم تعديل موعد المعاينة', 'success');
+            loadRequestDetail();
+        } else {
+            showToast(result.message || 'فشل تعديل الموعد', 'error');
+        }
+    })
+    .catch(err => {
+        showToast(err.message || 'حدث خطأ', 'error');
+    });
+}
+
+function confirmAppointment(id) {
+    if (!confirm('هل تمت المعاينة بنجاح وحضر الطرفان؟')) return;
+
+    const choice = confirm('هل تم الاتفاق مع صاحب العرض؟\nاضغط "موافق" إذا تم الاتفاق، "إلغاء" إذا لم يتم الاتفاق.');
+    
+    if (choice) {
+        // تم الاتفاق - إغلاق الطلب
+        API.requests.changeStage(id, 5, '✅ تم الاتفاق وإتمام الصفقة')
+            .then(result => {
+                if (result.status === 'success') {
+                    showToast('🎉 تم إتمام الصفقة وإغلاق الطلب', 'success');
+                    loadRequestDetail();
+                } else {
+                    showToast(result.message || 'فشل إكمال الصفقة', 'error');
+                }
+            })
+            .catch(err => {
+                showToast(err.message || 'حدث خطأ', 'error');
+            });
+    } else {
+        // لم يتم الاتفاق - فك الارتباط والعودة للمطابقة
+        API.requests.update(id, { 
+            matched_offer_id: null,
+            stage_id: 2,
+            appointment_date: null,
+            appointment_time: null
+        })
+        .then(result => {
+            if (result.status === 'success') {
+                showToast('🔄 تم فك الارتباط والعودة للمطابقة', 'info');
+                loadRequestDetail();
+                setTimeout(() => {
+                    findMatches(id);
+                }, 600);
+            } else {
+                showToast(result.message || 'فشل فك الارتباط', 'error');
+            }
+        })
+        .catch(err => {
+            showToast(err.message || 'حدث خطأ', 'error');
+        });
+    }
+}
+
+// ============================================================
+// MODAL CONTROLS
+// ============================================================
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async function() {
+    const isAuth = await checkAuth();
+    if (isAuth) {
+        loadRequestDetail();
+    }
+});
+
+// ============================================================
+// EXPOSE GLOBALS
+// ============================================================
+window.goBack = goBack;
+window.showToast = showToast;
+window.closeModal = closeModal;
+window.loadRequestDetail = loadRequestDetail;
+window.findMatches = findMatches;
+window.refreshMatches = refreshMatches;
+window.selectOffer = selectOffer;
+window.shareOfferToClient = shareOfferToClient;
+window.sendToExternalBroker = sendToExternalBroker;
+window.setAppointment = setAppointment;
+window.editAppointment = editAppointment;
+window.confirmAppointment = confirmAppointment;
+window.advanceStage = advanceStage;
+window.regressStage = regressStage;
+window.openEditRequest = openEditRequest;
+</script>
+</body>
+</html>

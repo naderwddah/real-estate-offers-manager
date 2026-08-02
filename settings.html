@@ -10,80 +10,71 @@
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
         * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0B121E; min-height: 100vh; color: #EDEAE2; }
+        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
         
-        /* ===== تنسيقات الواجهة المظلمة ===== */
-        .bg-surface { background: #121B2C; }
-        .bg-surface2 { background: #1A2740; }
-        .bg-surface3 { background: #22314C; }
-        .bg-bg { background: #0B121E; }
-        .text-muted { color: #8B96A8; }
-        .text-ink { color: #EDEAE2; }
-        .border-line { border-color: rgba(237, 234, 226, 0.08); }
-        .bg-gold { background: #C9A24B; }
-        .text-gold { color: #C9A24B; }
-        .bg-emerald { background: #1F7A5C; }
-        .text-emerald { color: #1F7A5C; }
-        .bg-danger { background: #E05A4A; }
-        .text-danger { color: #E05A4A; }
-        .bg-amber { background: #C9A24B; }
-        .text-amber { color: #C9A24B; }
-        
+        .bg-surface { background: var(--bg-secondary); }
+        .bg-surface2 { background: var(--bg-surface); }
+        .bg-surface3 { background: var(--bg-surface2); }
+        .bg-bg { background: var(--bg-primary); }
+        .text-muted { color: var(--text-secondary); }
+        .text-ink { color: var(--text-primary); }
+        .border-line { border-color: var(--border-color); }
+        .bg-gold { background: var(--gold); }
+        .text-gold { color: var(--gold); }
+        .bg-emerald { background: var(--emerald); }
+        .text-emerald { color: var(--emerald); }
+        .bg-danger { background: var(--danger); }
+        .text-danger { color: var(--danger); }
+        .bg-amber { background: var(--gold); }
+        .text-amber { color: var(--gold); }
+
         .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .btn-gold { background: #C9A24B; color: #0B121E; }
-        .btn-gold:hover { background: #8A7433; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
-        .btn-outline { background: transparent; color: #EDEAE2; border: 2px solid #22314C; }
-        .btn-outline:hover { background: #1A2740; color: #EDEAE2; }
+        .btn-gold { background: var(--gold); color: #0B121E; }
+        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
+        .btn-outline:hover { background: var(--bg-surface); color: var(--text-primary); }
         .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
-        .btn-emerald { background: #1F7A5C; color: #fff; }
-        .btn-emerald:hover { background: #123D30; }
-        .btn-danger { background: #E05A4A; color: #fff; }
-        .btn-danger:hover { background: #C1543A; }
-        
-        .settings-card { background: #121B2C; border-radius: 16px; border: 1px solid rgba(237, 234, 226, 0.08); padding: 20px 24px; margin-bottom: 20px; transition: all 0.2s; }
-        .settings-card:hover { border-color: #C9A24B55; }
-        .settings-card .card-title { font-size: 18px; font-weight: 800; color: #EDEAE2; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+        .btn-emerald { background: var(--emerald); color: #fff; }
+        .btn-emerald:hover { background: var(--emerald-soft); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: var(--terracotta); }
+
+        .settings-card { background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px 24px; margin-bottom: 20px; transition: all 0.2s; }
+        .settings-card:hover { border-color: var(--gold); }
+        .settings-card .card-title { font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
         .settings-card .card-title .icon { font-size: 1.2rem; }
-        
+
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .field { display: flex; flex-direction: column; gap: 4px; }
-        .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .field input, .field select, .field textarea { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A24B; box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
-        .field input::placeholder, .field textarea::placeholder { color: #5A6A7A; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
         .field.full-width { grid-column: 1 / -1; }
-        
-        .toast { position: fixed; bottom: 30px; left: 30px; background: #1A2740; color: #EDEAE2; padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid rgba(237, 234, 226, 0.08); }
+
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
         .toast.show { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .help-text { font-size: 0.75rem; color: #5A6A7A; margin-top: 4px; }
-        .tag-item { display: inline-flex; align-items: center; gap: 6px; background: #1A2740; border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; margin: 4px; border: 1px solid #22314C; color: #EDEAE2; }
-        .tag-item .remove { cursor: pointer; color: #8B96A8; font-weight: 700; font-size: 1rem; }
-        .tag-item .remove:hover { color: #E05A4A; }
+
+        .help-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .tag-item { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-surface); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; margin: 4px; border: 1px solid var(--border-light); color: var(--text-primary); }
+        .tag-item .remove { cursor: pointer; color: var(--text-secondary); font-weight: 700; font-size: 1rem; }
+        .tag-item .remove:hover { color: var(--danger); }
         .tag-input-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .tag-input-group input { flex: 1; min-width: 150px; }
         .tag-input-group .btn { white-space: nowrap; }
-        
+
         .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
+
         @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .settings-card { padding: 16px; } }
-        
-        /* ===== شاشة الدخول ===== */
-        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
-        #loginOverlay.show { display: flex !important; }
-        .login-box { background: #121B2C; border: 1px solid rgba(237, 234, 226, 0.08); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
-        .login-box h2 { color: #EDEAE2; font-weight: 800; text-align: center; margin-bottom: 24px; }
-        .login-box .field { margin-bottom: 16px; }
-        .login-box .field label { font-size: 0.85rem; font-weight: 600; color: #8B96A8; }
-        .login-box .field input { border: 2px solid #22314C; border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: #0B121E; color: #EDEAE2; width: 100%; font-family: "Tajawal", sans-serif; }
-        .login-box .field input:focus { outline: none; border-color: #C9A24B; }
-        .login-box .btn { width: 100%; justify-content: center; }
-        #loginError { color: #E05A4A; font-size: 0.85rem; text-align: center; margin-top: 8px; display: none; }
-        
+
         .main-content { display: none !important; }
         .main-content.visible { display: block !important; }
+
+        #loginOverlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.85); display: none !important; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(4px); }
+        #loginOverlay.show { display: flex !important; }
+        .login-box { background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 40px 30px; border-radius: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px var(--shadow-color); }
     </style>
 </head>
 <body>
@@ -121,7 +112,15 @@
                 </h1>
                 <p class="text-sm text-muted mt-1">إدارة إعدادات النظام والبيانات الأساسية</p>
             </div>
-            <button onclick="saveAllSettings()" class="btn btn-gold text-sm" id="saveBtn"><i class="fas fa-save"></i> حفظ جميع الإعدادات</button>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="btn btn-outline btn-sm" id="themeToggleBtn">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                    <span id="themeLabel">مظلم</span>
+                </button>
+                <button onclick="saveAllSettings()" class="btn btn-gold text-sm" id="saveBtn">
+                    <i class="fas fa-save"></i> حفظ جميع الإعدادات
+                </button>
+            </div>
         </div>
 
         <form id="settingsForm" onsubmit="return false;">
@@ -194,28 +193,15 @@
                 </div>
             </div>
 
-            <!-- 6. Notification Settings -->
+            <!-- 6. Data Statistics -->
             <div class="settings-card">
-                <div class="card-title"><span class="icon">🔔</span> إعدادات الإشعارات</div>
-                <div class="grid-2">
-                    <div class="field"><label>تفعيل الإشعارات</label>
-                        <select id="notificationsEnabled">
-                            <option value="true">مفعل</option>
-                            <option value="false">معطل</option>
-                        </select>
-                    </div>
-                    <div class="field"><label>تذكير المتابعات التلقائية</label>
-                        <select id="autoReminders">
-                            <option value="true">مفعل</option>
-                            <option value="false">معطل</option>
-                        </select>
-                    </div>
+                <div class="card-title"><span class="icon">📊</span> إحصائيات النظام</div>
+                <div id="statsInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+                    <div><span class="text-muted">العروض:</span> <span class="font-bold text-gold" id="statOffers">0</span></div>
+                    <div><span class="text-muted">الطلبات:</span> <span class="font-bold text-gold" id="statRequests">0</span></div>
+                    <div><span class="text-muted">جهات الاتصال:</span> <span class="font-bold text-gold" id="statContacts">0</span></div>
+                    <div><span class="text-muted">الملاك:</span> <span class="font-bold text-gold" id="statOwners">0</span></div>
                 </div>
-                <div style="margin-top:12px;">
-                    <button type="button" class="btn btn-outline btn-sm" onclick="requestNotificationPermission()"><i class="fas fa-bell"></i> طلب إذن الإشعارات</button>
-                    <span id="notificationStatus" class="text-xs text-muted mr-3"></span>
-                </div>
-                <div class="help-text">هذه الإعدادات تُخزن محلياً في المتصفح، وليست جزءاً من قاعدة البيانات.</div>
             </div>
 
             <!-- 7. Backup & Reset -->
@@ -228,17 +214,6 @@
                     <button type="button" class="btn btn-danger btn-sm" onclick="clearAllData()"><i class="fas fa-trash"></i> مسح جميع البيانات</button>
                 </div>
                 <div class="help-text mt-2">⚠️ مسح جميع البيانات سيعيد تعيين الإعدادات فقط (لا يحذف العروض أو الطلبات من قاعدة البيانات).</div>
-            </div>
-
-            <!-- 8. Data Statistics -->
-            <div class="settings-card">
-                <div class="card-title"><span class="icon">📊</span> إحصائيات النظام</div>
-                <div id="statsInfo" class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-                    <div><span class="text-muted">العروض:</span> <span class="font-bold text-gold" id="statOffers">0</span></div>
-                    <div><span class="text-muted">الطلبات:</span> <span class="font-bold text-gold" id="statRequests">0</span></div>
-                    <div><span class="text-muted">جهات الاتصال:</span> <span class="font-bold text-gold" id="statContacts">0</span></div>
-                    <div><span class="text-muted">الملاك:</span> <span class="font-bold text-gold" id="statOwners">0</span></div>
-                </div>
             </div>
         </form>
 
@@ -262,13 +237,33 @@ let propertyTypes = [];
 let isAuthChecked = false;
 
 // ============================================================
-// AUTH - محسنة
+// دالة تبديل الوضع المظلم
+// ============================================================
+function toggleTheme() {
+    const currentTheme = localStorage.getItem('masar_theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('masar_theme', newTheme);
+    updateThemeUI(newTheme);
+}
+
+function updateThemeUI(theme) {
+    const icon = document.getElementById('themeIcon');
+    const label = document.getElementById('themeLabel');
+    if (theme === 'dark') {
+        icon.className = 'fas fa-moon';
+        label.textContent = 'مظلم';
+    } else {
+        icon.className = 'fas fa-sun';
+        label.textContent = 'فاتح';
+    }
+}
+
+// ============================================================
+// AUTH
 // ============================================================
 async function checkAuth() {
-    if (isAuthChecked && API.isAuthenticated()) {
-        return true;
-    }
-
+    if (isAuthChecked && API.isAuthenticated()) return true;
     const token = localStorage.getItem('masar_token');
     const overlay = document.getElementById('loginOverlay');
     const mainContent = document.getElementById('mainContent');
@@ -288,7 +283,6 @@ async function checkAuth() {
                 API.token = null;
             }
         } catch (err) {
-            console.warn('خطأ في التحقق من التوكن:', err.message);
             localStorage.removeItem('masar_token');
             localStorage.removeItem('masar_user');
             API.token = null;
@@ -301,7 +295,6 @@ async function checkAuth() {
     return false;
 }
 
-// تسجيل الدخول
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -348,25 +341,18 @@ async function loadAllData() {
     }
 
     try {
-        // تحميل الإعدادات من التخزين المحلي
         const saved = localStorage.getItem('masar_settings');
         if (saved) {
-            try {
-                settings = JSON.parse(saved);
-            } catch (e) {}
+            try { settings = JSON.parse(saved); } catch (e) {}
         }
         renderSettings();
 
-        // تحميل أنواع العقارات من التخزين المحلي
         const types = localStorage.getItem('masar_property_types');
         if (types) {
-            try {
-                propertyTypes = JSON.parse(types);
-            } catch (e) {}
+            try { propertyTypes = JSON.parse(types); } catch (e) {}
         }
         renderPropertyTypes();
 
-        // تحميل الإحصائيات
         const dashboard = await API.reports.dashboard();
         if (dashboard.status === 'success') {
             const data = dashboard.data;
@@ -397,13 +383,6 @@ function renderSettings() {
     document.getElementById('reportDay').value = settings.report_day || 4;
     document.getElementById('maxWaitDays').value = settings.max_wait_days || 3;
     document.getElementById('reportFooter').value = settings.report_footer || '';
-    
-    // Notification settings (local)
-    const notif = localStorage.getItem('masar_notif_enabled');
-    document.getElementById('notificationsEnabled').value = notif !== null ? notif : 'true';
-    const auto = localStorage.getItem('masar_auto_reminders');
-    document.getElementById('autoReminders').value = auto !== null ? auto : 'true';
-    updateNotificationStatus();
 }
 
 // ============================================================
@@ -415,14 +394,12 @@ function renderPropertyTypes() {
         container.innerHTML = '<span class="text-muted text-sm">لا توجد أنواع عقارات مضافة</span>';
         return;
     }
-    container.innerHTML = propertyTypes
-        .map((p, index) => `
-            <span class="tag-item">
-                ${p}
-                <span class="remove" onclick="deletePropertyType(${index})">✕</span>
-            </span>
-        `)
-        .join('');
+    container.innerHTML = propertyTypes.map((p, index) => `
+        <span class="tag-item">
+            ${p}
+            <span class="remove" onclick="deletePropertyType(${index})">✕</span>
+        </span>
+    `).join('');
 }
 
 // ============================================================
@@ -486,61 +463,13 @@ function saveAllSettings() {
             return;
         }
 
-        // حفظ الإعدادات محلياً
         localStorage.setItem('masar_settings', JSON.stringify(settings));
-        
-        // حفظ إعدادات الإشعارات
-        localStorage.setItem('masar_notif_enabled', document.getElementById('notificationsEnabled').value);
-        localStorage.setItem('masar_auto_reminders', document.getElementById('autoReminders').value);
-        
         showToast('✅ تم حفظ جميع الإعدادات بنجاح', 'success');
     } catch (err) {
         showToast(err.message || 'حدث خطأ أثناء الحفظ', 'error');
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-save"></i> حفظ جميع الإعدادات';
-    }
-}
-
-// ============================================================
-// NOTIFICATION PERMISSION
-// ============================================================
-function requestNotificationPermission() {
-    if (!('Notification' in window)) {
-        showToast('⚠️ المتصفح لا يدعم الإشعارات', 'error');
-        return;
-    }
-    if (Notification.permission === 'granted') {
-        showToast('✅ الإشعارات مفعلة بالفعل', 'success');
-        return;
-    }
-    Notification.requestPermission().then((perm) => {
-        if (perm === 'granted') {
-            showToast('✅ تم تفعيل الإشعارات', 'success');
-            new Notification('🔔 تم تفعيل الإشعارات', { body: 'ستصلك تنبيهات النظام.' });
-        } else {
-            showToast('⚠️ تم رفض الإشعارات', 'error');
-        }
-        updateNotificationStatus();
-    });
-}
-
-function updateNotificationStatus() {
-    const status = document.getElementById('notificationStatus');
-    if (!('Notification' in window)) {
-        status.textContent = '⚠️ غير مدعوم';
-        status.className = 'text-xs text-red-400 mr-3';
-        return;
-    }
-    if (Notification.permission === 'granted') {
-        status.textContent = '✅ مفعل';
-        status.className = 'text-xs text-emerald-400 mr-3';
-    } else if (Notification.permission === 'denied') {
-        status.textContent = '❌ مرفوض';
-        status.className = 'text-xs text-red-400 mr-3';
-    } else {
-        status.textContent = '⏳ لم يسمح بعد';
-        status.className = 'text-xs text-amber-400 mr-3';
     }
 }
 
@@ -621,8 +550,6 @@ function clearAllData() {
     if (!confirm('تأكيد نهائي: هل تريد حذف كل شيء؟')) return;
     localStorage.removeItem('masar_settings');
     localStorage.removeItem('masar_property_types');
-    localStorage.removeItem('masar_notif_enabled');
-    localStorage.removeItem('masar_auto_reminders');
     localStorage.removeItem('masarOffersLocal');
     localStorage.removeItem('masarRequestsLocal');
     localStorage.removeItem('masarRemindersLocal');
@@ -647,6 +574,10 @@ document.addEventListener('keydown', (e) => {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
+    const savedTheme = localStorage.getItem('masar_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeUI(savedTheme);
+    
     const isAuth = await checkAuth();
     if (isAuth) {
         loadAllData();
@@ -661,9 +592,9 @@ window.backupData = backupData;
 window.restoreData = restoreData;
 window.resetSystem = resetSystem;
 window.clearAllData = clearAllData;
-window.requestNotificationPermission = requestNotificationPermission;
 window.addPropertyType = addPropertyType;
 window.deletePropertyType = deletePropertyType;
+window.toggleTheme = toggleTheme;
 window.showToast = showToast;
 window.checkAuth = checkAuth;
 window.loadAllData = loadAllData;
