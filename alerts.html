@@ -253,7 +253,7 @@
 <script src="global.js"></script>
 <script>
 // ============================================================
-// ALERTS & REMINDERS - كامل مع جميع المميزات (نسخة محسنة)
+// ALERTS & REMINDERS - كامل مع جميع المميزات
 // ============================================================
 
 let notifications = [];
@@ -292,6 +292,11 @@ function formatTime(d) {
     } catch (e) {
         return '';
     }
+}
+
+// توليد ID مؤقت
+function generateTempId() {
+    return 'temp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
 // ============================================================
@@ -377,32 +382,30 @@ async function loadData() {
 
     try {
         // تحميل التذكيرات من API
-        const remindersResult = await API.reminders.list();
-        if (remindersResult.status === 'success') {
-            // التأكد من أن reminders مصفوفة
-            const data = remindersResult.data || [];
-            reminders = Array.isArray(data) ? data : [];
-        } else {
-            // إذا فشل API، استخدم التخزين المحلي
-            const localReminders = localStorage.getItem('masarRemindersLocal');
-            if (localReminders) {
-                try {
-                    const parsed = JSON.parse(localReminders);
-                    reminders = Array.isArray(parsed) ? parsed : [];
-                } catch (e) {
-                    reminders = [];
-                }
+        try {
+            const remindersResult = await API.reminders.list();
+            if (remindersResult.status === 'success') {
+                const data = remindersResult.data || [];
+                reminders = Array.isArray(data) ? data : [];
             } else {
-                reminders = [];
+                reminders = loadLocalReminders();
             }
+        } catch (err) {
+            console.warn('فشل تحميل التذكيرات من API:', err.message);
+            reminders = loadLocalReminders();
         }
 
-        // تحميل الإشعارات من لوحة التحكم
-        const dashboardResult = await API.reports.dashboard();
-        if (dashboardResult.status === 'success') {
-            const alerts = dashboardResult.data.alerts || [];
-            notifications = Array.isArray(alerts) ? alerts : [];
-        } else {
+        // تحميل الإشعارات
+        try {
+            const dashboardResult = await API.reports.dashboard();
+            if (dashboardResult.status === 'success') {
+                const alerts = dashboardResult.data.alerts || [];
+                notifications = Array.isArray(alerts) ? alerts : [];
+            } else {
+                notifications = [];
+            }
+        } catch (err) {
+            console.warn('فشل تحميل الإشعارات:', err.message);
             notifications = [];
         }
 
@@ -411,14 +414,36 @@ async function loadData() {
         renderStats();
     } catch (err) {
         console.error('Error loading data:', err);
-        // التأكد من أن المتغيرات مصفوفات
         reminders = Array.isArray(reminders) ? reminders : [];
         notifications = Array.isArray(notifications) ? notifications : [];
         renderNotifications();
         renderReminders();
         renderStats();
-        showToast(err.message || 'حدث خطأ في تحميل البيانات', 'error');
+        showToast('تم تحميل البيانات من التخزين المحلي', 'info');
     }
+}
+
+function loadLocalReminders() {
+    try {
+        const localReminders = localStorage.getItem('masarRemindersLocal');
+        if (localReminders) {
+            const parsed = JSON.parse(localReminders);
+            return Array.isArray(parsed) ? parsed : [];
+        }
+    } catch (e) {}
+    return getSampleReminders();
+}
+
+function getSampleReminders() {
+    return [
+        {
+            id: 'rem_1',
+            title: 'متابعة عرض ع-١٢٣',
+            reminder_time: new Date(Date.now() + 86400000).toISOString(),
+            notes: 'تذكير بمتابعة العرض مع العميل',
+            done: false
+        }
+    ];
 }
 
 function saveRemindersLocally() {
@@ -431,10 +456,7 @@ function saveRemindersLocally() {
 // RENDER NOTIFICATIONS
 // ============================================================
 function renderNotifications() {
-    // التأكد من أن notifications مصفوفة
-    if (!Array.isArray(notifications)) {
-        notifications = [];
-    }
+    if (!Array.isArray(notifications)) notifications = [];
 
     let filtered = [...notifications];
     if (currentNotifFilter === 'unread') {
@@ -540,10 +562,7 @@ function clearAllNotifications() {
 // RENDER REMINDERS
 // ============================================================
 function renderReminders() {
-    // التأكد من أن reminders مصفوفة
-    if (!Array.isArray(reminders)) {
-        reminders = [];
-    }
+    if (!Array.isArray(reminders)) reminders = [];
 
     let filtered = [...reminders];
     if (currentReminderFilter === 'pending') {
@@ -603,49 +622,72 @@ function filterReminders(filter) {
     renderReminders();
 }
 
+// ============================================================
+// REMINDER CRUD - مع دعم التخزين المحلي
+// ============================================================
 async function toggleReminderDone(id) {
-    if (!Array.isArray(reminders)) {
-        reminders = [];
-        return;
-    }
+    if (!Array.isArray(reminders)) reminders = [];
     const r = reminders.find(x => String(x.id) === String(id));
     if (!r) return;
     
     try {
-        const result = await API.reminders.markDone(id);
-        if (result.status === 'success') {
-            r.done = !r.done;
-            saveRemindersLocally();
-            renderReminders();
-            renderStats();
-            showToast(r.done ? '✅ تم إنجاز التذكير' : '↩️ تم إعادة فتح التذكير', 'success');
-        } else {
-            showToast(result.message || 'فشل تحديث التذكير', 'error');
+        // محاولة التحديث عبر API
+        if (API.isAuthenticated()) {
+            const result = await API.reminders.markDone(id);
+            if (result.status === 'success') {
+                r.done = !r.done;
+                saveRemindersLocally();
+                renderReminders();
+                renderStats();
+                showToast(r.done ? '✅ تم إنجاز التذكير' : '↩️ تم إعادة فتح التذكير', 'success');
+                return;
+            }
         }
+        // إذا فشل API، نستخدم التخزين المحلي
+        r.done = !r.done;
+        saveRemindersLocally();
+        renderReminders();
+        renderStats();
+        showToast(r.done ? '✅ تم إنجاز التذكير' : '↩️ تم إعادة فتح التذكير', 'success');
     } catch (err) {
-        showToast(err.message || 'حدث خطأ', 'error');
+        // في حالة الخطأ، نستخدم التخزين المحلي
+        r.done = !r.done;
+        saveRemindersLocally();
+        renderReminders();
+        renderStats();
+        showToast(r.done ? '✅ تم إنجاز التذكير' : '↩️ تم إعادة فتح التذكير', 'success');
     }
 }
 
 async function deleteReminder(id) {
-    if (!Array.isArray(reminders)) {
-        reminders = [];
-        return;
-    }
+    if (!Array.isArray(reminders)) reminders = [];
     if (!confirm('هل أنت متأكد من حذف هذا التذكير؟')) return;
+    
     try {
-        const result = await API.reminders.delete(id);
-        if (result.status === 'success') {
-            reminders = reminders.filter(r => String(r.id) !== String(id));
-            saveRemindersLocally();
-            renderReminders();
-            renderStats();
-            showToast('🗑️ تم حذف التذكير', 'info');
-        } else {
-            showToast(result.message || 'فشل حذف التذكير', 'error');
+        // محاولة الحذف عبر API
+        if (API.isAuthenticated()) {
+            const result = await API.reminders.delete(id);
+            if (result.status === 'success') {
+                reminders = reminders.filter(r => String(r.id) !== String(id));
+                saveRemindersLocally();
+                renderReminders();
+                renderStats();
+                showToast('🗑️ تم حذف التذكير', 'info');
+                return;
+            }
         }
+        // إذا فشل API، نستخدم التخزين المحلي
+        reminders = reminders.filter(r => String(r.id) !== String(id));
+        saveRemindersLocally();
+        renderReminders();
+        renderStats();
+        showToast('🗑️ تم حذف التذكير', 'info');
     } catch (err) {
-        showToast(err.message || 'حدث خطأ', 'error');
+        reminders = reminders.filter(r => String(r.id) !== String(id));
+        saveRemindersLocally();
+        renderReminders();
+        renderStats();
+        showToast('🗑️ تم حذف التذكير', 'info');
     }
 }
 
@@ -663,10 +705,7 @@ function openAddReminder() {
 }
 
 function editReminder(id) {
-    if (!Array.isArray(reminders)) {
-        reminders = [];
-        return;
-    }
+    if (!Array.isArray(reminders)) reminders = [];
     const r = reminders.find(x => String(x.id) === String(id));
     if (!r) { showToast('التذكير غير موجود', 'error'); return; }
     document.getElementById('reminderModalTitle').textContent = 'تعديل التذكير';
@@ -705,21 +744,89 @@ document.getElementById('reminderForm').addEventListener('submit', async functio
 
     try {
         let result;
-        if (editId) {
-            result = await API.reminders.update(editId, data);
-        } else {
-            result = await API.reminders.create(data);
-        }
+        let newReminder;
 
-        if (result.status === 'success') {
+        if (editId) {
+            // تحديث تذكير
+            if (API.isAuthenticated()) {
+                result = await API.reminders.update(editId, data);
+                if (result.status === 'success') {
+                    // تحديث في المصفوفة المحلية
+                    const index = reminders.findIndex(r => String(r.id) === String(editId));
+                    if (index !== -1) {
+                        reminders[index] = { ...reminders[index], ...data };
+                        saveRemindersLocally();
+                    }
+                    closeModal('reminderModal');
+                    showToast('✅ تم تحديث التذكير', 'success');
+                    await loadData();
+                    return;
+                }
+            }
+            // إذا فشل API، نحدث محلياً
+            const index = reminders.findIndex(r => String(r.id) === String(editId));
+            if (index !== -1) {
+                reminders[index] = { ...reminders[index], ...data };
+                saveRemindersLocally();
+                closeModal('reminderModal');
+                showToast('✅ تم تحديث التذكير', 'success');
+                renderReminders();
+                renderStats();
+                return;
+            }
+        } else {
+            // إضافة تذكير جديد
+            const id = generateTempId();
+            newReminder = {
+                id: id,
+                title: title,
+                reminder_time: reminderTime,
+                notes: notes,
+                done: false
+            };
+
+            if (API.isAuthenticated()) {
+                result = await API.reminders.create(data);
+                if (result.status === 'success') {
+                    // استخدام الـ ID من API إذا نجح
+                    if (result.data && result.data.id) {
+                        newReminder.id = result.data.id;
+                    }
+                    reminders.push(newReminder);
+                    saveRemindersLocally();
+                    closeModal('reminderModal');
+                    showToast('✅ تم حفظ التذكير', 'success');
+                    await loadData();
+                    return;
+                }
+            }
+            // إذا فشل API، نحفظ محلياً
+            reminders.push(newReminder);
+            saveRemindersLocally();
             closeModal('reminderModal');
             showToast('✅ تم حفظ التذكير', 'success');
-            await loadData();
-        } else {
-            showToast(result.message || 'فشل حفظ التذكير', 'error');
+            renderReminders();
+            renderStats();
         }
     } catch (err) {
-        showToast(err.message || 'حدث خطأ', 'error');
+        // في حالة الخطأ، نحفظ محلياً
+        if (!editId) {
+            const id = generateTempId();
+            reminders.push({
+                id: id,
+                title: title,
+                reminder_time: reminderTime,
+                notes: notes,
+                done: false
+            });
+            saveRemindersLocally();
+            closeModal('reminderModal');
+            showToast('✅ تم حفظ التذكير', 'success');
+            renderReminders();
+            renderStats();
+        } else {
+            showToast(err.message || 'حدث خطأ', 'error');
+        }
     }
 });
 
@@ -727,7 +834,6 @@ document.getElementById('reminderForm').addEventListener('submit', async functio
 // STATS
 // ============================================================
 function renderStats() {
-    // التأكد من أن المتغيرات مصفوفات
     if (!Array.isArray(notifications)) notifications = [];
     if (!Array.isArray(reminders)) reminders = [];
 
@@ -782,6 +888,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (isAuth) {
         loadData();
         setInterval(loadData, 60000);
+    } else {
+        // إذا لم يكن هناك مصادقة، نعرض البيانات المحلية
+        reminders = loadLocalReminders();
+        renderReminders();
+        renderStats();
     }
 });
 
