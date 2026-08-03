@@ -1005,9 +1005,159 @@ Authorization: Bearer {token}
     }
 }
 ```
-
 ---
 
+## 🔔 **التذكيرات (Reminders)**
+
+### **قائمة التذكيرات**
+
+```
+GET /reminders
+```
+
+**Query Parameters:**
+
+| المعامل | النوع | الوصف |
+|---------|-------|-------|
+| `is_sent` | boolean | تم إرساله / لم يتم |
+| `upcoming` | boolean | التذكيرات القادمة فقط |
+| `overdue` | boolean | التذكيرات المتأخرة فقط |
+
+**Response:**
+```json
+{
+    "status": "success",
+    "data": {
+        "current_page": 1,
+        "data": [
+            {
+                "id": 1,
+                "note": "تذكير: إرسال العرض للمدير للتسعير",
+                "reminder_time": "2024-01-04T10:00:00.000000Z",
+                "is_sent": false,
+                "offer": {
+                    "id": 1,
+                    "display_id": "ع-001",
+                    "title": "أرض سكنية في الرياض"
+                }
+            }
+        ],
+        "total": 5
+    }
+}
+```
+
+### **التذكيرات النشطة**
+
+```
+GET /reminders/active
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "data": [
+        {
+            "id": 1,
+            "note": "تذكير: متابعة العرض مع العميل",
+            "reminder_time": "2024-01-05T10:00:00.000000Z",
+            "is_sent": false
+        }
+    ]
+}
+```
+
+### **التذكيرات المتأخرة**
+
+```
+GET /reminders/overdue
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "data": [
+        {
+            "id": 2,
+            "note": "تذكير: العرض متأخر في المرحلة",
+            "reminder_time": "2024-01-01T10:00:00.000000Z",
+            "is_sent": false
+        }
+    ]
+}
+```
+
+### **إنشاء تذكير جديد**
+
+```
+POST /reminders
+```
+
+**Request Body:**
+```json
+{
+    "offer_id": 1,
+    "reminder_time": "2024-01-05 14:00:00",
+    "note": "تذكير: متابعة العرض مع العميل"
+}
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "تم إنشاء التذكير بنجاح",
+    "data": {
+        "id": 6,
+        "note": "تذكير: متابعة العرض مع العميل",
+        "reminder_time": "2024-01-05 14:00:00",
+        "is_sent": false
+    }
+}
+```
+
+### **تأكيد إرسال التذكير**
+
+```
+PATCH /reminders/{id}/done
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "تم تأكيد التذكير",
+    "data": {
+        "id": 1,
+        "is_sent": true,
+        "sent_at": "2024-01-04T10:00:00.000000Z"
+    }
+}
+```
+
+### **تحديث تذكير**
+
+```
+PUT /reminders/{id}
+```
+
+**Request Body:**
+```json
+{
+    "reminder_time": "2024-01-06 15:00:00",
+    "note": "تذكير محدث: متابعة العرض مع العميل"
+}
+```
+
+### **حذف تذكير**
+
+```
+DELETE /reminders/{id}
+```
+
+---
 ## 🔧 **نصائح للاستخدام**
 
 1. **التوكن**: يتم إرسال التوكن في كل طلب عبر Header: `Authorization: Bearer {token}`

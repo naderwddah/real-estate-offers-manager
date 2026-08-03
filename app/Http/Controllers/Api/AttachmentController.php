@@ -71,7 +71,7 @@ class AttachmentController extends Controller
             $file = $request->file('file');
             
             // إنشاء اسم فريد للملف
-            $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+            $fileName = uniqid() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('offers/' . $offer->id, $fileName, 'public');
 
             if (!$filePath) {

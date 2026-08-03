@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reminder;
+use App\Models\Offer;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
 
 class ReminderController extends Controller
@@ -14,7 +14,7 @@ class ReminderController extends Controller
     use ApiResponse;
 
     /**
-     * عرض جميع التذكيرات
+     * عرض التذكيرات مع فلترة
      */
     public function index(Request $request)
     {
@@ -25,26 +25,19 @@ class ReminderController extends Controller
             $query->where('is_sent', $request->is_sent);
         }
 
-        // فلترة حسب العرض
-        if ($request->has('offer_id') && $request->offer_id) {
-            $query->where('offer_id', $request->offer_id);
-        }
-
-        // فلترة حسب الطلب
-        if ($request->has('request_id') && $request->request_id) {
-            $query->where('request_id', $request->request_id);
-        }
-
         // التذكيرات القادمة
         if ($request->has('upcoming') && $request->upcoming) {
             $query->where('reminder_time', '>=', now())
                   ->where('is_sent', false);
         }
 
-        // ترتيب حسب الوقت
-        $query->orderBy('reminder_time', 'asc');
+        // التذكيرات المتأخرة
+        if ($request->has('overdue') && $request->overdue) {
+            $query->where('reminder_time', '<', now())
+                  ->where('is_sent', false);
+        }
 
-        // تقسيم الصفحات
+        $query->orderBy('reminder_time', 'asc');
         $perPage = $request->per_page ?? 15;
         $reminders = $query->paginate($perPage);
 
@@ -52,14 +45,14 @@ class ReminderController extends Controller
     }
 
     /**
-     * إنشاء تذكير جديد
+     * إنشاء تذكير (محسّن)
      */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'offer_id' => 'nullable|exists:offers,id',
             'request_id' => 'nullable|exists:requests,id',
-            'reminder_time' => 'required|date|after:now',
+            'reminder_time' => 'required|date',
             'note' => 'required|string|max:255'
         ]);
 
@@ -67,7 +60,6 @@ class ReminderController extends Controller
             return $this->validationError($validator->errors());
         }
 
-        // التأكد من وجود عرض أو طلب
         if (!$request->offer_id && !$request->request_id) {
             return $this->error('يجب تحديد إما عرض أو طلب', 400);
         }
@@ -79,6 +71,14 @@ class ReminderController extends Controller
             'note' => $request->note,
             'created_by' => auth()->id()
         ]);
+
+        // تسجيل في سجل النشاط
+        if ($request->offer_id) {
+            $offer = Offer::find($request->offer_id);
+            if ($offer) {
+                $offer->addLog("📌 تم إنشاء تذكير: {$request->note} - تاريخ: {$request->reminder_time}");
+            }
+        }
 
         return $this->success($reminder, 'تم إنشاء التذكير بنجاح', 201);
     }
@@ -94,7 +94,7 @@ class ReminderController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'reminder_time' => 'sometimes|date|after:now',
+            'reminder_time' => 'sometimes|date',
             'note' => 'sometimes|string|max:255'
         ]);
 
@@ -108,7 +108,7 @@ class ReminderController extends Controller
     }
 
     /**
-     * تأكيد التذكير (تم إرساله)
+     * تأكيد إرسال التذكير (mark as sent)
      */
     public function markDone($id)
     {
@@ -117,7 +117,9 @@ class ReminderController extends Controller
             return $this->notFound('التذكير غير موجود');
         }
 
-        $reminder->markAsSent();
+        $reminder->is_sent = true;
+        $reminder->sent_at = now();
+        $reminder->save();
 
         return $this->success($reminder, 'تم تأكيد التذكير');
     }
@@ -138,35 +140,53 @@ class ReminderController extends Controller
     }
 
     /**
-     * إنشاء تذكير تلقائي لتأخر المرحلة
+     * إنشاء تذكير لتأخر المرحلة
      */
-    public function createStageTimeout($offerId)
+    public function createStageTimeout(Request $request, $offerId)
     {
         $offer = Offer::find($offerId);
         if (!$offer) {
             return $this->notFound('العرض غير موجود');
         }
 
-        // التحقق من وجود تذكير سابق
-        $existing = Reminder::where('offer_id', $offerId)
-                            ->where('is_sent', false)
-                            ->where('reminder_time', '>', now())
-                            ->first();
-
-        if ($existing) {
-            return $this->success($existing, 'يوجد تذكير نشط بالفعل');
-        }
-
-        $settings = Setting::getSettings();
-        $days = $settings->max_wait_days ?? 3;
+        $timeoutDays = $request->timeout_days ?? 3;
+        $stageName = $offer->stage->name ?? 'المرحلة الحالية';
 
         $reminder = Reminder::create([
             'offer_id' => $offerId,
-            'reminder_time' => now()->addDays($days),
-            'note' => 'تذكير: العرض ' . $offer->display_id . ' في المرحلة ' . $offer->currentStage->name . ' منذ ' . $days . ' أيام',
+            'reminder_time' => now()->addDays($timeoutDays),
+            'note' => $request->note ?? "تذكير: العرض {$offer->display_id} في مرحلة '{$stageName}'",
             'created_by' => auth()->id()
         ]);
 
         return $this->success($reminder, 'تم إنشاء تذكير تأخر المرحلة');
+    }
+
+    /**
+     * التذكيرات النشطة (للـ Frontend)
+     */
+    public function active()
+    {
+        $reminders = Reminder::where('is_sent', false)
+            ->where('reminder_time', '>=', now())
+            ->with(['offer', 'request'])
+            ->orderBy('reminder_time', 'asc')
+            ->get();
+
+        return $this->success($reminders);
+    }
+
+    /**
+     * التذكيرات المتأخرة
+     */
+    public function overdue()
+    {
+        $reminders = Reminder::where('is_sent', false)
+            ->where('reminder_time', '<', now())
+            ->with(['offer', 'request'])
+            ->orderBy('reminder_time', 'asc')
+            ->get();
+
+        return $this->success($reminders);
     }
 }

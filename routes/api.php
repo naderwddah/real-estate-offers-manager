@@ -65,15 +65,17 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/next', [StageController::class, 'nextStage']);
     });
 
-    // التذكيرات
-    Route::prefix('reminders')->group(function () {
-        Route::get('/', [ReminderController::class, 'index']);
-        Route::post('/', [ReminderController::class, 'store']);
-        Route::put('/{id}', [ReminderController::class, 'update']);
-        Route::delete('/{id}', [ReminderController::class, 'destroy']);
-        Route::patch('/{id}/done', [ReminderController::class, 'markDone']);
-        Route::post('/offer/{id}/timeout', [ReminderController::class, 'createStageTimeout']);
-    });
+// التذكيرات
+Route::prefix('reminders')->group(function () {
+    Route::get('/', [ReminderController::class, 'index']);
+    Route::get('/active', [ReminderController::class, 'active']);
+    Route::get('/overdue', [ReminderController::class, 'overdue']);
+    Route::post('/', [ReminderController::class, 'store']);
+    Route::put('/{id}', [ReminderController::class, 'update']);
+    Route::delete('/{id}', [ReminderController::class, 'destroy']);
+    Route::patch('/{id}/done', [ReminderController::class, 'markDone']);
+    Route::post('/offer/{offerId}/timeout', [ReminderController::class, 'createStageTimeout']);
+});
 
     // المرفقات
     Route::prefix('attachments')->group(function () {
