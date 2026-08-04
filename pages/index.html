@@ -1,0 +1,606 @@
+<!-- ============================================================ -->
+<!-- pages/index.html - صفحة تسجيل الدخول (مع تصحيح وتشخيص)        -->
+<!-- ============================================================ -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>مسار — نظام إدارة العروض العقارية</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../assets/css/global.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          "Tajawal",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0a1628;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 20% 50%,
+          #1e3a5f 0%,
+          #0a1628 70%
+        );
+        z-index: 0;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.04"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        z-index: 0;
+      }
+
+      .login-wrapper {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 440px;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        border-radius: 2rem;
+        padding: 2.5rem 2rem;
+        box-shadow:
+          0 40px 80px rgba(0, 0, 0, 0.6),
+          0 0 0 1px rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.3s ease;
+      }
+
+      .logo-area {
+        text-align: center;
+        margin-bottom: 2.2rem;
+      }
+      .logo-area .icon-box {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #c9a84c, #a8873a);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2rem;
+        color: #0a1628;
+        box-shadow: 0 12px 30px rgba(201, 168, 76, 0.3);
+      }
+      .logo-area h1 {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #0a1628;
+        letter-spacing: -0.5px;
+      }
+      .logo-area h1 span {
+        color: #c9a84c;
+      }
+      .logo-area p {
+        color: #6b7a93;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+      }
+
+      .field-group {
+        margin-bottom: 1.25rem;
+      }
+      .field-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.3px;
+      }
+      .field-group .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #f1f5f9;
+        border-radius: 1rem;
+        border: 2px solid transparent;
+        transition: all 0.25s ease;
+      }
+      .field-group .input-wrapper:focus-within {
+        border-color: #c9a84c;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.15);
+      }
+      .field-group .input-wrapper i {
+        position: absolute;
+        right: 1rem;
+        color: #94a3b8;
+        font-size: 1rem;
+        pointer-events: none;
+        transition: color 0.2s;
+      }
+      .field-group .input-wrapper:focus-within i {
+        color: #c9a84c;
+      }
+      .field-group .input-wrapper input {
+        width: 100%;
+        padding: 0.85rem 3rem 0.85rem 1rem;
+        background: transparent;
+        border: none;
+        font-size: 0.95rem;
+        color: #0f172a;
+        outline: none;
+        font-weight: 500;
+      }
+      .field-group .input-wrapper input::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+      }
+      .field-group .input-wrapper .toggle-password {
+        position: absolute;
+        left: 1rem;
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.25rem;
+        transition: color 0.2s;
+      }
+      .field-group .input-wrapper .toggle-password:hover {
+        color: #1e293b;
+      }
+
+      .btn-gold {
+        width: 100%;
+        padding: 0.9rem;
+        background: linear-gradient(135deg, #c9a84c, #b8973a);
+        border: none;
+        border-radius: 1rem;
+        color: #0a1628;
+        font-weight: 800;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        box-shadow: 0 8px 25px rgba(201, 168, 76, 0.3);
+        margin-top: 0.5rem;
+      }
+      .btn-gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(201, 168, 76, 0.4);
+        background: linear-gradient(135deg, #d4b354, #c9a84c);
+      }
+      .btn-gold:active {
+        transform: translateY(0);
+      }
+      .btn-gold:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-gold .spinner {
+        border: 2px solid rgba(10, 22, 40, 0.2);
+        border-top: 2px solid #0a1628;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      #loginError {
+        background: #fef2f2;
+        color: #b91c1c;
+        padding: 0.6rem 1rem;
+        border-radius: 0.75rem;
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
+        display: none;
+        border: 1px solid #fecaca;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      #loginError.show {
+        display: flex;
+      }
+      .toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1e293b;
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        display: none;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 9999;
+        font-size: 0.9rem;
+        max-width: 90%;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+      }
+      .toast.show {
+        display: flex;
+      }
+      .toast.error {
+        border-right: 4px solid #ef4444;
+      }
+      .toast.success {
+        border-right: 4px solid #10b981;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+        color: #94a3b8;
+      }
+      .footer-links a {
+        color: #1e3a5f;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: #c9a84c;
+      }
+
+      .debug-toggle {
+        margin-top: 1rem;
+        text-align: center;
+      }
+      .debug-toggle button {
+        background: none;
+        border: none;
+        color: #6b7a93;
+        font-size: 0.8rem;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .debug-toggle button:hover {
+        color: #1e293b;
+      }
+      .debug-info {
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: #f1f5f9;
+        border-radius: 0.75rem;
+        font-size: 0.75rem;
+        color: #334155;
+        display: none;
+        direction: ltr;
+        text-align: left;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .debug-info.show {
+        display: block;
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 1.75rem 1.25rem;
+        }
+        .logo-area h1 {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-wrapper">
+      <div class="login-card">
+        <div class="logo-area">
+          <div class="icon-box">
+            <i class="fas fa-building"></i>
+          </div>
+          <h1>مسار <span>العقاري</span></h1>
+          <p>نظام إدارة العروض والطلبات العقارية</p>
+        </div>
+
+        <form id="loginForm" novalidate>
+          <div id="loginError">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText">بيانات الدخول غير صحيحة</span>
+          </div>
+
+          <div class="field-group">
+            <label for="loginEmail"
+              ><i class="fas fa-envelope ml-1"></i> البريد الإلكتروني</label
+            >
+            <div class="input-wrapper">
+              <i class="fas fa-envelope"></i>
+              <input
+                type="email"
+                id="loginEmail"
+                value="admin@masar.sa"
+                placeholder="admin@masar.sa"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="loginPassword"
+              ><i class="fas fa-lock ml-1"></i> كلمة المرور</label
+            >
+            <div class="input-wrapper">
+              <i class="fas fa-lock"></i>
+              <input
+                type="password"
+                id="loginPassword"
+                value="Admin.123"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-password"
+                id="togglePassword"
+                aria-label="إظهار كلمة المرور"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-gold" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>دخول</span>
+          </button>
+
+          <div class="footer-links">
+            <span>نسيت كلمة المرور؟</span>
+            <a href="#">تواصل مع الدعم</a>
+          </div>
+        </form>
+
+        <!-- Debug toggle -->
+        <div class="debug-toggle">
+          <button type="button" id="debugToggle">🛠️ عرض تفاصيل الطلب</button>
+          <div class="debug-info" id="debugInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle text-emerald-400"></i>
+      <span id="toastMessage">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- تحميل api.js - تأكد من المسار الصحيح                         -->
+    <!-- ============================================================ -->
+    <script src="../assets/js/core/api.js"></script>
+
+    <script>
+      // ============================================================
+      // 1. TOAST SYSTEM
+      // ============================================================
+      function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        const toastMsg = document.getElementById("toastMessage");
+        if (!toast || !toastMsg) return;
+
+        const icon = toast.querySelector("i");
+        if (type === "success") {
+          icon.className = "fas fa-check-circle text-emerald-400";
+        } else if (type === "error") {
+          icon.className = "fas fa-exclamation-circle text-red-400";
+        } else {
+          icon.className = "fas fa-info-circle text-blue-400";
+        }
+
+        toastMsg.textContent = message;
+        toast.className = "toast show " + type;
+        clearTimeout(toast._hideTimeout);
+        toast._hideTimeout = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 4500);
+      }
+
+      // ============================================================
+      // 2. TOGGLE PASSWORD
+      // ============================================================
+      document
+        .getElementById("togglePassword")
+        .addEventListener("click", function () {
+          const passwordInput = document.getElementById("loginPassword");
+          const icon = this.querySelector("i");
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.className = "fas fa-eye-slash";
+          } else {
+            passwordInput.type = "password";
+            icon.className = "fas fa-eye";
+          }
+        });
+
+      // ============================================================
+      // 3. DEBUG TOGGLE
+      // ============================================================
+      let debugVisible = false;
+      document
+        .getElementById("debugToggle")
+        .addEventListener("click", function () {
+          const info = document.getElementById("debugInfo");
+          debugVisible = !debugVisible;
+          info.classList.toggle("show");
+          if (debugVisible) {
+            info.textContent =
+              "لم يتم إرسال طلب بعد. قم بتسجيل الدخول لعرض التفاصيل.";
+          }
+        });
+
+      // ============================================================
+      // 4. التأكد من تحميل API
+      // ============================================================
+      if (typeof API === "undefined" || !API.auth) {
+        console.error("❌ API غير محمل بشكل صحيح، تأكد من مسار api.js");
+        document.getElementById("errorText").textContent =
+          "حدث خطأ في تحميل النظام، حاول تحديث الصفحة";
+        document.getElementById("loginError").classList.add("show");
+      } else {
+        console.log("✅ API loaded successfully");
+      }
+
+      // ============================================================
+      // 5. LOGIN HANDLER (مع تصحيح أخطاء)
+      // ============================================================
+      const form = document.getElementById("loginForm");
+      const errorEl = document.getElementById("loginError");
+      const errorText = document.getElementById("errorText");
+      const submitBtn = document.getElementById("loginBtn");
+      const originalBtnHTML = submitBtn.innerHTML;
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        errorEl.classList.remove("show");
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+
+        if (!email || !password) {
+          errorText.textContent = "الرجاء إدخال البريد الإلكتروني وكلمة المرور";
+          errorEl.classList.add("show");
+          return;
+        }
+
+        // تحديث معلومات التصحيح
+        const debugInfo = document.getElementById("debugInfo");
+        debugInfo.textContent = "⏳ جاري إرسال الطلب...";
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
+
+        try {
+          // تخزين وقت البدء
+          const startTime = Date.now();
+          console.log({
+            email,
+            password,
+            api: API.baseUrl,
+          });
+          // استدعاء دالة login من API
+          const result = await API.auth.login(email, password);
+
+          const endTime = Date.now();
+          const duration = endTime - startTime;
+
+          console.log("📥 رد الخادم:", result);
+
+          // تحديث معلومات التصحيح
+          debugInfo.textContent = `
+                    📤 الطلب:
+                    URL: ${API.baseUrl}/auth/login
+                    Method: POST
+                    Headers: { "Content-Type": "application/json" }
+                    Body: { "email": "${email}", "password": "••••••••" }
+
+                    📥 الرد:
+                    Status: ${result.status || "unknown"}
+                    Message: ${result.message || "لا توجد رسالة"}
+                    وقت الاستجابة: ${duration}ms
+                    البيانات الكاملة: ${JSON.stringify(result, null, 2)}
+                `;
+
+          if (result.status === "success") {
+            showToast("✅ تم تسجيل الدخول بنجاح، جاري التحويل...", "success");
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 500);
+          } else {
+            const serverMessage = result.message || "بيانات الدخول غير صحيحة";
+            errorText.textContent = serverMessage;
+            errorEl.classList.add("show");
+            showToast(serverMessage, "error");
+          }
+        } catch (err) {
+          console.error("❌ خطأ في تسجيل الدخول:", err);
+          const errorMsg = err.message || "حدث خطأ في الاتصال بالخادم";
+          errorText.textContent = errorMsg;
+          errorEl.classList.add("show");
+          showToast("⚠️ " + errorMsg, "error");
+
+          // تحديث معلومات التصحيح
+          debugInfo.textContent = `
+                    ❌ حدث خطأ:
+                    ${errorMsg}
+                    ${err.stack || ""}
+                `;
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHTML;
+        }
+      });
+
+      // ============================================================
+      // 6. REDIRECT IF ALREADY LOGGED IN
+      // ============================================================
+      document.addEventListener("DOMContentLoaded", async function () {
+        const token = localStorage.getItem("masar_token");
+        if (token) {
+          try {
+            const me = await API.auth.me();
+            if (me.status === "success") {
+              window.location.href = "dashboard.html";
+              return;
+            } else {
+              localStorage.removeItem("masar_token");
+              localStorage.removeItem("masar_user");
+              API.token = null;
+            }
+          } catch (e) {
+            localStorage.removeItem("masar_token");
+            localStorage.removeItem("masar_user");
+            API.token = null;
+          }
+        }
+      });
+
+      console.log("✅ صفحة تسجيل الدخول جاهزة (مسار العقاري)");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!-- ============================================================ -->
+<!-- pages/offers-detail.html - تفاصيل العرض (نسخة منظمة)         -->
+<!-- ============================================================ -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>مسار — تفاصيل العرض</title>
+    <link rel="stylesheet" href="/assets/css/global.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+        * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
+        
+        .bg-surface { background: var(--bg-secondary); }
+        .bg-surface2 { background: var(--bg-surface); }
+        .bg-surface3 { background: var(--bg-surface2); }
+        .bg-bg { background: var(--bg-primary); }
+        .text-muted { color: var(--text-secondary); }
+        .text-ink { color: var(--text-primary); }
+        .border-line { border-color: var(--border-color); }
+        .bg-gold { background: var(--gold); }
+        .text-gold { color: var(--gold); }
+        .bg-emerald { background: var(--emerald); }
+        .text-emerald { color: var(--emerald); }
+        .bg-danger { background: var(--danger); }
+        .text-danger { color: var(--danger); }
+        .bg-emeraldSoft { background: var(--emerald-soft); }
+        .bg-terracottaSoft { background: var(--terracotta-soft); }
+        
+        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .btn-gold { background: var(--gold); color: #0b121e; }
+        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
+        .btn-outline:hover { background: var(--bg-surface); color: var(--text-primary); }
+        .btn-sm { padding: 6px 16px; font-size: 0.8rem; }
+        .btn-emerald { background: var(--emerald); color: #fff; }
+        .btn-emerald:hover { background: var(--emerald-soft); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: var(--terracotta); }
+        
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.3px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .status-dot.pulse { animation: pulse-dot 1.8s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+        
+        .detail-section { background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border-color); padding: 20px 24px; margin-bottom: 20px; }
+        .detail-section .section-title { font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        
+        .timeline { display: flex; flex-direction: column; gap: 0; padding-right: 4px; }
+        .timeline-item { display: flex; gap: 16px; padding: 6px 0; }
+        .timeline-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 2px solid var(--bg-primary); margin-top: 2px; position: relative; z-index: 2; }
+        .timeline-dot.completed { background: var(--gold); }
+        .timeline-dot.active { background: var(--gold); box-shadow: 0 0 0 4px rgba(201, 162, 75, 0.3); }
+        .timeline-dot.active.delayed { background: var(--danger); box-shadow: 0 0 0 4px rgba(224, 90, 74, 0.3); }
+        .timeline-dot.pending { background: var(--border-light); }
+        .timeline-line { width: 3px; flex: 1; min-height: 24px; margin: 0 7px; border-radius: 4px; }
+        .timeline-line.completed { background: linear-gradient(180deg, var(--gold) 0%, var(--gold) 100%); }
+        .timeline-line.pending { background: var(--border-light); }
+        .timeline-line.delayed { background: var(--danger); }
+        .timeline-content { flex: 1; padding-bottom: 4px; }
+        .timeline-content .stage-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+        .timeline-content .stage-date { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+        
+        .doc-item { background: var(--input-bg); border: 1px solid var(--border-light); border-radius: 8px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; margin: 4px; color: var(--text-primary); }
+        .doc-item .del { cursor: pointer; color: var(--danger); font-weight: 700; font-size: 1rem; }
+        .doc-item .del:hover { color: var(--terracotta); }
+        
+        .log-entry { padding: 6px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; }
+        .log-entry .log-time { color: var(--text-muted); font-size: 0.75rem; white-space: nowrap; min-width: 90px; }
+        
+        .chip { font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+        
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(4, 8, 14, 0.72); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 24px; max-width: 860px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 30px 60px var(--shadow-color); animation: modalFadeIn 0.25s ease; position: relative; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { position: sticky; top: 0; float: left; background: none; border: none; font-size: 28px; color: var(--text-secondary); cursor: pointer; transition: color 0.2s; line-height: 1; z-index: 10; }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-title { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 20px; }
+        
+        .force-action-modal { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; margin: 20px auto; box-shadow: 0 20px 50px var(--shadow-color); animation: modalFadeIn 0.25s ease; }
+        .force-action-modal h3 { font-size: 1.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .force-action-modal p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 16px; }
+        .force-action-modal .btn-group { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+        
+        .field { display: flex; flex-direction: column; gap: 4px; }
+        .field label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: border 0.2s; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08); }
+        
+        .file-upload-area { border: 2px dashed var(--border-light); border-radius: 12px; padding: 16px; text-align: center; color: var(--text-secondary); cursor: pointer; transition: background 0.2s, border-color 0.2s; font-weight: 500; font-size: 0.9rem; }
+        .file-upload-area:hover { background: var(--hover-bg); border-color: var(--gold); }
+        
+        .main-content { display: none; }
+        .main-content.visible { display: block; }
+        
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @media (max-width: 768px) { .detail-section { padding: 14px 16px; } .btn { padding: 8px 18px; font-size: 0.85rem; } .modal-box { padding: 16px; } }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+        <div class="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+            <!-- Back Button -->
+            <button class="btn btn-outline btn-sm mb-4" onclick="goBack()">
+                <i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة
+            </button>
+            
+            <!-- Loading -->
+            <div id="loadingState" class="text-center py-12">
+                <div class="spinner mx-auto"></div>
+                <p class="text-muted mt-4">جاري تحميل تفاصيل العرض...</p>
+            </div>
+            
+            <!-- Detail Content -->
+            <div id="detailContent" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- ===== FORCE ACTION MODAL ===== -->
+    <div class="modal-overlay" id="forceActionModal">
+        <div class="force-action-modal">
+            <button class="modal-close" onclick="closeModal('forceActionModal')" style="position:relative;float:left;background:none;border:none;font-size:28px;color:var(--text-secondary);cursor:pointer;">✕</button>
+            <h3 id="forceActionTitle">📢 إجراء مطلوب</h3>
+            <p id="forceActionMessage">يرجى تنفيذ الخطوة التالية لإكمال العملية.</p>
+            <div id="forceActionBody"></div>
+            <div class="btn-group">
+                <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')">تأجيل</button>
+                <button class="btn btn-gold btn-sm" id="forceActionPrimaryBtn" onclick="executeForceAction()">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RECORD PRICE MODAL ===== -->
+    <div class="modal-overlay" id="recordPriceModal">
+        <div class="modal-box" style="max-width:500px;">
+            <button class="modal-close" onclick="closeModal('recordPriceModal')">✕</button>
+            <div class="modal-title">💰 تسجيل السعر المعتمد</div>
+            <form onsubmit="recordPriceSubmit(event)">
+                <input type="hidden" id="recordPriceOfferId">
+                <div class="field mb-4">
+                    <label>السعر السابق (ريال)</label>
+                    <input type="number" id="forceOldPrice" readonly style="background:var(--input-bg);color:var(--text-secondary);" />
+                </div>
+                <div class="field mb-4">
+                    <label>السعر المعتمد الجديد (ريال) *</label>
+                    <input type="number" id="forcePriceInput" required placeholder="أدخل السعر..." />
+                </div>
+                <div class="field mb-4">
+                    <label>ملاحظات المدير</label>
+                    <textarea id="forcePriceNotes" rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+                </div>
+                <div style="margin-top:12px;background:var(--bg-primary);border:1px solid var(--emerald);border-radius:12px;padding:12px;">
+                    <p style="font-size:0.9rem;color:var(--emerald);"><i class="fas fa-clock ml-1"></i> بعد الحفظ، سيتم فتح واتساب لإبلاغ العميل بالسعر الجديد.</p>
+                </div>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('recordPriceModal')">إلغاء</button>
+                    <button type="submit" class="btn btn-gold">💰 تسجيل السعر</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/assets/js/components/sidebar.js"></script>
+    <script src="/assets/js/core/api.js"></script>
+    <script src="/assets/js/components/global.js"></script>
+    <script src="/assets/js/pages/offers-detail.js"></script>
+</body>
+</html>

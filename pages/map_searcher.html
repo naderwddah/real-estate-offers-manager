@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>مسار — مستكشف المواقع</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+        * {
+            font-family: "Tajawal", sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .bg-surface {
+            background: var(--bg-secondary);
+        }
+        .bg-surface2 {
+            background: var(--bg-surface);
+        }
+        .text-muted {
+            color: var(--text-secondary);
+        }
+        .text-ink {
+            color: var(--text-primary);
+        }
+        .border-line {
+            border-color: var(--border-color);
+        }
+        .bg-gold {
+            background: var(--gold);
+        }
+        .text-gold {
+            color: var(--gold);
+        }
+        .bg-emerald {
+            background: var(--emerald);
+        }
+        .text-emerald {
+            color: var(--emerald);
+        }
+        .bg-danger {
+            background: var(--danger);
+        }
+        .text-danger {
+            color: var(--danger);
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: #0b121e;
+        }
+        .btn-gold:hover {
+            background: var(--gold-soft);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-light);
+        }
+        .btn-outline:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 0.8rem;
+        }
+        .btn-emerald {
+            background: var(--emerald);
+            color: #fff;
+        }
+        .btn-emerald:hover {
+            background: var(--emerald-soft);
+        }
+
+        .main-content {
+            display: block !important;
+        }
+
+        .search-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.2s;
+        }
+        .search-card:hover {
+            border-color: var(--gold);
+        }
+
+        .result-table {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        .result-table thead {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .result-table th {
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 14px 16px;
+            text-align: right;
+        }
+        .result-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .result-table tbody tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .status-text {
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+        }
+        .status-text.loading {
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        .status-text.success {
+            color: var(--emerald);
+            border-color: var(--emerald);
+        }
+        .status-text.error {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 12px 30px var(--shadow-color);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.3s ease;
+            max-width: 90%;
+            border: 1px solid var(--border-color);
+        }
+        .toast.show {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .search-card { padding: 16px; }
+            .result-table { font-size: 0.85rem; }
+            .result-table th, .result-table td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
+        <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight">
+                        <i class="fas fa-map-marked-alt ml-2 text-gold"></i>مستكشف المواقع
+                    </h1>
+                    <p class="text-sm text-muted mt-1">ابحث عن الأنشطة التجارية والمؤسسات في أي مدينة</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-muted" id="currentDate"></span>
+                </div>
+            </div>
+
+            <!-- Search Form -->
+            <div class="search-card">
+                <form id="searchForm" class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-muted mb-2">النشاط التجاري</label>
+                        <input type="text" id="activity" required placeholder="مثال: مستشفيات، مطاعم، مقاهي..." class="w-full p-3 border-2 border-line rounded-xl focus:outline-none focus:border-gold bg-bg text-ink">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold text-muted mb-2">المدينة / المنطقة</label>
+                        <input type="text" id="location" required placeholder="مثال: الرياض، جدة، حي النخيل..." class="w-full p-3 border-2 border-line rounded-xl focus:outline-none focus:border-gold bg-bg text-ink">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" id="searchBtn" class="btn btn-gold w-full md:w-auto">
+                            <i class="fas fa-search"></i> ابحث الآن
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Status -->
+            <div id="status" class="status-text text-center mb-4 hidden"></div>
+
+            <!-- Actions -->
+            <div id="actionsContainer" class="hidden flex justify-end mb-4">
+                <button id="exportBtn" class="btn btn-emerald btn-sm">
+                    <i class="fas fa-file-excel"></i> تصدير إلى Excel
+                </button>
+            </div>
+
+            <!-- Results Table -->
+            <div id="tableContainer" class="hidden result-table">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right">
+                        <thead>
+                            <tr>
+                                <th>اسم النشاط</th>
+                                <th>رقم الهاتف</th>
+                                <th>العنوان</th>
+                                <th>الموقع الإلكتروني</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- سيتم إضافة الصفوف بواسطة JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/components/sidebar.js"></script>
+    <script src="/assets/js/components/global.js"></script>
+    <script>
+        // ============================================================
+        // هذا الكود مخصص للبحث في خرائط جوجل - لا يتم تعديله
+        // ============================================================
+
+        let globalResultsData = [];
+
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const activity = document.getElementById('activity').value;
+            const location = document.getElementById('location').value;
+            
+            const statusEl = document.getElementById('status');
+            const tableBody = document.getElementById('tableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const actionsContainer = document.getElementById('actionsContainer');
+            
+            statusEl.className = "status-text loading text-center mb-4";
+            statusEl.textContent = "⏳ جاري الاتصال بخرائط جوجل وجلب البيانات الحقيقية...";
+            statusEl.classList.remove('hidden');
+            tableBody.innerHTML = ""; 
+            tableContainer.classList.add('hidden');
+            actionsContainer.classList.add('hidden');
+            globalResultsData = [];
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/search?activity=${activity}&location=${location}`);
+                
+                if(!response.ok) throw new Error("حدث خطأ في الاتصال");
+                
+                const data = await response.json();
+                
+                statusEl.className = "status-text success text-center mb-4";
+                statusEl.textContent = `✅ تم العثور على ${data.length} نتيجة حقيقية`;
+                statusEl.classList.remove('hidden');
+
+                if(data.length === 0) {
+                    statusEl.textContent = "لا توجد نتائج مطابقة.";
+                    return;
+                }
+
+                globalResultsData = data;
+                tableContainer.classList.remove('hidden');
+                actionsContainer.classList.remove('hidden');
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-surface2 transition-colors";
+                    
+                    const name = item.title || 'بدون اسم';
+                    const phone = item.phone || 'لا يوجد رقم';
+                    
+                    const searchQuery = encodeURIComponent(`${name} ${item.address || ''}`);
+                    const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${searchQuery}`;
+                    
+                    const addressHtml = item.address 
+                        ? `<a href="${googleMapsLink}" target="_blank" class="text-gold hover:underline flex items-start gap-1">
+                             <i class="fas fa-map-marker-alt mt-0.5"></i>
+                             <span>${item.address}</span>
+                           </a>`
+                        : '<span class="text-muted">العنوان غير مدرج</span>';
+
+                    const website = item.website ? `<a href="${item.website}" target="_blank" class="text-gold hover:underline">زيارة الموقع</a>` : '-';
+
+                    row.innerHTML = `
+                        <td class="font-bold text-ink">${name}</td>
+                        <td class="text-ink" dir="ltr" style="text-align: right;">${phone}</td>
+                        <td class="text-sm">${addressHtml}</td>
+                        <td class="text-sm">${website}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                statusEl.className = "status-text error text-center mb-4";
+                statusEl.textContent = "❌ حدث خطأ، تأكد من تشغيل ملف server.js أولاً (node server.js).";
+                statusEl.classList.remove('hidden');
+            }
+        });
+
+        // تصدير البيانات إلى CSV
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            if (globalResultsData.length === 0) return;
+            let csvContent = "\uFEFF"; 
+            csvContent += "اسم النشاط,رقم الهاتف,العنوان,الموقع الإلكتروني\n";
+
+            globalResultsData.forEach(item => {
+                let name = `"${(item.title || '').replace(/"/g, '""')}"`;
+                let phone = `"${(item.phone || '').replace(/"/g, '""')}"`;
+                let address = `"${(item.address || '').replace(/"/g, '""')}"`;
+                let website = `"${(item.website || '').replace(/"/g, '""')}"`;
+                
+                csvContent += `${name},${phone},${address},${website}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", "GoogleMaps_Results.csv");
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // عرض التاريخ الحالي
+        const now = new Date();
+        document.getElementById('currentDate').textContent = now.toLocaleDateString('ar-SA', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        // دالة عرض رسائل (للتوافق مع نظام toasts)
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            if (!toast || !toastMsg) return;
+            toast.className = 'toast show ' + type;
+            toastMsg.textContent = message;
+            clearTimeout(toast._hideTimeout);
+            toast._hideTimeout = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+    </script>
+</body>
+</html>

@@ -6,11 +6,12 @@
     "use strict";
 
     const menuItems = [
-        { id: "dashboard", title: "لوحة التحكم", icon: "fa-gauge-high", link: "dashboard.html" },
-        { id: "offers", title: "العروض", icon: "fa-file-signature", link: "offers.html" },
-        { id: "requests", title: "الطلبات", icon: "fa-clipboard-list", link: "requests.html" },
-        { id: "alerts", title: "التنبيهات والتذكيرات", icon: "fa-bell", link: "alerts.html" },
-        { id: "settings", title: "الإعدادات", icon: "fa-gear", link: "settings.html" }
+        { id: "dashboard", title: "لوحة التحكم", icon: "fa-gauge-high", link: "/pages/dashboard.html" },
+        { id: "offers", title: "العروض", icon: "fa-file-signature", link: "/pages/offers.html" },
+        { id: "requests", title: "الطلبات", icon: "fa-clipboard-list", link: "/pages/requests.html" },
+         { id: "map", title: "مستكشف المواقع", icon: "fa-map-marked-alt", link: "/pages/map_searcher.html" },
+        { id: "alerts", title: "التنبيهات والتذكيرات", icon: "fa-bell", link: "/pages/alerts.html" },
+        { id: "settings", title: "الإعدادات", icon: "fa-gear", link: "/pages/settings.html" }
     ];
 
     function getTheme() {
@@ -21,6 +22,7 @@
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('masar_theme', theme);
         updateThemeUI(theme);
+        updateSidebarThemeButton(theme);
     }
 
     function toggleTheme() {
@@ -62,7 +64,8 @@
         const token = localStorage.getItem('masar_token');
         if (!token) return false;
         try {
-            const res = await fetch('http://localhost:8000/api/auth/me', {
+            // استخدام الـ API الفعلي بدلاً من localhost
+            const res = await fetch('https://masar.technova.fun/api/auth/me', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -80,7 +83,7 @@
             document.body.prepend(container);
         }
 
-        // Theme toggle button (floating)
+        // Theme toggle button (floating) - تأكد من وجوده مرة واحدة فقط
         if (!document.querySelector('.theme-toggle')) {
             const themeBtn = document.createElement('button');
             themeBtn.className = 'theme-toggle';
@@ -107,6 +110,7 @@
         `;
 
         menuItems.forEach((item) => {
+            // تحديد الصفحة النشطة بناءً على الرابط
             const isActive = item.link === currentPage ? "active" : "";
             menuHTML += `
                 <li>
@@ -149,7 +153,7 @@
 
         container.innerHTML = menuHTML;
 
-        // Hamburger button
+        // Hamburger button - تأكد من وجوده مرة واحدة فقط
         if (!document.getElementById("hamburgerBtn")) {
             const hamburger = document.createElement("button");
             hamburger.id = "hamburgerBtn";
@@ -184,7 +188,10 @@
             hamburger.innerHTML = '<i class="fas fa-bars"></i>';
         }
 
-        hamburger.addEventListener("click", function(e) {
+        // إزالة الأحداث القديمة لمنع التكرار
+        hamburger.replaceWith(hamburger.cloneNode(true));
+        const newHamburger = document.getElementById("hamburgerBtn");
+        newHamburger.addEventListener("click", function(e) {
             e.stopPropagation();
             if (sidebar.classList.contains("open")) {
                 closeSidebar();
@@ -193,7 +200,9 @@
             }
         });
 
-        overlay.addEventListener("click", closeSidebar);
+        overlay.replaceWith(overlay.cloneNode(true));
+        const newOverlay = document.getElementById("sidebarOverlay");
+        newOverlay.addEventListener("click", closeSidebar);
 
         window.addEventListener("resize", function() {
             if (window.innerWidth > 768 && sidebar.classList.contains("open")) {
@@ -211,6 +220,7 @@
         const savedTheme = getTheme();
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeUI(savedTheme);
+        updateSidebarThemeButton(savedTheme);
 
         // منع التنقل غير المصرح به
         const links = sidebar.querySelectorAll(".sidebar-menu a");
@@ -281,6 +291,7 @@
     window.setTheme = setTheme;
     window.toggleTheme = toggleTheme;
     window.updateThemeUI = updateThemeUI;
+    window.updateSidebarThemeButton = updateSidebarThemeButton;
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", renderSidebar);

@@ -1,0 +1,189 @@
+<!-- ============================================================ -->
+<!-- pages/dashboard.html - نسخة مع تصحيح إظهار المحتوى            -->
+<!-- ============================================================ -->
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>مسار — لوحة التحكم</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* إضافة مؤقتة لإظهار المحتوى الرئيسي في حال وجود تعارض */
+        .main-content {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        /* بقية الأنماط كما هي */
+        .stat-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color);
+        }
+        .stat-card .stat-icon.bg-blue-50 { background: rgba(59, 130, 246, 0.1); }
+        .stat-card .stat-icon.bg-purple-50 { background: rgba(139, 92, 246, 0.1); }
+        .stat-card .stat-icon.bg-emerald-50 { background: rgba(16, 185, 129, 0.1); }
+        .stat-card .stat-icon.bg-amber-50 { background: rgba(245, 158, 11, 0.1); }
+        .stat-card .stat-icon.bg-red-50 { background: rgba(239, 68, 68, 0.1); }
+        
+        .quick-action-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        .quick-action-btn:hover {
+            border-color: var(--gold);
+            background: var(--hover-bg);
+        }
+        .alert-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        .chart-bar {
+            transition: height 0.5s ease;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-dot.gold { background: #c9a84c; }
+        .activity-dot.purple { background: #8b5cf6; }
+        .activity-dot.blue { background: #3b82f6; }
+        .activity-dot.amber { background: #f59e0b; }
+        .activity-dot.gray { background: #9ca3af; }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 9999;
+            max-width: 90%;
+        }
+        .toast.show { display: flex; }
+        .toast.success { border-right: 4px solid #10b981; }
+        .toast.error { border-right: 4px solid #ef4444; }
+        .toast.info { border-right: 4px solid #3b82f6; }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+
+    <!-- MAIN CONTENT - تم إضافة class="visible" و style إضافي -->
+    <div class="main-content visible" id="mainContent" style="display: block !important;">
+        <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
+                        <i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i>لوحة التحكم
+                    </h1>
+                    <p class="text-sm text-gray-500 mt-1" id="greetingText">مرحباً بك، إليك ملخص أعمالك اليوم</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-sm text-gray-400" id="currentDate"></span>
+                    <button onclick="window.location.href = 'offers.html'" class="btn btn-gold text-sm"><i class="fas fa-plus"></i> عرض جديد</button>
+                    <button onclick="window.location.href = 'requests.html'" class="btn btn-outline text-sm"><i class="fas fa-plus"></i> طلب جديد</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6" id="statsGrid"></div>
+
+            <div class="rounded-2xl border border-[#e9edf4] p-4 md:p-5 mb-6">
+                <h3 class="text-sm font-bold text-[#1e3a5f] mb-3">⚡ إجراءات سريعة</h3>
+                <div class="flex flex-wrap gap-3">
+                    <div class="quick-action-btn" onclick="window.location.href='offers.html'"><span class="icon">🏗️</span> عرض جديد</div>
+                    <div class="quick-action-btn" onclick="window.location.href='requests.html'"><span class="icon">📋</span> طلب جديد</div>
+                    <div class="quick-action-btn" onclick="showTodayAppointments()"><span class="icon">📅</span> معاينات اليوم</div>
+                    <div class="quick-action-btn" onclick="exportExcel()"><span class="icon">📊</span> تصدير تقرير</div>
+                    <div class="quick-action-btn" onclick="window.location.href='offers.html'"><span class="icon">🔍</span> عرض العروض</div>
+                    <div class="quick-action-btn" onclick="window.location.href='requests.html'"><span class="icon">🔍</span> عرض الطلبات</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="lg:col-span-2 rounded-2xl border border-[#e9edf4] p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-bell ml-2 text-[#2d6a9f]"></i> التنبيهات</h3>
+                        <span class="text-xs text-gray-400" id="alertCount">0 تنبيه</span>
+                    </div>
+                    <div id="alertsContainer" class="max-h-[280px] overflow-y-auto"></div>
+                </div>
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-calendar-check ml-2 text-[#2d6a9f]"></i> معاينات اليوم</h3>
+                        <span class="text-xs text-gray-400" id="appointmentCount">0</span>
+                    </div>
+                    <div id="appointmentsContainer" class="max-h-[280px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-chart-bar ml-2 text-[#2d6a9f]"></i> توزيع العقارات</h3>
+                    <div id="propertyChart" class="h-48 flex items-end justify-center gap-4"></div>
+                </div>
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i> حالة الطلبات</h3>
+                    <div id="requestChart" class="h-48 flex items-end justify-center gap-4"></div>
+                </div>
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-clock ml-2 text-[#2d6a9f]"></i> آخر النشاطات</h3>
+                    <div id="activityFeed" class="max-h-[200px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> عروض قيد الانتظار</h3>
+                        <button onclick="window.location.href='offers.html'" class="text-xs text-[#1e3a5f] hover:underline">عرض الكل</button>
+                    </div>
+                    <div id="pendingOffersList" class="space-y-2 max-h-[180px] overflow-y-auto"></div>
+                </div>
+                <div class="rounded-2xl border border-[#e9edf4] p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> طلبات قيد المطابقة</h3>
+                        <button onclick="window.location.href='requests.html'" class="text-xs text-[#1e3a5f] hover:underline">عرض الكل</button>
+                    </div>
+                    <div id="pendingRequestsList" class="space-y-2 max-h-[180px] overflow-y-auto"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/assets/js/components/sidebar.js"></script>
+    <script src="/assets/js/core/api.js"></script>
+    <script src="/assets/js/components/global.js"></script>
+    <script src="/assets/js/pages/dashboard.js"></script>
+</body>
+</html>

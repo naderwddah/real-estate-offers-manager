@@ -85,6 +85,50 @@ const API = {
         return { status: "error", message: err.message };
       }
     },
+
+    // ============================================================
+    // CHECK AUTH - دالة عامة للتحقق من صحة التوكن
+    // ============================================================
+    checkAuth: async (redirect = true) => {
+      // إذا كان هناك توكن بالفعل وتم التحقق منه سابقاً (يمكن إضافة متغير cache)
+      const token = localStorage.getItem("masar_token");
+      if (!token) {
+        if (redirect) {
+          window.location.href = "index.html";
+        }
+        return false;
+      }
+
+      // تحديث التوكن في الكائن
+      API.token = token;
+
+      try {
+        const result = await API.auth.me();
+        if (result.status === "success") {
+          // توكن صالح
+          return true;
+        } else {
+          // توكن غير صالح
+          localStorage.removeItem("masar_token");
+          localStorage.removeItem("masar_user");
+          API.token = null;
+          if (redirect) {
+            window.location.href = "index.html";
+          }
+          return false;
+        }
+      } catch (err) {
+        // خطأ في الاتصال أو أي خطأ آخر
+        console.warn("خطأ في التحقق من التوكن:", err.message);
+        localStorage.removeItem("masar_token");
+        localStorage.removeItem("masar_user");
+        API.token = null;
+        if (redirect) {
+          window.location.href = "index.html";
+        }
+        return false;
+      }
+    },
   },
 
   // ============================================================
@@ -633,11 +677,33 @@ const API = {
     get: async () => {
       if (!API.token) return { status: "error", message: "غير مسجل دخول" };
       try {
-        const res = await fetch(`${API.baseUrl}/settings`, {
-          method: "GET",
-          headers: API.getHeaders(),
-        });
-        return await res.json();
+        // محاولة جلب الإعدادات من localStorage أولاً
+        const localSettings = localStorage.getItem("masar_settings");
+        if (localSettings) {
+          try {
+            const parsed = JSON.parse(localSettings);
+            return { status: "success", data: parsed };
+          } catch (e) {}
+        }
+        // إذا لم توجد محلياً، نعيد إعدادات افتراضية
+        return {
+          status: "success",
+          data: {
+            company_name: "شركة مسار العقارية",
+            logo_path: "",
+            phone: "",
+            email: "",
+            manager_name: "أسد",
+            manager_phone: "966500000000",
+            manager_email: "",
+            legal_name: "الشؤون القانونية",
+            legal_phone: "",
+            legal_email: "",
+            report_day: 4,
+            max_wait_days: 3,
+            report_footer: "",
+          },
+        };
       } catch (err) {
         return { status: "error", message: err.message };
       }
@@ -646,12 +712,9 @@ const API = {
     update: async (data) => {
       if (!API.token) return { status: "error", message: "غير مسجل دخول" };
       try {
-        const res = await fetch(`${API.baseUrl}/settings`, {
-          method: "PUT",
-          headers: API.getHeaders(),
-          body: JSON.stringify(data),
-        });
-        return await res.json();
+        // حفظ في localStorage مؤقتاً
+        localStorage.setItem("masar_settings", JSON.stringify(data));
+        return { status: "success", message: "تم حفظ الإعدادات" };
       } catch (err) {
         return { status: "error", message: err.message };
       }
@@ -893,57 +956,6 @@ const API = {
     } catch (err) {
       return false;
     }
-  },
-
-  // ============================================================
-  // SETTINGS - إضافة دوال الإعدادات
-  // ============================================================
-  settings: {
-    get: async () => {
-      if (!API.token) return { status: "error", message: "غير مسجل دخول" };
-      try {
-        // محاولة جلب الإعدادات من localStorage أولاً
-        const localSettings = localStorage.getItem("masar_settings");
-        if (localSettings) {
-          try {
-            const parsed = JSON.parse(localSettings);
-            return { status: "success", data: parsed };
-          } catch (e) {}
-        }
-        // إذا لم توجد محلياً، نعيد إعدادات افتراضية
-        return {
-          status: "success",
-          data: {
-            company_name: "شركة مسار العقارية",
-            logo_path: "",
-            phone: "",
-            email: "",
-            manager_name: "أسد",
-            manager_phone: "966500000000",
-            manager_email: "",
-            legal_name: "الشؤون القانونية",
-            legal_phone: "",
-            legal_email: "",
-            report_day: 4,
-            max_wait_days: 3,
-            report_footer: "",
-          },
-        };
-      } catch (err) {
-        return { status: "error", message: err.message };
-      }
-    },
-
-    update: async (data) => {
-      if (!API.token) return { status: "error", message: "غير مسجل دخول" };
-      try {
-        // حفظ في localStorage مؤقتاً
-        localStorage.setItem("masar_settings", JSON.stringify(data));
-        return { status: "success", message: "تم حفظ الإعدادات" };
-      } catch (err) {
-        return { status: "error", message: err.message };
-      }
-    },
   },
 };
 
