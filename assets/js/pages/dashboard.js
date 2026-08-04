@@ -7,14 +7,13 @@ let dashboardData = {};
 let refreshInterval = null;
 
 // ============================================================
-// TOAST HELPER
+// TOAST HELPER (مستوحى من global.js)
 // ============================================================
 function showToast(message, type = "success") {
   const toast = document.getElementById("toast");
   const toastMsg = document.getElementById("toastMessage");
   if (!toast || !toastMsg) return;
 
-  // إعادة تعيين الأيقونة حسب النوع
   const icon = toast.querySelector("i");
   if (icon) {
     if (type === "success") {
@@ -344,13 +343,13 @@ function renderPending(data) {
 /**
  * تحديث رسالة الترحيب
  */
-function updateGreeting(data) {
+function updateGreeting() {
   const hour = new Date().getHours();
   let greeting = "صباح الخير";
   if (hour >= 12 && hour < 17) greeting = "مساء الخير";
   else if (hour >= 17) greeting = "مساء الخير";
 
-  // محاولة جلب اسم المستخدم
+  // جلب اسم المستخدم من التوكن
   let userName = "خالد";
   try {
     const user = API.getUser();
@@ -380,61 +379,58 @@ function updateGreeting(data) {
 // ============================================================
 async function loadDashboard() {
   try {
-    // عرض حالة التحميل
-    const loadingEl = document.getElementById("loadingState");
-    if (loadingEl) loadingEl.style.display = "block";
+    // استدعاء API - ترمي استثناء في حالة الفشل
+    const result = await API.reports.dashboard();
 
-    const data = await API.reports.dashboard();
+    // بما أن API.reports.dashboard ترمي استثناء في حالة الفشل،
+    // نصل إلى هنا فقط في حالة النجاح
+    dashboardData = result.data || {};
 
-    // إخفاء حالة التحميل
-    if (loadingEl) loadingEl.style.display = "none";
+    // التأكد من وجود جميع الحقول المطلوبة
+    dashboardData = {
+      total_offers: dashboardData.total_offers || 0,
+      total_requests: dashboardData.total_requests || 0,
+      active_offers: dashboardData.active_offers || 0,
+      pending_requests: dashboardData.pending_requests || 0,
+      today_appointments: dashboardData.today_appointments || 0,
+      delayed: dashboardData.delayed || 0,
+      alerts: dashboardData.alerts || [],
+      today_appointments_list: dashboardData.today_appointments_list || [],
+      property_types: dashboardData.property_types || {},
+      request_statuses: dashboardData.request_statuses || {},
+      recent_activity: dashboardData.recent_activity || [],
+      pending_offers: dashboardData.pending_offers || [],
+      pending_requests_list: dashboardData.pending_requests_list || [],
+    };
 
-    if (data.status === "success") {
-      dashboardData = data.data || {};
+    // عرض البيانات
+    renderStats(dashboardData);
+    renderAlerts(dashboardData);
+    renderAppointments(dashboardData);
+    renderCharts(dashboardData);
+    renderActivity(dashboardData);
+    renderPending(dashboardData);
+    updateGreeting();
 
-      // التأكد من وجود جميع الحقول المطلوبة
-      dashboardData = {
-        total_offers: dashboardData.total_offers || 0,
-        total_requests: dashboardData.total_requests || 0,
-        active_offers: dashboardData.active_offers || 0,
-        pending_requests: dashboardData.pending_requests || 0,
-        today_appointments: dashboardData.today_appointments || 0,
-        delayed: dashboardData.delayed || 0,
-        alerts: dashboardData.alerts || [],
-        today_appointments_list: dashboardData.today_appointments_list || [],
-        property_types: dashboardData.property_types || {},
-        request_statuses: dashboardData.request_statuses || {},
-        recent_activity: dashboardData.recent_activity || [],
-        pending_offers: dashboardData.pending_offers || [],
-        pending_requests_list: dashboardData.pending_requests_list || [],
-      };
+    // إظهار المحتوى (إن وجد)
+    const content = document.getElementById("dashboardContent");
+    if (content) content.style.display = "block";
 
-      // عرض البيانات
-      renderStats(dashboardData);
-      renderAlerts(dashboardData);
-      renderAppointments(dashboardData);
-      renderCharts(dashboardData);
-      renderActivity(dashboardData);
-      renderPending(dashboardData);
-      updateGreeting(dashboardData);
-
-      // إظهار المحتوى بعد التحميل
-      const content = document.getElementById("dashboardContent");
-      if (content) content.style.display = "block";
-
-    } else {
-      showToast(data.message || "فشل تحميل البيانات", "error");
-    }
   } catch (err) {
-    console.error("خطأ في تحميل لوحة التحكم:", err);
-    showToast(err.message || "حدث خطأ في الاتصال", "error");
+    console.error("❌ خطأ في تحميل لوحة التحكم:", err);
+    showToast(err.message || "حدث خطأ في تحميل البيانات", "error");
 
-    // إخفاء حالة التحميل وإظهار رسالة خطأ
-    const loadingEl = document.getElementById("loadingState");
-    if (loadingEl) loadingEl.style.display = "none";
-
-    const errorEl = document.getElementById("errorState");
-    if (errorEl) errorEl.style.display = "block";
+    // عرض رسالة خطأ في الواجهة
+    const alertsContainer = document.getElementById("alertsContainer");
+    if (alertsContainer) {
+      alertsContainer.innerHTML = `
+        <div class="text-center py-8 text-red-500">
+          <i class="fas fa-exclamation-triangle text-3xl block mb-2"></i>
+          <p>${err.message || "حدث خطأ في تحميل البيانات"}</p>
+          <button onclick="loadDashboard()" class="mt-3 text-sm text-[#1e3a5f] hover:underline">🔄 إعادة المحاولة</button>
+        </div>
+      `;
+    }
   }
 }
 
@@ -471,37 +467,34 @@ async function exportExcel() {
       .slice(0, 10);
     const toDate = today.toISOString().slice(0, 10);
 
+    // API.reports.offers ترمي استثناء في حالة الفشل
     const result = await API.reports.offers(fromDate, toDate);
 
-    if (result.status === "success" && result.data) {
-      const rows = result.data.data || result.data || [];
-      if (rows.length === 0) {
-        showToast("لا توجد بيانات للتصدير", "error");
-        return;
-      }
-
-      // إنشاء ملف CSV
-      const headers = Object.keys(rows[0]);
-      let csv = "\uFEFF" + headers.join(",") + "\n";
-      rows.forEach((r) => {
-        csv +=
-          headers
-            .map((h) => `"${String(r[h] || "").replace(/"/g, '""')}"`)
-            .join(",") + "\n";
-      });
-
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = `تقرير_لوحة_التحكم_${today.toISOString().slice(0, 10)}.csv`;
-      link.click();
-
-      showToast("✅ تم تصدير التقرير بنجاح", "success");
-    } else {
-      showToast(result.message || "فشل التصدير", "error");
+    const rows = result.data?.data || result.data || [];
+    if (rows.length === 0) {
+      showToast("لا توجد بيانات للتصدير", "error");
+      return;
     }
+
+    // إنشاء ملف CSV
+    const headers = Object.keys(rows[0]);
+    let csv = "\uFEFF" + headers.join(",") + "\n";
+    rows.forEach((r) => {
+      csv +=
+        headers
+          .map((h) => `"${String(r[h] || "").replace(/"/g, '""')}"`)
+          .join(",") + "\n";
+    });
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `تقرير_لوحة_التحكم_${today.toISOString().slice(0, 10)}.csv`;
+    link.click();
+
+    showToast("✅ تم تصدير التقرير بنجاح", "success");
   } catch (err) {
-    console.error("خطأ في التصدير:", err);
+    console.error("❌ خطأ في التصدير:", err);
     showToast(err.message || "حدث خطأ أثناء التصدير", "error");
   }
 }
@@ -512,19 +505,19 @@ async function exportExcel() {
 document.addEventListener("DOMContentLoaded", async function () {
   console.log("📊 تحميل لوحة التحكم...");
 
-  // 1. التحقق من صحة التوكن
+  // 1. التحقق من صحة التوكن - API.auth.checkAuth ترمي استثناء أو تعيد توجيه تلقائياً
   const isAuthenticated = await API.auth.checkAuth(true);
   if (!isAuthenticated) {
     // سيتم التحويل تلقائياً بواسطة checkAuth
     return;
   }
 
-  // 2. إظهار المحتوى وإخفاء حالة التحميل
-  const loadingEl = document.getElementById("loadingState");
-  if (loadingEl) loadingEl.style.display = "none";
-
-  const contentEl = document.getElementById("dashboardContent");
-  if (contentEl) contentEl.style.display = "block";
+  // 2. إظهار المحتوى الرئيسي
+  const mainContent = document.getElementById("mainContent");
+  if (mainContent) {
+    mainContent.style.display = "block";
+    mainContent.classList.add("visible");
+  }
 
   // 3. تحميل البيانات
   await loadDashboard();

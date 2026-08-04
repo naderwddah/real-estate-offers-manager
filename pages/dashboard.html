@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- pages/dashboard.html - نسخة مع تصحيح إظهار المحتوى            -->
+<!-- pages/dashboard.html - لوحة التحكم الرئيسية                   -->
 <!-- ============================================================ -->
 <!doctype html>
 <html lang="ar" dir="rtl">
@@ -11,16 +11,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* إضافة مؤقتة لإظهار المحتوى الرئيسي في حال وجود تعارض */
-        .main-content {
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        }
-        /* بقية الأنماط كما هي */
+        /* أنماط البطاقات والعناصر */
         .stat-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
         .stat-card .stat-icon.bg-blue-50 { background: rgba(59, 130, 246, 0.1); }
         .stat-card .stat-icon.bg-purple-50 { background: rgba(139, 92, 246, 0.1); }
@@ -33,17 +32,35 @@
             border: 1px solid var(--border-color);
             color: var(--text-primary);
             cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
         }
         .quick-action-btn:hover {
             border-color: var(--gold);
             background: var(--hover-bg);
+            transform: translateY(-1px);
         }
+        .quick-action-btn .icon { font-size: 1.1rem; }
+        
         .alert-item {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
         }
+        .alert-item.info { border-right: 3px solid #3b82f6; }
+        .alert-item.warning { border-right: 3px solid #f59e0b; }
+        .alert-item.error { border-right: 3px solid #ef4444; }
+        .alert-item.success { border-right: 3px solid #10b981; }
+        
         .chart-bar {
             transition: height 0.5s ease;
+            min-height: 4px;
+            border-radius: 4px 4px 0 0;
         }
         .activity-item {
             display: flex;
@@ -64,6 +81,8 @@
         .activity-dot.blue { background: #3b82f6; }
         .activity-dot.amber { background: #f59e0b; }
         .activity-dot.gray { background: #9ca3af; }
+        .activity-dot.green { background: #10b981; }
+        .activity-dot.red { background: #ef4444; }
 
         .toast {
             position: fixed;
@@ -84,6 +103,16 @@
         .toast.success { border-right: 4px solid #10b981; }
         .toast.error { border-right: 4px solid #ef4444; }
         .toast.info { border-right: 4px solid #3b82f6; }
+
+        .main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .main-content.visible {
+            display: block;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -97,8 +126,8 @@
     <!-- SIDEBAR -->
     <div id="sidebar-container"></div>
 
-    <!-- MAIN CONTENT - تم إضافة class="visible" و style إضافي -->
-    <div class="main-content visible" id="mainContent" style="display: block !important;">
+    <!-- MAIN CONTENT -->
+    <div class="main-content" id="mainContent">
         <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
 
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -110,13 +139,15 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <span class="text-sm text-gray-400" id="currentDate"></span>
-                    <button onclick="window.location.href = 'offers.html'" class="btn btn-gold text-sm"><i class="fas fa-plus"></i> عرض جديد</button>
-                    <button onclick="window.location.href = 'requests.html'" class="btn btn-outline text-sm"><i class="fas fa-plus"></i> طلب جديد</button>
+                    <button onclick="window.location.href='offers.html'" class="btn btn-gold text-sm"><i class="fas fa-plus"></i> عرض جديد</button>
+                    <button onclick="window.location.href='requests.html'" class="btn btn-outline text-sm"><i class="fas fa-plus"></i> طلب جديد</button>
                 </div>
             </div>
 
+            <!-- البطاقات الإحصائية -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6" id="statsGrid"></div>
 
+            <!-- الإجراءات السريعة -->
             <div class="rounded-2xl border border-[#e9edf4] p-4 md:p-5 mb-6">
                 <h3 class="text-sm font-bold text-[#1e3a5f] mb-3">⚡ إجراءات سريعة</h3>
                 <div class="flex flex-wrap gap-3">
@@ -129,6 +160,7 @@
                 </div>
             </div>
 
+            <!-- التنبيهات والمعاينات -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="lg:col-span-2 rounded-2xl border border-[#e9edf4] p-5">
                     <div class="flex items-center justify-between mb-4">
@@ -146,6 +178,7 @@
                 </div>
             </div>
 
+            <!-- المخططات والنشاطات -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="rounded-2xl border border-[#e9edf4] p-5">
                     <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-chart-bar ml-2 text-[#2d6a9f]"></i> توزيع العقارات</h3>
@@ -161,6 +194,7 @@
                 </div>
             </div>
 
+            <!-- القوائم المعلقة -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
                 <div class="rounded-2xl border border-[#e9edf4] p-5">
                     <div class="flex items-center justify-between mb-4">
@@ -181,6 +215,7 @@
         </div>
     </div>
 
+    <!-- تحميل الملفات -->
     <script src="/assets/js/components/sidebar.js"></script>
     <script src="/assets/js/core/api.js"></script>
     <script src="/assets/js/components/global.js"></script>

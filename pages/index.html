@@ -312,6 +312,8 @@
         overflow-x: auto;
         white-space: pre-wrap;
         word-break: break-all;
+        max-height: 300px;
+        overflow-y: auto;
       }
       .debug-info.show {
         display: block;
@@ -516,14 +518,10 @@
         submitBtn.innerHTML = '<span class="spinner"></span> جاري الدخول...';
 
         try {
-          // تخزين وقت البدء
           const startTime = Date.now();
-          console.log({
-            email,
-            password,
-            api: API.baseUrl,
-          });
-          // استدعاء دالة login من API
+          console.log("📤 إرسال طلب تسجيل الدخول:", { email });
+
+          // استدعاء دالة login من API - ترمي استثناء في حالة الفشل
           const result = await API.auth.login(email, password);
 
           const endTime = Date.now();
@@ -533,18 +531,18 @@
 
           // تحديث معلومات التصحيح
           debugInfo.textContent = `
-                    📤 الطلب:
-                    URL: ${API.baseUrl}/auth/login
-                    Method: POST
-                    Headers: { "Content-Type": "application/json" }
-                    Body: { "email": "${email}", "password": "••••••••" }
+📤 الطلب:
+URL: ${API.baseUrl}/auth/login
+Method: POST
+Headers: { "Content-Type": "application/json" }
+Body: { "email": "${email}", "password": "••••••••" }
 
-                    📥 الرد:
-                    Status: ${result.status || "unknown"}
-                    Message: ${result.message || "لا توجد رسالة"}
-                    وقت الاستجابة: ${duration}ms
-                    البيانات الكاملة: ${JSON.stringify(result, null, 2)}
-                `;
+📥 الرد:
+Status: ${result.status || "unknown"}
+Message: ${result.message || "لا توجد رسالة"}
+وقت الاستجابة: ${duration}ms
+البيانات الكاملة: ${JSON.stringify(result, null, 2)}
+          `;
 
           if (result.status === "success") {
             showToast("✅ تم تسجيل الدخول بنجاح، جاري التحويل...", "success");
@@ -552,24 +550,26 @@
               window.location.href = "dashboard.html";
             }, 500);
           } else {
+            // هذا لن يحدث لأن API.auth.login يعيد status: "error" فقط في حالة catch
+            // لكننا نضعه كاحتياط
             const serverMessage = result.message || "بيانات الدخول غير صحيحة";
             errorText.textContent = serverMessage;
             errorEl.classList.add("show");
             showToast(serverMessage, "error");
           }
         } catch (err) {
+          // أي استثناء من API.auth.login أو من handleResponse
           console.error("❌ خطأ في تسجيل الدخول:", err);
           const errorMsg = err.message || "حدث خطأ في الاتصال بالخادم";
           errorText.textContent = errorMsg;
           errorEl.classList.add("show");
           showToast("⚠️ " + errorMsg, "error");
 
-          // تحديث معلومات التصحيح
           debugInfo.textContent = `
-                    ❌ حدث خطأ:
-                    ${errorMsg}
-                    ${err.stack || ""}
-                `;
+❌ حدث خطأ:
+${errorMsg}
+${err.stack || ""}
+          `;
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalBtnHTML;
@@ -583,16 +583,14 @@
         const token = localStorage.getItem("masar_token");
         if (token) {
           try {
-            const me = await API.auth.me();
-            if (me.status === "success") {
-              window.location.href = "dashboard.html";
-              return;
-            } else {
-              localStorage.removeItem("masar_token");
-              localStorage.removeItem("masar_user");
-              API.token = null;
-            }
+            // API.auth.me ترمي استثناء في حالة فشل التوكن
+            await API.auth.me();
+            // إذا وصلنا هنا، التوكن صالح
+            window.location.href = "dashboard.html";
+            return;
           } catch (e) {
+            // التوكن غير صالح، ننظفه
+            console.warn("⚠️ توكن غير صالح، جاري تنظيفه:", e.message);
             localStorage.removeItem("masar_token");
             localStorage.removeItem("masar_user");
             API.token = null;

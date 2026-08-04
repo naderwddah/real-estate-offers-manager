@@ -1,639 +1,314 @@
 <!-- ============================================================ -->
-<!-- pages/settings.html - الإعدادات (نسخة منظمة)                 -->
+<!-- pages/settings.html - النسخة النهائية مع يوم التقرير        -->
 <!-- ============================================================ -->
 <!doctype html>
 <html lang="ar" dir="rtl">
-  <head>
+<head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
     <title>مسار — الإعدادات</title>
     <link rel="stylesheet" href="/assets/css/global.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
-      * {
-        font-family: "Tajawal", sans-serif;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background: var(--bg-primary);
-        min-height: 100vh;
-        color: var(--text-primary);
-      }
-
-      .bg-surface {
-        background: var(--bg-secondary);
-      }
-      .bg-surface2 {
-        background: var(--bg-surface);
-      }
-      .bg-surface3 {
-        background: var(--bg-surface2);
-      }
-      .bg-bg {
-        background: var(--bg-primary);
-      }
-      .text-muted {
-        color: var(--text-secondary);
-      }
-      .text-ink {
-        color: var(--text-primary);
-      }
-      .border-line {
-        border-color: var(--border-color);
-      }
-      .bg-gold {
-        background: var(--gold);
-      }
-      .text-gold {
-        color: var(--gold);
-      }
-      .bg-emerald {
-        background: var(--emerald);
-      }
-      .text-emerald {
-        color: var(--emerald);
-      }
-      .bg-danger {
-        background: var(--danger);
-      }
-      .text-danger {
-        color: var(--danger);
-      }
-      .bg-amber {
-        background: var(--gold);
-      }
-      .text-amber {
-        color: var(--gold);
-      }
-
-      .btn {
-        padding: 10px 28px;
-        border-radius: 40px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.95rem;
-      }
-      .btn-gold {
-        background: var(--gold);
-        color: #0b121e;
-      }
-      .btn-gold:hover {
-        background: var(--gold-soft);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25);
-      }
-      .btn-outline {
-        background: transparent;
-        color: var(--text-primary);
-        border: 2px solid var(--border-light);
-      }
-      .btn-outline:hover {
-        background: var(--bg-surface);
-        color: var(--text-primary);
-      }
-      .btn-sm {
-        padding: 6px 16px;
-        font-size: 0.8rem;
-      }
-      .btn-emerald {
-        background: var(--emerald);
-        color: #fff;
-      }
-      .btn-emerald:hover {
-        background: var(--emerald-soft);
-      }
-      .btn-danger {
-        background: var(--danger);
-        color: #fff;
-      }
-      .btn-danger:hover {
-        background: var(--terracotta);
-      }
-
-      .settings-card {
-        background: var(--bg-secondary);
-        border-radius: 16px;
-        border: 1px solid var(--border-color);
-        padding: 20px 24px;
-        margin-bottom: 20px;
-        transition: all 0.2s;
-      }
-      .settings-card:hover {
-        border-color: var(--gold);
-      }
-      .settings-card .card-title {
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--text-primary);
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .settings-card .card-title .icon {
-        font-size: 1.2rem;
-      }
-
-      .grid-2 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .field {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      .field label {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-      }
-      .field input,
-      .field select,
-      .field textarea {
-        border: 2px solid var(--border-light);
-        border-radius: 12px;
-        padding: 10px 14px;
-        font-size: 0.9rem;
-        transition: border 0.2s;
-        background: var(--input-bg);
-        color: var(--text-primary);
-        width: 100%;
-        font-family: "Tajawal", sans-serif;
-      }
-      .field input:focus,
-      .field select:focus,
-      .field textarea:focus {
-        outline: none;
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08);
-      }
-      .field input::placeholder,
-      .field textarea::placeholder {
-        color: var(--text-muted);
-      }
-      .field.full-width {
-        grid-column: 1 / -1;
-      }
-      .field input:disabled,
-      .field select:disabled,
-      .field textarea:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        background: var(--bg-primary);
-      }
-
-      .toast {
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-        background: var(--bg-surface);
-        color: var(--text-primary);
-        padding: 14px 28px;
-        border-radius: 14px;
-        font-weight: 500;
-        box-shadow: 0 12px 30px var(--shadow-color);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        gap: 12px;
-        animation: slideUp 0.3s ease;
-        max-width: 90%;
-        border: 1px solid var(--border-color);
-      }
-      .toast.show {
-        display: flex;
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .help-text {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-top: 4px;
-      }
-      .tag-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: var(--bg-surface);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 0.85rem;
-        margin: 4px;
-        border: 1px solid var(--border-light);
-        color: var(--text-primary);
-      }
-      .tag-item .remove {
-        cursor: pointer;
-        color: var(--text-secondary);
-        font-weight: 700;
-        font-size: 1rem;
-      }
-      .tag-item .remove:hover {
-        color: var(--danger);
-      }
-      .tag-input-group {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-      .tag-input-group input {
-        flex: 1;
-        min-width: 150px;
-      }
-      .tag-input-group .btn {
-        white-space: nowrap;
-      }
-
-      .spinner {
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: #fff;
-        animation: spin 0.8s linear infinite;
-      }
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .grid-2 {
-          grid-template-columns: 1fr;
-        }
-        .settings-card {
-          padding: 16px;
-        }
-      }
-
-      .main-content {
-        display: none !important;
-      }
-      .main-content.visible {
-        display: block !important;
-      }
+        /* جميع الأنماط كما هي، لا تغيير */
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap");
+        * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
+        .settings-card { background: var(--bg-secondary); border-radius: 20px; border: 1px solid var(--border-color); padding: 24px 28px; margin-bottom: 24px; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .settings-card:hover { border-color: rgba(201, 168, 76, 0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .settings-card .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--border-color); }
+        .settings-card .card-header .icon-box { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .settings-card .card-header .icon-box.gold { background: rgba(201, 168, 76, 0.15); color: var(--gold); }
+        .settings-card .card-header .icon-box.blue { background: rgba(59,130,246,0.15); color: #3b82f6; }
+        .settings-card .card-header .icon-box.emerald { background: rgba(16,185,129,0.15); color: #10b981; }
+        .settings-card .card-header .icon-box.purple { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+        .settings-card .card-header .icon-box.amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .settings-card .card-header .icon-box.rose { background: rgba(244,63,94,0.15); color: #f43f5e; }
+        .settings-card .card-header .card-title { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+        .settings-card .card-header .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field label { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.3px; }
+        .field label .required { color: var(--danger); margin-right: 3px; }
+        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: all 0.25s ease; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(201,168,76,0.08); background: var(--bg-secondary); }
+        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
+        .field input:disabled, .field select:disabled, .field textarea:disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-primary); }
+        .field.full-width { grid-column: 1 / -1; }
+        .field .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
+        .btn-gold { background: var(--gold); color: #0b121e; }
+        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.3); }
+        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
+        .btn-outline:hover { background: var(--bg-surface); border-color: var(--gold); color: var(--text-primary); }
+        .btn-sm { padding: 6px 16px; font-size: 0.78rem; border-radius: 30px; }
+        .btn-emerald { background: #10b981; color: #fff; }
+        .btn-emerald:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16,185,129,0.3); }
+        .btn-rose { background: #f43f5e; color: #fff; }
+        .btn-rose:hover { background: #e11d48; transform: translateY(-2px); }
+        .btn-amber { background: #f59e0b; color: #0b121e; }
+        .btn-amber:hover { background: #d97706; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+        .btn .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag-item { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-surface); border-radius: 30px; padding: 6px 14px 6px 10px; font-size: 0.82rem; border: 1px solid var(--border-light); color: var(--text-primary); transition: all 0.2s; }
+        .tag-item:hover { border-color: var(--gold); }
+        .tag-item .remove { cursor: pointer; color: var(--text-secondary); font-weight: 700; font-size: 0.9rem; transition: color 0.2s; line-height: 1; }
+        .tag-item .remove:hover { color: var(--danger); }
+        .tag-input-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .tag-input-group input { flex: 1; min-width: 160px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
+        .stat-item { background: var(--bg-primary); border-radius: 14px; padding: 14px 18px; text-align: center; border: 1px solid var(--border-color); transition: all 0.2s; }
+        .stat-item:hover { border-color: var(--gold); }
+        .stat-item .stat-value { font-size: 26px; font-weight: 900; color: var(--gold); }
+        .stat-item .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .edit-mode .settings-card { border-color: rgba(201,168,76,0.2); box-shadow: 0 0 0 1px rgba(201,168,76,0.1); }
+        .edit-mode .settings-card:hover { border-color: rgba(201,168,76,0.4); }
+        .edit-indicator { display: none; font-size: 11px; font-weight: 700; color: var(--gold); background: rgba(201,168,76,0.12); padding: 2px 12px; border-radius: 20px; margin-right: 10px; }
+        .edit-mode .edit-indicator { display: inline-block; }
+        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
+        .toast.show { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .toast.success { border-right: 4px solid #10b981; }
+        .toast.error { border-right: 4px solid #ef4444; }
+        .toast.info { border-right: 4px solid #3b82f6; }
+        .logo-preview { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .logo-preview img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid var(--border-color); background: var(--bg-primary); }
+        .logo-preview .placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; text-align: center; }
+        @media (max-width: 992px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .settings-card { padding: 18px 16px; } .stat-grid { grid-template-columns: 1fr 1fr; } .btn { padding: 8px 18px; font-size: 0.82rem; } }
+        .main-content { display: none !important; }
+        .main-content.visible { display: block !important; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <!-- TOAST -->
-    <div class="toast" id="toast">
-      <i class="fas fa-check-circle text-emerald-400"></i>
-      <span id="toastMessage">تم الإجراء بنجاح</span>
-    </div>
+    <div class="toast" id="toast"><i class="fas fa-check-circle text-emerald-400"></i><span id="toastMessage">تم الإجراء بنجاح</span></div>
 
     <!-- SIDEBAR -->
     <div id="sidebar-container"></div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
-      <div class="max-w-5xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
-        <!-- Header -->
-        <div
-          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-        >
-          <div>
-            <h1
-              class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight"
-            >
-              <i class="fas fa-cog ml-2 text-gold"></i>الإعدادات
-            </h1>
-            <p class="text-sm text-muted mt-1">
-              إدارة إعدادات النظام والبيانات الأساسية
-            </p>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              onclick="toggleTheme()"
-              class="btn btn-outline btn-sm"
-              id="themeToggleBtn"
-            >
-              <i class="fas fa-moon" id="themeIcon"></i>
-              <span id="themeLabel">مظلم</span>
-            </button>
-            <button
-              onclick="toggleEditMode()"
-              class="btn btn-gold text-sm"
-              id="editToggleBtn"
-            >
-              <i class="fas fa-edit"></i> <span id="editBtnText">تعديل</span>
-            </button>
-            <button
-              onclick="saveAllSettings()"
-              class="btn btn-emerald text-sm hidden"
-              id="saveBtn"
-            >
-              <i class="fas fa-save"></i> حفظ
-            </button>
-          </div>
-        </div>
-
-        <form id="settingsForm" onsubmit="return false;">
-          <!-- 1. Company Settings -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">🏢</span> بيانات الشركة
-            </div>
-            <div class="grid-2">
-              <div class="field">
-                <label>اسم الشركة *</label
-                ><input
-                  type="text"
-                  id="companyName"
-                  disabled
-                  placeholder="مثال: شركة مسار العقارية"
-                />
-              </div>
-              <div class="field">
-                <label>شعار الشركة (رابط الصورة)</label
-                ><input
-                  type="url"
-                  id="companyLogo"
-                  disabled
-                  placeholder="https://example.com/logo.png"
-                />
-              </div>
-              <div class="field">
-                <label>رقم هاتف الشركة</label
-                ><input
-                  type="tel"
-                  id="companyPhone"
-                  disabled
-                  placeholder="مثال: 966500000000"
-                />
-              </div>
-              <div class="field">
-                <label>البريد الإلكتروني للشركة</label
-                ><input
-                  type="email"
-                  id="companyEmail"
-                  disabled
-                  placeholder="info@masar.sa"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. Manager Settings -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">👤</span> المدير (أسد)
-            </div>
-            <div class="grid-2">
-              <div class="field">
-                <label>اسم المدير المسؤول عن التسعير *</label
-                ><input
-                  type="text"
-                  id="managerName"
-                  disabled
-                  placeholder="مثال: أسد"
-                />
-              </div>
-              <div class="field">
-                <label>رقم واتساب المدير *</label
-                ><input
-                  type="tel"
-                  id="managerPhone"
-                  disabled
-                  placeholder="مثال: 966500000000"
-                />
-              </div>
-              <div class="field">
-                <label>البريد الإلكتروني للمدير</label
-                ><input
-                  type="email"
-                  id="managerEmail"
-                  disabled
-                  placeholder="manager@masar.sa"
-                />
-              </div>
-            </div>
-            <div class="help-text">
-              سيتم استخدام هذا الرقم لإرسال تفاصيل العروض للمدير للتسعير.
-            </div>
-          </div>
-
-          <!-- 3. Legal Department -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">⚖️</span> الشؤون القانونية
-            </div>
-            <div class="grid-2">
-              <div class="field">
-                <label>اسم جهة الشؤون القانونية</label
-                ><input
-                  type="text"
-                  id="legalName"
-                  disabled
-                  placeholder="مثال: الشؤون القانونية"
-                />
-              </div>
-              <div class="field">
-                <label>رقم واتساب الشؤون القانونية</label
-                ><input
-                  type="tel"
-                  id="legalPhone"
-                  disabled
-                  placeholder="مثال: 966500000000"
-                />
-              </div>
-              <div class="field">
-                <label>البريد الإلكتروني للشؤون القانونية</label
-                ><input
-                  type="email"
-                  id="legalEmail"
-                  disabled
-                  placeholder="legal@masar.sa"
-                />
-              </div>
-            </div>
-            <div class="help-text">
-              سيتم استخدام هذا الرقم لإرسال المستندات والعقود للمراجعة
-              القانونية.
-            </div>
-          </div>
-
-          <!-- 4. General Settings -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">⚙️</span> الإعدادات العامة
-            </div>
-            <div class="grid-2">
-              <div class="field">
-                <label>اليوم الأسبوعي لتقرير الأسبوع</label>
-                <select id="reportDay" disabled>
-                  <option value="0">الأحد</option>
-                  <option value="1">الإثنين</option>
-                  <option value="2">الثلاثاء</option>
-                  <option value="3">الأربعاء</option>
-                  <option value="4">الخميس</option>
-                  <option value="5">الجمعة</option>
-                  <option value="6">السبت</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>المهلة القصوى للانتظار (أيام)</label>
-                <input
-                  type="number"
-                  id="maxWaitDays"
-                  disabled
-                  value="3"
-                  min="1"
-                  max="30"
-                />
-                <div class="help-text">
-                  عدد الأيام قبل اعتبار الطلب/العرض متأخراً.
+        <div class="max-w-6xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight flex items-center gap-3">
+                        <i class="fas fa-sliders-h text-gold"></i>الإعدادات
+                        <span class="edit-indicator" id="editIndicator">✏️ وضع التعديل</span>
+                    </h1>
+                    <p class="text-sm text-muted mt-1">إدارة إعدادات النظام، جهات التواصل، وفترات التذكير</p>
                 </div>
-              </div>
-              <div class="field full-width">
-                <label>تذييل التقارير (نص إضافي)</label>
-                <textarea
-                  id="reportFooter"
-                  rows="2"
-                  disabled
-                  placeholder="نص يظهر في تذييل جميع التقارير..."
-                ></textarea>
-              </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="toggleTheme()" class="btn btn-outline btn-sm" id="themeToggleBtn">
+                        <i class="fas fa-moon" id="themeIcon"></i><span id="themeLabel">مظلم</span>
+                    </button>
+                    <button onclick="toggleEditMode()" class="btn btn-gold text-sm" id="editToggleBtn">
+                        <i class="fas fa-edit"></i> <span id="editBtnText">تعديل</span>
+                    </button>
+                    <button onclick="saveAllSettings()" class="btn btn-emerald text-sm hidden" id="saveBtn">
+                        <i class="fas fa-save"></i> حفظ
+                    </button>
+                </div>
             </div>
-          </div>
 
-          <!-- 5. Property Types -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">🏗️</span> أنواع العقارات
-            </div>
-            <div class="field">
-              <label>أنواع العقارات المسموحة</label>
-              <div class="tag-input-group">
-                <input
-                  type="text"
-                  id="newPropertyType"
-                  disabled
-                  placeholder="أدخل نوع جديد..."
-                />
-                <button
-                  type="button"
-                  class="btn btn-outline btn-sm"
-                  id="addPropertyBtn"
-                  disabled
-                  onclick="addPropertyType()"
-                >
-                  <i class="fas fa-plus"></i> إضافة
-                </button>
-              </div>
-              <div
-                id="propertyTypesTags"
-                class="flex flex-wrap gap-1 mt-2"
-              ></div>
-              <div class="help-text">
-                هذه الأنواع ستظهر في قوائم اختيار نوع العقار في العروض والطلبات.
-              </div>
-            </div>
-          </div>
+            <form id="settingsForm" onsubmit="return false;">
+                <!-- 1. بيانات الشركة -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box gold"><i class="fas fa-building"></i></div>
+                        <div><div class="card-title">بيانات الشركة</div><div class="card-subtitle">المعلومات الأساسية للشركة</div></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="field">
+                            <label>اسم الشركة <span class="required">*</span></label>
+                            <input type="text" id="companyName" disabled placeholder="مثال: شركة مسار العقارية" />
+                        </div>
+                        <div class="field">
+                            <label>شعار الشركة</label>
+                            <div class="logo-preview">
+                                <img id="logoPreview" src="" alt="الشعار" class="hidden" />
+                                <div id="logoPlaceholder" class="placeholder"><i class="fas fa-image"></i></div>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('logoFileInput').click()">
+                                    <i class="fas fa-upload"></i> اختيار صورة
+                                </button>
+                                <button type="button" class="btn btn-rose btn-sm hidden" id="removeLogoBtn" onclick="removeLogo()">
+                                    <i class="fas fa-times"></i> إزالة
+                                </button>
+                                <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)" />
+                                <input type="hidden" id="companyLogo" value="" />
+                            </div>
+                            <div class="hint">يُفضل صورة مربعة بحجم 200×200 بكسل (سيتم حفظها في قاعدة البيانات)</div>
+                        </div>
+                        <div class="field">
+                            <label>رقم هاتف الشركة</label>
+                            <input type="tel" id="companyPhone" disabled placeholder="مثال: 966500000000" />
+                        </div>
+                        <div class="field">
+                            <label>البريد الإلكتروني للشركة</label>
+                            <input type="email" id="companyEmail" disabled placeholder="info@masar.sa" />
+                        </div>
+                        <div class="field full-width">
+                            <label>تذييل التقارير</label>
+                            <textarea id="reportFooter" rows="2" disabled placeholder="نص يظهر في تذييل جميع التقارير..."></textarea>
+                        </div>
+                    </div>
+                </div>
 
-          <!-- 6. Data Statistics -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">📊</span> إحصائيات النظام
-            </div>
-            <div
-              id="statsInfo"
-              class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm"
-            >
-              <div>
-                <span class="text-muted">العروض:</span>
-                <span class="font-bold text-gold" id="statOffers">0</span>
-              </div>
-              <div>
-                <span class="text-muted">الطلبات:</span>
-                <span class="font-bold text-gold" id="statRequests">0</span>
-              </div>
-              <div>
-                <span class="text-muted">جهات الاتصال:</span>
-                <span class="font-bold text-gold" id="statContacts">0</span>
-              </div>
-              <div>
-                <span class="text-muted">الملاك:</span>
-                <span class="font-bold text-gold" id="statOwners">0</span>
-              </div>
-            </div>
-          </div>
+                <!-- 2. جهات التواصل الرئيسية -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box blue"><i class="fas fa-user-tie"></i></div>
+                        <div><div class="card-title">جهات التواصل الرئيسية</div><div class="card-subtitle">المدير المسؤول عن التسعير والشؤون القانونية</div></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="field">
+                            <label>اسم المدير <span class="required">*</span></label>
+                            <input type="text" id="managerName" disabled placeholder="مثال: أسد" />
+                            <div class="hint">المسؤول عن اعتماد التسعير</div>
+                        </div>
+                        <div class="field">
+                            <label>رقم واتساب المدير <span class="required">*</span></label>
+                            <input type="tel" id="managerPhone" disabled placeholder="مثال: 966500000000" />
+                        </div>
+                        <div class="field">
+                            <label>البريد الإلكتروني للمدير</label>
+                            <input type="email" id="managerEmail" disabled placeholder="manager@masar.sa" />
+                        </div>
+                        <div class="field"></div>
+                        <div class="field">
+                            <label>اسم الشؤون القانونية</label>
+                            <input type="text" id="legalName" disabled placeholder="مثال: الشؤون القانونية" />
+                            <div class="hint">المسؤول عن مراجعة العقود</div>
+                        </div>
+                        <div class="field">
+                            <label>رقم واتساب الشؤون القانونية</label>
+                            <input type="tel" id="legalPhone" disabled placeholder="مثال: 966500000000" />
+                        </div>
+                        <div class="field">
+                            <label>البريد الإلكتروني للشؤون القانونية</label>
+                            <input type="email" id="legalEmail" disabled placeholder="legal@masar.sa" />
+                        </div>
+                    </div>
+                </div>
 
-          <!-- 7. Backup & Reset -->
-          <div class="settings-card">
-            <div class="card-title">
-              <span class="icon">💾</span> النسخ الاحتياطي والاستعادة
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <button
-                type="button"
-                class="btn btn-emerald btn-sm"
-                onclick="backupData()"
-              >
-                <i class="fas fa-download"></i> تحميل نسخة احتياطية
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline btn-sm"
-                onclick="restoreData()"
-              >
-                <i class="fas fa-upload"></i> استعادة الإعدادات
-              </button>
-              <button
-                type="button"
-                class="btn btn-amber btn-sm"
-                onclick="resetSystem()"
-              >
-                <i class="fas fa-undo"></i> إعادة تعيين الإعدادات الافتراضية
-              </button>
-              <button
-                type="button"
-                class="btn btn-danger btn-sm"
-                onclick="clearAllData()"
-              >
-                <i class="fas fa-trash"></i> مسح جميع البيانات
-              </button>
-            </div>
-            <div class="help-text mt-2">
-              ⚠️ مسح جميع البيانات سيعيد تعيين الإعدادات فقط (لا يحذف العروض أو
-              الطلبات من قاعدة البيانات).
-            </div>
-          </div>
-        </form>
-      </div>
+                <!-- 3. فترات التذكير -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box amber"><i class="fas fa-clock"></i></div>
+                        <div><div class="card-title">فترات التذكير (المهلات)</div><div class="card-subtitle">تحديد المدد الزمنية للتنبيهات في كل مرحلة</div></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="field">
+                            <label>⏳ مهلة رد المدير <span class="required">*</span></label>
+                            <input type="number" id="managerTimeout" disabled value="2" min="1" max="30" />
+                            <div class="hint">عدد الأيام لانتظار رد المدير على التسعير</div>
+                        </div>
+                        <div class="field">
+                            <label>⏳ مهلة رد العميل <span class="required">*</span></label>
+                            <input type="number" id="clientTimeout" disabled value="3" min="1" max="30" />
+                            <div class="hint">عدد الأيام لانتظار رد العميل بعد إرسال السعر</div>
+                        </div>
+                        <div class="field">
+                            <label>⏳ مهلة الشؤون القانونية <span class="required">*</span></label>
+                            <input type="number" id="legalTimeout" disabled value="3" min="1" max="30" />
+                            <div class="hint">عدد الأيام لانتظار إعداد العقد من القانونية</div>
+                        </div>
+                        <div class="field">
+                            <label>⏳ مهلة توقيع العميل <span class="required">*</span></label>
+                            <input type="number" id="clientSignTimeout" disabled value="3" min="1" max="30" />
+                            <div class="hint">عدد الأيام لانتظار توقيع العميل على العقد</div>
+                        </div>
+                        <div class="field full-width">
+                            <label>المهلة القصوى للانتظار (عام)</label>
+                            <input type="number" id="maxWaitDays" disabled value="3" min="1" max="30" />
+                            <div class="hint">عدد الأيام قبل اعتبار أي طلب/عرض متأخراً (يُستخدم في لوحة التحكم)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. يوم التقرير الأسبوعي -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box purple"><i class="fas fa-calendar-week"></i></div>
+                        <div><div class="card-title">يوم التقرير الأسبوعي</div><div class="card-subtitle">تحديد اليوم الذي يتم فيه إنشاء التقرير الأسبوعي</div></div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="field">
+                            <label>يوم التقرير <span class="required">*</span></label>
+                            <select id="reportDay" disabled>
+                                <option value="0">الأحد</option>
+                                <option value="1">الإثنين</option>
+                                <option value="2">الثلاثاء</option>
+                                <option value="3">الأربعاء</option>
+                                <option value="4" selected>الخميس</option>
+                                <option value="5">الجمعة</option>
+                                <option value="6">السبت</option>
+                            </select>
+                            <div class="hint">اليوم الذي سيتم فيه إنشاء تقرير الأسبوع تلقائياً</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. أنواع العقارات -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box emerald"><i class="fas fa-tags"></i></div>
+                        <div><div class="card-title">أنواع العقارات</div><div class="card-subtitle">إدارة أنواع العقارات المتاحة في النظام</div></div>
+                    </div>
+                    <div class="field">
+                        <label>أضف نوع جديد</label>
+                        <div class="tag-input-group">
+                            <input type="text" id="newPropertyType" disabled placeholder="أدخل نوع جديد..." />
+                            <button type="button" class="btn btn-outline btn-sm" id="addPropertyBtn" disabled onclick="addPropertyType()">
+                                <i class="fas fa-plus"></i> إضافة
+                            </button>
+                        </div>
+                        <div class="tags-container" id="propertyTypesTags"></div>
+                        <div class="hint">هذه الأنواع ستظهر في قوائم اختيار نوع العقار</div>
+                    </div>
+                </div>
+
+                <!-- 6. إحصائيات النظام -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box purple"><i class="fas fa-chart-simple"></i></div>
+                        <div><div class="card-title">إحصائيات النظام</div><div class="card-subtitle">ملخص سريع لبيانات النظام</div></div>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-item"><div class="stat-value" id="statOffers">0</div><div class="stat-label">📋 العروض</div></div>
+                        <div class="stat-item"><div class="stat-value" id="statRequests">0</div><div class="stat-label">📝 الطلبات</div></div>
+                        <div class="stat-item"><div class="stat-value" id="statClients">0</div><div class="stat-label">👤 العملاء</div></div>
+                        <div class="stat-item"><div class="stat-value" id="statUsers">0</div><div class="stat-label">👥 المستخدمين</div></div>
+                    </div>
+                </div>
+
+                <!-- 7. النسخ الاحتياطي -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <div class="icon-box rose"><i class="fas fa-database"></i></div>
+                        <div><div class="card-title">النسخ الاحتياطي والاستعادة</div><div class="card-subtitle">إدارة نسخ احتياطية للإعدادات</div></div>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <button type="button" class="btn btn-emerald btn-sm" onclick="backupData()"><i class="fas fa-download"></i> تحميل نسخة احتياطية</button>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="restoreData()"><i class="fas fa-upload"></i> استعادة الإعدادات</button>
+                        <button type="button" class="btn btn-amber btn-sm" onclick="resetSystem()"><i class="fas fa-undo"></i> إعادة تعيين الإعدادات الافتراضية</button>
+                    </div>
+                    <div class="hint mt-3">⚠️ استعادة الإعدادات ستستبدل الإعدادات الحالية بالنسخة التي تختارها.</div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="/assets/js/components/sidebar.js"></script>
     <script src="/assets/js/core/api.js"></script>
     <script src="/assets/js/components/global.js"></script>
     <script src="/assets/js/pages/settings.js"></script>
-  </body>
+</body>
 </html>

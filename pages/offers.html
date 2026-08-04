@@ -1,6 +1,3 @@
-<!-- ============================================================ -->
-<!-- pages/offers.html - العروض العقارية (بدون شاشة دخول)         -->
-<!-- ============================================================ -->
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
@@ -716,11 +713,11 @@
       }
     </style>
   </head>
-  <body>
+<body>
     <!-- TOAST -->
     <div class="toast" id="toast">
-      <i class="fas fa-check-circle text-emerald-400"></i>
-      <span id="toastMessage">تم الإجراء بنجاح</span>
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toastMessage">تم الإجراء بنجاح</span>
     </div>
 
     <!-- SIDEBAR -->
@@ -728,530 +725,268 @@
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
-      <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
-        <!-- Header -->
-        <div
-          class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
-        >
-          <div>
-            <h1
-              class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight"
-            >
-              <i class="fas fa-file-signature ml-2 text-gold"></i>العروض
-              العقارية
-            </h1>
-            <p class="text-sm text-muted mt-1">نظام متابعة العروض العقارية</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <button class="btn btn-outline btn-sm" onclick="exportExcel()">
-              <i class="fas fa-file-excel ml-1"></i> تصدير
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="window.print()">
-              <i class="fas fa-print ml-1"></i> طباعة
-            </button>
-            <button
-              onclick="openAddOffer()"
-              class="btn btn-gold text-sm md:text-base"
-            >
-              <i class="fas fa-plus"></i> إضافة عرض جديد
-            </button>
-          </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">إجمالي العروض</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-gold mt-1"
-              id="totalOffers"
-            >
-              0
-            </p>
-          </div>
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">قيد الانتظار</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-amber-500 mt-1"
-              id="pendingOffers"
-            >
-              0
-            </p>
-          </div>
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">مكتملة</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-emerald-400 mt-1"
-              id="completedOffers"
-            >
-              0
-            </p>
-          </div>
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">🏞️ أراضي</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-gold mt-1"
-              id="countLand"
-            >
-              0
-            </p>
-          </div>
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">⛽ محطات</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-gold mt-1"
-              id="countGas"
-            >
-              0
-            </p>
-          </div>
-          <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
-            <p class="text-xs text-muted font-medium">🏬 مراكز</p>
-            <p
-              class="text-xl md:text-2xl font-bold text-gold mt-1"
-              id="countMall"
-            >
-              0
-            </p>
-          </div>
-        </div>
-
-        <!-- Search & Filters -->
-        <div class="bg-surface rounded-2xl border border-line p-4 md:p-5 mb-6">
-          <div class="flex flex-col md:flex-row gap-3">
-            <div class="flex-1 relative">
-              <i
-                class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-muted"
-              ></i>
-              <input
-                type="text"
-                id="searchInput"
-                class="border-2 border-line rounded-full py-2.5 px-4 pr-12 w-full text-sm focus:outline-none focus:border-gold bg-bg text-ink"
-                placeholder="بحث..."
-                oninput="filterTable()"
-              />
-            </div>
-            <select
-              id="typeFilter"
-              class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold"
-              onchange="filterTable()"
-            >
-              <option value="all">كل الأنواع</option>
-              <option value="أرض">أرض</option>
-              <option value="محطة وقود">محطة وقود</option>
-              <option value="مركز تجاري">مركز تجاري</option>
-            </select>
-            <select
-              id="statusFilter"
-              class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold"
-              onchange="filterTable()"
-            >
-              <option value="all">كل الحالات</option>
-              <option value="جديد">جديد</option>
-              <option value="انتظار">في انتظار رد</option>
-              <option value="قيد">قيد الإجراء</option>
-              <option value="مغلق">مغلق</option>
-            </select>
-            <div class="flex items-center gap-2 text-sm text-muted flex-wrap">
-              <i class="far fa-calendar-alt"></i><span>من</span>
-              <input
-                type="date"
-                id="dateFrom"
-                class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold"
-                onchange="filterTable()"
-              />
-              <span>إلى</span>
-              <input
-                type="date"
-                id="dateTo"
-                class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold"
-                onchange="filterTable()"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- LIST VIEW -->
-        <div id="listView">
-          <div
-            class="offer-table-wrap bg-surface rounded-2xl border border-line overflow-hidden mb-5"
-          >
-            <div class="overflow-x-auto">
-              <table class="w-full min-w-[800px]">
-                <thead class="bg-surface2 border-b border-line">
-                  <tr>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      العرض
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      العميل
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      النوع
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      المرحلة
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      الحالة
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      مقدم العرض
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      التاريخ
-                    </th>
-                    <th
-                      class="text-right px-3 py-3 text-xs font-bold text-muted"
-                    >
-                      الإجراءات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody id="offersTableBody">
-                  <tr>
-                    <td colspan="8" class="text-center py-12">
-                      <div class="loading-spinner">
-                        <div class="spinner"></div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="offer-card-list" id="offersCardList"></div>
-          <div
-            class="flex items-center justify-between px-2 py-3 flex-wrap gap-2"
-          >
-            <span class="text-sm text-muted" id="paginationInfo"
-              >عرض 0-0 من 0</span
-            >
-            <div
-              class="flex items-center gap-2 flex-wrap"
-              id="paginationControls"
-            ></div>
-          </div>
-        </div>
-
-        <!-- DETAIL VIEW -->
-        <div id="detailView" class="hidden">
-          <button class="btn btn-outline btn-sm mb-4" onclick="closeDetail()">
-            <i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة
-          </button>
-          <div id="detailContent"></div>
-        </div>
-      </div>
-
-      <!-- ===== FORCE ACTION MODAL ===== -->
-      <div class="modal-overlay" id="forceActionModal">
-        <div class="force-action-modal">
-          <button
-            class="modal-close"
-            onclick="closeModal('forceActionModal')"
-            style="
-              position: relative;
-              float: left;
-              background: none;
-              border: none;
-              font-size: 28px;
-              color: var(--text-secondary);
-              cursor: pointer;
-            "
-          >
-            ✕
-          </button>
-          <h3 id="forceActionTitle">📢 إجراء مطلوب</h3>
-          <p id="forceActionMessage">
-            يرجى تنفيذ الخطوة التالية لإكمال العملية.
-          </p>
-          <div id="forceActionBody"></div>
-          <div class="btn-group">
-            <button
-              class="btn btn-outline btn-sm"
-              onclick="closeModal('forceActionModal')"
-            >
-              تأجيل
-            </button>
-            <button
-              class="btn btn-gold btn-sm"
-              id="forceActionPrimaryBtn"
-              onclick="executeForceAction()"
-            >
-              تأكيد
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== MODAL: إضافة / تعديل عرض ===== -->
-      <div class="modal-overlay" id="offerModal">
-        <div class="modal-box">
-          <button class="modal-close" onclick="closeModal('offerModal')">
-            ✕
-          </button>
-          <div class="modal-title" id="modalTitle">عرض جديد</div>
-
-          <div class="switch-group">
-            <button
-              class="active"
-              data-mode="normal"
-              onclick="setMode('normal')"
-            >
-              إدخال عادي
-            </button>
-            <button data-mode="smart" onclick="setMode('smart')">
-              إدخال ذكي
-            </button>
-          </div>
-
-          <div id="smartArea" class="smart-area hidden">
-            <label
-              style="
-                font-weight: 700;
-                display: block;
-                margin-bottom: 8px;
-                color: var(--text-secondary);
-              "
-              >الصق رسالة العميل مع الأجوبة بين [ ]</label
-            >
-            <textarea
-              id="smartInput"
-              placeholder="مثال:
-        نوع العقار: [أرض]
-        نوع الاتفاق: [بيع]
-        المساحة: [500]
-        السعر: [2500000]
-        العنوان: [الرياض - حي النخيل]
-        رابط الموقع: [https://maps.google.com/...]
-        اسم مقدم العرض: [أحمد]
-        نوع مقدم العرض: [مالك]
-        رقم التواصل: [0501234567]
-        ملاحظات: [تطل على شارع رئيسي]"
-            ></textarea>
-            <div class="smart-actions">
-              <button class="btn btn-gold btn-sm" onclick="parseSmartInput()">
-                🔍 استخراج
-              </button>
-              <button
-                class="btn btn-outline btn-sm"
-                onclick="
-                  document.getElementById('smartInput').value = '';
-                  document
-                    .getElementById('smartFeedback')
-                    .classList.remove('show');
-                "
-              >
-                مسح
-              </button>
-            </div>
-            <div id="smartFeedback" class="smart-feedback"></div>
-          </div>
-
-          <form id="offerForm" class="grid-2" style="margin-top: 16px">
-            <input type="hidden" id="editOfferId" value="" />
-
-            <div class="field full-width">
-              <label>مسار العرض *</label>
-              <select id="f_track" required>
-                <option value="company">أعمال الشركة</option>
-                <option value="personal">عمل شخصي</option>
-              </select>
+        <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-gold tracking-tight">
+                        <i class="fas fa-file-signature ml-2 text-gold"></i>العروض العقارية
+                    </h1>
+                    <p class="text-sm text-muted mt-1">نظام متابعة العروض العقارية</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button class="btn btn-outline btn-sm" onclick="exportExcel()">
+                        <i class="fas fa-file-excel ml-1"></i> تصدير
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="window.print()">
+                        <i class="fas fa-print ml-1"></i> طباعة
+                    </button>
+                    <button onclick="openAddOffer()" class="btn btn-gold text-sm md:text-base">
+                        <i class="fas fa-plus"></i> إضافة عرض جديد
+                    </button>
+                </div>
             </div>
 
-            <div class="field">
-              <label>نوع العقار *</label>
-              <select id="f_type" required>
-                <option value="">اختر</option>
-                <option value="أرض">أرض</option>
-                <option value="محطة وقود">محطة وقود</option>
-                <option value="مركز تجاري">مركز تجاري</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>المساحة (م²) *</label>
-              <input
-                type="number"
-                id="f_area"
-                required
-                placeholder="مثال: 500"
-              />
-            </div>
-
-            <div class="field">
-              <label>السعر (ريال) *</label>
-              <input
-                type="number"
-                id="f_price"
-                required
-                placeholder="مثال: 2500000"
-              />
-            </div>
-
-            <div class="field">
-              <label>العنوان (المدينة - الحي) *</label>
-              <input
-                type="text"
-                id="f_address"
-                required
-                placeholder="مثال: الرياض - حي النخيل"
-              />
+            <!-- Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">إجمالي العروض</p>
+                    <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="totalOffers">0</p>
+                </div>
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">قيد الانتظار</p>
+                    <p class="text-xl md:text-2xl font-bold text-amber-500 mt-1" id="pendingOffers">0</p>
+                </div>
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">مكتملة</p>
+                    <p class="text-xl md:text-2xl font-bold text-emerald-400 mt-1" id="completedOffers">0</p>
+                </div>
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">🏞️ أراضي</p>
+                    <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="countLand">0</p>
+                </div>
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">⛽ محطات</p>
+                    <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="countGas">0</p>
+                </div>
+                <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
+                    <p class="text-xs text-muted font-medium">🏬 مراكز</p>
+                    <p class="text-xl md:text-2xl font-bold text-gold mt-1" id="countMall">0</p>
+                </div>
             </div>
 
-            <div class="field">
-              <label>رابط الموقع *</label>
-              <div style="display: flex; gap: 8px; align-items: center">
-                <input
-                  type="url"
-                  id="f_location"
-                  required
-                  placeholder="https://maps.google.com/..."
-                  pattern="https?://.+"
-                  style="flex: 1"
-                />
-                <button
-                  type="button"
-                  class="map-picker-btn"
-                  onclick="openMapPicker()"
-                  style="white-space: nowrap; flex-shrink: 0"
-                >
-                  <i class="fas fa-map-marker-alt"></i> اختيار
+            <!-- Search & Filters -->
+            <div class="bg-surface rounded-2xl border border-line p-4 md:p-5 mb-6">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="flex-1 relative">
+                        <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-muted"></i>
+                        <input type="text" id="searchInput" class="border-2 border-line rounded-full py-2.5 px-4 pr-12 w-full text-sm focus:outline-none focus:border-gold bg-bg text-ink" placeholder="بحث..." oninput="filterTable()" />
+                    </div>
+                    <select id="typeFilter" class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()">
+                        <option value="all">كل الأنواع</option>
+                        <!-- سيتم ملؤها ديناميكياً من API -->
+                    </select>
+                    <select id="statusFilter" class="border-2 border-line rounded-full px-4 py-2.5 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()">
+                        <option value="all">كل الحالات</option>
+                        <!-- سيتم ملؤها ديناميكياً من API -->
+                    </select>
+                    <div class="flex items-center gap-2 text-sm text-muted flex-wrap">
+                        <i class="far fa-calendar-alt"></i><span>من</span>
+                        <input type="date" id="dateFrom" class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()" />
+                        <span>إلى</span>
+                        <input type="date" id="dateTo" class="border-2 border-line rounded-full px-3 py-2 text-sm bg-bg text-ink focus:outline-none focus:border-gold" onchange="filterTable()" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIST VIEW -->
+            <div id="listView">
+                <div class="offer-table-wrap bg-surface rounded-2xl border border-line overflow-hidden mb-5">
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[800px]">
+                            <thead class="bg-surface2 border-b border-line">
+                                <tr>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">العرض</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">العميل</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">النوع</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">المرحلة</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">الحالة</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">مقدم العرض</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">التاريخ</th>
+                                    <th class="text-right px-3 py-3 text-xs font-bold text-muted">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="offersTableBody">
+                                <tr>
+                                    <td colspan="8" class="text-center py-12">
+                                        <div class="loading-spinner"><div class="spinner"></div></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="offer-card-list" id="offersCardList"></div>
+                <div class="flex items-center justify-between px-2 py-3 flex-wrap gap-2">
+                    <span class="text-sm text-muted" id="paginationInfo">عرض 0-0 من 0</span>
+                    <div class="flex items-center gap-2 flex-wrap" id="paginationControls"></div>
+                </div>
+            </div>
+
+            <!-- DETAIL VIEW -->
+            <div id="detailView" class="hidden">
+                <button class="btn btn-outline btn-sm mb-4" onclick="closeDetail()">
+                    <i class="fas fa-arrow-right ml-1"></i> رجوع للقائمة
                 </button>
-              </div>
+                <div id="detailContent"></div>
             </div>
-
-            <div class="field">
-              <label>مخطط العقار</label>
-              <div
-                class="file-upload-area"
-                onclick="document.getElementById('f_plan').click()"
-              >
-                📎 اضغط لرفع المخطط
-              </div>
-              <input
-                type="file"
-                id="f_plan"
-                accept=".pdf,image/*"
-                style="display: none"
-              />
-            </div>
-            <div class="field">
-              <label>صور العقار</label>
-              <div
-                class="file-upload-area"
-                onclick="document.getElementById('f_images').click()"
-              >
-                📎 اضغط لرفع صور
-              </div>
-              <input
-                type="file"
-                id="f_images"
-                accept="image/*"
-                multiple
-                style="display: none"
-              />
-            </div>
-
-            <div class="field">
-              <label>اسم مقدم العرض *</label>
-              <input
-                type="text"
-                id="f_providerName"
-                required
-                placeholder="الاسم الكامل"
-              />
-            </div>
-            <div class="field">
-              <label>نوع مقدم العرض *</label>
-              <select id="f_providerType" required>
-                <option value="">اختر</option>
-                <option value="مالك">مالك</option>
-                <option value="وسيط">وسيط</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>رقم التواصل *</label>
-              <input
-                type="tel"
-                id="f_phone"
-                required
-                placeholder="مثال: 0501234567"
-              />
-            </div>
-            <div class="field">
-              <label>نوع الاتفاق *</label>
-              <select id="f_dealType" required>
-                <option value="">اختر</option>
-                <option value="بيع">بيع</option>
-                <option value="إيجار">إيجار</option>
-                <option value="مشاركة أرباح">مشاركة أرباح</option>
-                <option value="فرنشايز">فرنشايز</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label>المستندات</label>
-              <div
-                class="file-upload-area"
-                onclick="document.getElementById('f_docs').click()"
-              >
-                📎 اضغط لرفع المستندات
-              </div>
-              <input
-                type="file"
-                id="f_docs"
-                accept=".pdf,.doc,.docx"
-                multiple
-                style="display: none"
-              />
-            </div>
-            <div class="field">
-              <label>ملاحظات</label>
-              <textarea
-                id="f_notes"
-                rows="2"
-                placeholder="أي تفاصيل إضافية"
-              ></textarea>
-            </div>
-          </form>
-
-          <div
-            style="
-              display: flex;
-              gap: 12px;
-              justify-content: flex-end;
-              margin-top: 24px;
-              flex-wrap: wrap;
-            "
-          >
-            <button class="btn btn-outline" onclick="closeModal('offerModal')">
-              إلغاء
-            </button>
-            <button class="btn btn-gold" onclick="saveOffer()">
-              💾 حفظ العرض
-            </button>
-          </div>
         </div>
-      </div>
+
+        <!-- ===== FORCE ACTION MODAL ===== -->
+        <div class="modal-overlay" id="forceActionModal">
+            <div class="force-action-modal">
+                <button class="modal-close" onclick="closeModal('forceActionModal')" style="position:relative;float:left;background:none;border:none;font-size:28px;color:var(--text-secondary);cursor:pointer;">✕</button>
+                <h3 id="forceActionTitle">📢 إجراء مطلوب</h3>
+                <p id="forceActionMessage">يرجى تنفيذ الخطوة التالية لإكمال العملية.</p>
+                <div id="forceActionBody"></div>
+                <div class="btn-group">
+                    <button class="btn btn-outline btn-sm" onclick="closeModal('forceActionModal')">تأجيل</button>
+                    <button class="btn btn-gold btn-sm" id="forceActionPrimaryBtn" onclick="executeForceAction()">تأكيد</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MODAL: إضافة / تعديل عرض ===== -->
+        <div class="modal-overlay" id="offerModal">
+            <div class="modal-box">
+                <button class="modal-close" onclick="closeModal('offerModal')">✕</button>
+                <div class="modal-title" id="modalTitle">عرض جديد</div>
+
+                <div class="switch-group">
+                    <button class="active" data-mode="normal" onclick="setMode('normal')">إدخال عادي</button>
+                    <button data-mode="smart" onclick="setMode('smart')">إدخال ذكي</button>
+                </div>
+
+                <div id="smartArea" class="smart-area hidden">
+                    <label style="font-weight:700;display:block;margin-bottom:8px;color:var(--text-secondary);">الصق رسالة العميل مع الأجوبة بين [ ]</label>
+                    <textarea id="smartInput" placeholder="مثال:
+نوع العقار: [أرض]
+نوع الاتفاق: [بيع]
+المساحة: [500]
+السعر: [2500000]
+العنوان: [الرياض - حي النخيل]
+رابط الموقع: [https://maps.google.com/...]
+اسم مقدم العرض: [أحمد]
+نوع مقدم العرض: [مالك]
+رقم التواصل: [0501234567]
+ملاحظات: [تطل على شارع رئيسي]"></textarea>
+                    <div class="smart-actions">
+                        <button class="btn btn-gold btn-sm" onclick="parseSmartInput()">🔍 استخراج</button>
+                        <button class="btn btn-outline btn-sm" onclick="document.getElementById('smartInput').value='';document.getElementById('smartFeedback').classList.remove('show');">مسح</button>
+                    </div>
+                    <div id="smartFeedback" class="smart-feedback"></div>
+                </div>
+
+                <form id="offerForm" class="grid-2" style="margin-top:16px">
+                    <input type="hidden" id="editOfferId" value="" />
+
+                    <div class="field full-width">
+                        <label>مسار العرض *</label>
+                        <select id="f_track" required>
+                            <option value="company">أعمال الشركة</option>
+                            <option value="personal">عمل شخصي</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>نوع العقار *</label>
+                        <select id="f_type" required>
+                            <option value="">اختر</option>
+                            <!-- سيتم ملؤها من API -->
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>المساحة (م²) *</label>
+                        <input type="number" id="f_area" required placeholder="مثال: 500" />
+                    </div>
+
+                    <div class="field">
+                        <label>السعر (ريال) *</label>
+                        <input type="number" id="f_price" required placeholder="مثال: 2500000" />
+                    </div>
+
+                    <div class="field">
+                        <label>العنوان (المدينة - الحي) *</label>
+                        <input type="text" id="f_address" required placeholder="مثال: الرياض - حي النخيل" />
+                    </div>
+
+                    <div class="field">
+                        <label>رابط الموقع *</label>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <input type="url" id="f_location" required placeholder="https://maps.google.com/..." pattern="https?://.+" style="flex:1" />
+                            <button type="button" class="map-picker-btn" onclick="openMapPicker()" style="white-space:nowrap;flex-shrink:0">
+                                <i class="fas fa-map-marker-alt"></i> اختيار
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>مخطط العقار</label>
+                        <div class="file-upload-area" onclick="document.getElementById('f_plan').click()">📎 اضغط لرفع المخطط</div>
+                        <input type="file" id="f_plan" accept=".pdf,image/*" style="display:none" />
+                    </div>
+                    <div class="field">
+                        <label>صور العقار</label>
+                        <div class="file-upload-area" onclick="document.getElementById('f_images').click()">📎 اضغط لرفع صور</div>
+                        <input type="file" id="f_images" accept="image/*" multiple style="display:none" />
+                    </div>
+
+                    <div class="field">
+                        <label>اسم مقدم العرض *</label>
+                        <input type="text" id="f_providerName" required placeholder="الاسم الكامل" />
+                    </div>
+                    <div class="field">
+                        <label>نوع مقدم العرض *</label>
+                        <select id="f_providerType" required>
+                            <option value="">اختر</option>
+                            <option value="مالك">مالك</option>
+                            <option value="وسيط">وسيط</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>رقم التواصل *</label>
+                        <input type="tel" id="f_phone" required placeholder="مثال: 0501234567" />
+                    </div>
+                    <div class="field">
+                        <label>نوع الاتفاق *</label>
+                        <select id="f_dealType" required>
+                            <option value="">اختر</option>
+                            <!-- سيتم ملؤها من API -->
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>المستندات</label>
+                        <div class="file-upload-area" onclick="document.getElementById('f_docs').click()">📎 اضغط لرفع المستندات</div>
+                        <input type="file" id="f_docs" accept=".pdf,.doc,.docx" multiple style="display:none" />
+                    </div>
+                    <div class="field">
+                        <label>ملاحظات</label>
+                        <textarea id="f_notes" rows="2" placeholder="أي تفاصيل إضافية"></textarea>
+                    </div>
+                </form>
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap">
+                    <button class="btn btn-outline" onclick="closeModal('offerModal')">إلغاء</button>
+                    <button class="btn btn-gold" onclick="saveOffer()">💾 حفظ العرض</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="/assets/js/components/sidebar.js"></script>
     <script src="/assets/js/core/api.js"></script>
     <script src="/assets/js/components/global.js"></script>
     <script src="/assets/js/pages/offers.js"></script>
-  </body>
+</body>
 </html>
