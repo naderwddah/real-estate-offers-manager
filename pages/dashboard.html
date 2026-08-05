@@ -1,224 +1,314 @@
-<!-- ============================================================ -->
-<!-- pages/dashboard.html - لوحة التحكم الرئيسية                   -->
-<!-- ============================================================ -->
-<!doctype html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
-    <title>مسار — لوحة التحكم</title>
-    <link rel="stylesheet" href="/assets/css/global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>لوحة التحكم | عقاري CRM</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/global.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Cairo', 'Segoe UI', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
     <style>
-        /* أنماط البطاقات والعناصر */
-        .stat-card { 
-            background: var(--card-bg); 
+        .dash-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
+            transition: var(--transition);
         }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        .dash-card:hover {
+            box-shadow: var(--shadow-lg);
         }
-        .stat-card .stat-icon.bg-blue-50 { background: rgba(59, 130, 246, 0.1); }
-        .stat-card .stat-icon.bg-purple-50 { background: rgba(139, 92, 246, 0.1); }
-        .stat-card .stat-icon.bg-emerald-50 { background: rgba(16, 185, 129, 0.1); }
-        .stat-card .stat-icon.bg-amber-50 { background: rgba(245, 158, 11, 0.1); }
-        .stat-card .stat-icon.bg-red-50 { background: rgba(239, 68, 68, 0.1); }
-        
-        .quick-action-btn {
-            background: var(--card-bg);
+        .stat-box {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 0.75rem;
-            font-size: 0.85rem;
+            transition: var(--transition-slow);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold-gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stat-box:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-gold);
+        }
+        .stat-box:hover::after { opacity: 1; }
+        .stat-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
         }
-        .quick-action-btn:hover {
-            border-color: var(--gold);
-            background: var(--hover-bg);
-            transform: translateY(-1px);
+        .stat-box:hover .stat-icon-box {
+            transform: scale(1.1) rotate(-5deg);
         }
-        .quick-action-btn .icon { font-size: 1.1rem; }
-        
-        .alert-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
+        .skeleton {
+            background: linear-gradient(90deg, var(--border-color) 25%, var(--bg-body) 50%, var(--border-color) 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.2s infinite;
+            border-radius: 8px;
         }
-        .alert-item.info { border-right: 3px solid #3b82f6; }
-        .alert-item.warning { border-right: 3px solid #f59e0b; }
-        .alert-item.error { border-right: 3px solid #ef4444; }
-        .alert-item.success { border-right: 3px solid #10b981; }
-        
-        .chart-bar {
-            transition: height 0.5s ease;
-            min-height: 4px;
-            border-radius: 4px 4px 0 0;
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0;
+        .table-row {
+            transition: var(--transition);
             border-bottom: 1px solid var(--border-color);
         }
-        .activity-item:last-child { border-bottom: none; }
-        .activity-dot {
-            width: 8px;
-            height: 8px;
+        .table-row:last-child { border-bottom: none; }
+        .table-row:hover {
+            background: var(--sidebar-hover);
+        }
+        .stage-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        .reminder-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            transition: var(--transition);
+        }
+        .reminder-item:hover {
+            border-color: var(--gold-primary);
+            box-shadow: var(--shadow-gold);
+        }
+        .reminder-dot {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             flex-shrink: 0;
+            margin-top: 6px;
         }
-        .activity-dot.gold { background: #c9a84c; }
-        .activity-dot.purple { background: #8b5cf6; }
-        .activity-dot.blue { background: #3b82f6; }
-        .activity-dot.amber { background: #f59e0b; }
-        .activity-dot.gray { background: #9ca3af; }
-        .activity-dot.green { background: #10b981; }
-        .activity-dot.red { background: #ef4444; }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: none;
+        .reminder-overdue { background: var(--danger); box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+        .reminder-upcoming { background: var(--warning); }
+        .reminder-done { background: var(--success); }
+        .chart-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--gold-gradient);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .city-item {
+            display: flex;
             align-items: center;
-            gap: 0.75rem;
-            z-index: 9999;
-            max-width: 90%;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
         }
-        .toast.show { display: flex; }
-        .toast.success { border-right: 4px solid #10b981; }
-        .toast.error { border-right: 4px solid #ef4444; }
-        .toast.info { border-right: 4px solid #3b82f6; }
-
-        .main-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .main-content.visible {
-            display: block;
-            opacity: 1;
+        .city-item:last-child { border-bottom: none; }
+        @media (max-width: 640px) {
+            .stat-box { padding: 16px; }
+            .dash-card { padding: 16px; }
         }
     </style>
+
 </head>
 <body>
-
-    <!-- TOAST -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle text-emerald-400"></i>
-        <span id="toastMessage">تم الإجراء بنجاح</span>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-content" id="mainContent">
-        <div class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 md:py-8">
-
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-extrabold text-[#1e3a5f] tracking-tight">
-                        <i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i>لوحة التحكم
-                    </h1>
-                    <p class="text-sm text-gray-500 mt-1" id="greetingText">مرحباً بك، إليك ملخص أعمالك اليوم</p>
-                </div>
-                <div class="flex flex-wrap items-center gap-3">
-                    <span class="text-sm text-gray-400" id="currentDate"></span>
-                    <button onclick="window.location.href='offers.html'" class="btn btn-gold text-sm"><i class="fas fa-plus"></i> عرض جديد</button>
-                    <button onclick="window.location.href='requests.html'" class="btn btn-outline text-sm"><i class="fas fa-plus"></i> طلب جديد</button>
-                </div>
-            </div>
-
-            <!-- البطاقات الإحصائية -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6" id="statsGrid"></div>
-
-            <!-- الإجراءات السريعة -->
-            <div class="rounded-2xl border border-[#e9edf4] p-4 md:p-5 mb-6">
-                <h3 class="text-sm font-bold text-[#1e3a5f] mb-3">⚡ إجراءات سريعة</h3>
-                <div class="flex flex-wrap gap-3">
-                    <div class="quick-action-btn" onclick="window.location.href='offers.html'"><span class="icon">🏗️</span> عرض جديد</div>
-                    <div class="quick-action-btn" onclick="window.location.href='requests.html'"><span class="icon">📋</span> طلب جديد</div>
-                    <div class="quick-action-btn" onclick="showTodayAppointments()"><span class="icon">📅</span> معاينات اليوم</div>
-                    <div class="quick-action-btn" onclick="exportExcel()"><span class="icon">📊</span> تصدير تقرير</div>
-                    <div class="quick-action-btn" onclick="window.location.href='offers.html'"><span class="icon">🔍</span> عرض العروض</div>
-                    <div class="quick-action-btn" onclick="window.location.href='requests.html'"><span class="icon">🔍</span> عرض الطلبات</div>
-                </div>
-            </div>
-
-            <!-- التنبيهات والمعاينات -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <div class="lg:col-span-2 rounded-2xl border border-[#e9edf4] p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-bell ml-2 text-[#2d6a9f]"></i> التنبيهات</h3>
-                        <span class="text-xs text-gray-400" id="alertCount">0 تنبيه</span>
+    <main class="main-content">
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6" id="statsContainer">
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">إجمالي العروض</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
                     </div>
-                    <div id="alertsContainer" class="max-h-[280px] overflow-y-auto"></div>
-                </div>
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-calendar-check ml-2 text-[#2d6a9f]"></i> معاينات اليوم</h3>
-                        <span class="text-xs text-gray-400" id="appointmentCount">0</span>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309;">
+                        <i class="fas fa-tags"></i>
                     </div>
-                    <div id="appointmentsContainer" class="max-h-[280px] overflow-y-auto"></div>
                 </div>
             </div>
-
-            <!-- المخططات والنشاطات -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-chart-bar ml-2 text-[#2d6a9f]"></i> توزيع العقارات</h3>
-                    <div id="propertyChart" class="h-48 flex items-end justify-center gap-4"></div>
-                </div>
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-chart-pie ml-2 text-[#2d6a9f]"></i> حالة الطلبات</h3>
-                    <div id="requestChart" class="h-48 flex items-end justify-center gap-4"></div>
-                </div>
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <h3 class="font-bold text-[#1e3a5f] mb-4"><i class="fas fa-clock ml-2 text-[#2d6a9f]"></i> آخر النشاطات</h3>
-                    <div id="activityFeed" class="max-h-[200px] overflow-y-auto"></div>
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">العروض النشطة</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1d4ed8;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
                 </div>
             </div>
-
-            <!-- القوائم المعلقة -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> عروض قيد الانتظار</h3>
-                        <button onclick="window.location.href='offers.html'" class="text-xs text-[#1e3a5f] hover:underline">عرض الكل</button>
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">إجمالي الطلبات</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
                     </div>
-                    <div id="pendingOffersList" class="space-y-2 max-h-[180px] overflow-y-auto"></div>
-                </div>
-                <div class="rounded-2xl border border-[#e9edf4] p-5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-bold text-[#1e3a5f]"><i class="fas fa-hourglass-half ml-2 text-[#2d6a9f]"></i> طلبات قيد المطابقة</h3>
-                        <button onclick="window.location.href='requests.html'" class="text-xs text-[#1e3a5f] hover:underline">عرض الكل</button>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669;">
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
-                    <div id="pendingRequestsList" class="space-y-2 max-h-[180px] overflow-y-auto"></div>
                 </div>
             </div>
-
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">العملاء</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- تحميل الملفات -->
-    <script src="/assets/js/components/sidebar.js"></script>
-    <script src="/assets/js/core/api.js"></script>
-    <script src="/assets/js/components/global.js"></script>
-    <script src="/assets/js/pages/dashboard.js"></script>
+        <!-- Second Stats Row -->
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6" id="statsContainer2">
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">عروض الشركة</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca;">
+                        <i class="fas fa-building"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">عروض شخصية</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #fef9c3, #fde047); color: #a16207;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">مكتملة - عروض</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #dcfce7, #86efac); color: #15803d;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <p class="text-xs font-medium" style="color: var(--text-secondary);">مكتملة - طلبات</p>
+                        <div class="skeleton w-16 h-8 mt-1"></div>
+                    </div>
+                    <div class="stat-icon-box" style="background: linear-gradient(135deg, #ccfbf1, #5eead4); color: #0f766e;">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cities Distribution -->
+        <div class="dash-card mb-6" id="citiesCard">
+            <h2 class="section-title mb-4">توزيع العروض حسب المدينة</h2>
+            <div id="citiesList">
+                <div class="skeleton w-full h-12 mb-3"></div>
+                <div class="skeleton w-full h-12 mb-3"></div>
+                <div class="skeleton w-full h-12"></div>
+            </div>
+        </div>
+
+        <!-- Recent Offers & Requests -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Recent Offers -->
+            <div class="dash-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="section-title" style="margin-bottom:0;">آخر العروض</h2>
+                    <a href="offers.html" class="text-xs font-semibold" style="color:var(--gold-primary);">
+                        عرض الكل <i class="fas fa-arrow-left mr-1"></i>
+                    </a>
+                </div>
+                <div id="recentOffersList">
+                    <div class="skeleton w-full h-14 mb-2"></div>
+                    <div class="skeleton w-full h-14 mb-2"></div>
+                    <div class="skeleton w-full h-14"></div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="dash-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="section-title" style="margin-bottom:0;">آخر الطلبات</h2>
+                    <a href="requests.html" class="text-xs font-semibold" style="color:var(--gold-primary);">
+                        عرض الكل <i class="fas fa-arrow-left mr-1"></i>
+                    </a>
+                </div>
+                <div id="recentRequestsList">
+                    <div class="skeleton w-full h-14 mb-2"></div>
+                    <div class="skeleton w-full h-14 mb-2"></div>
+                    <div class="skeleton w-full h-14"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reminders -->
+        <div class="dash-card mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="section-title" style="margin-bottom:0;">التنبيهات والتذكيرات</h2>
+                <a href="alerts.html" class="text-xs font-semibold" style="color:var(--gold-primary);">
+                    عرض الكل <i class="fas fa-arrow-left mr-1"></i>
+                </a>
+            </div>
+            <div id="remindersList">
+                <div class="skeleton w-full h-16 mb-2"></div>
+                <div class="skeleton w-full h-16 mb-2"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../assets/js/core/api.js"></script>
+    <script src="../assets/js/components/global.js"></script>
+    <script src="../assets/js/pages/dashboard.js"></script>
 </body>
 </html>

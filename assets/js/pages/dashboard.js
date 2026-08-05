@@ -1,540 +1,422 @@
-// ============================================================
-// assets/js/pages/dashboard.js - لوحة التحكم الرئيسية
-// مع إصلاح إظهار المحتوى وإضافة التحقق من المصادقة
-// ============================================================
+(function () {
+  "use strict";
 
-let dashboardData = {};
-let refreshInterval = null;
+  // ============================================================
+  // RENDER HELPERS
+  // ============================================================
 
-// ============================================================
-// TOAST HELPER (مستوحى من global.js)
-// ============================================================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  const toastMsg = document.getElementById("toastMessage");
-  if (!toast || !toastMsg) return;
-
-  const icon = toast.querySelector("i");
-  if (icon) {
-    if (type === "success") {
-      icon.className = "fas fa-check-circle text-emerald-400";
-    } else if (type === "error") {
-      icon.className = "fas fa-exclamation-circle text-red-400";
-    } else {
-      icon.className = "fas fa-info-circle text-blue-400";
-    }
+  function formatNumber(num) {
+    if (num === undefined || num === null) return "0";
+    return num.toLocaleString("ar-SA");
   }
 
-  toast.className = "toast show " + type;
-  toastMsg.textContent = message;
-  clearTimeout(toast._hideTimeout);
-  toast._hideTimeout = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 4000);
-}
-
-// ============================================================
-// RENDER FUNCTIONS
-// ============================================================
-
-/**
- * عرض البطاقات الإحصائية
- */
-function renderStats(data) {
-  const stats = [
-    {
-      label: "العروض",
-      value: data.total_offers || 0,
-      icon: "fa-file-signature",
-      color: "blue",
-      link: "offers.html",
-    },
-    {
-      label: "الطلبات",
-      value: data.total_requests || 0,
-      icon: "fa-clipboard-list",
-      color: "purple",
-      link: "requests.html",
-    },
-    {
-      label: "عروض نشطة",
-      value: data.active_offers || 0,
-      icon: "fa-check-circle",
-      color: "emerald",
-      link: "offers.html",
-    },
-    {
-      label: "قيد المطابقة",
-      value: data.pending_requests || 0,
-      icon: "fa-hourglass-half",
-      color: "amber",
-      link: "requests.html",
-    },
-    {
-      label: "معاينات اليوم",
-      value: data.today_appointments || 0,
-      icon: "fa-calendar-check",
-      color: "blue",
-      link: "#",
-      onclick: "showTodayAppointments()",
-    },
-    {
-      label: "متأخرة",
-      value: data.delayed || 0,
-      icon: "fa-exclamation-triangle",
-      color: "red",
-      link: "#",
-    },
-  ];
-
-  const grid = document.getElementById("statsGrid");
-  if (!grid) return;
-
-  grid.innerHTML = stats
-    .map(
-      (s) => `
-        <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow" 
-             onclick="${s.onclick ? s.onclick : (s.link ? `window.location.href='${s.link}'` : '')}">
-            <div class="flex items-center gap-3">
-                <div class="stat-icon bg-${s.color}-50 text-${s.color}-600 w-10 h-10 flex items-center justify-center rounded-xl">
-                    <i class="fas ${s.icon}"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400 font-medium">${s.label}</p>
-                    <p class="text-xl md:text-2xl font-bold text-[#1e3a5f]">${s.value}</p>
-                </div>
-            </div>
-        </div>
-    `,
-    )
-    .join("");
-
-  // تحديث العدادات في الهيدر
-  document.getElementById("alertCount").textContent =
-    (data.alerts?.length || 0) + " تنبيه";
-  document.getElementById("appointmentCount").textContent =
-    data.today_appointments || 0;
-}
-
-/**
- * عرض التنبيهات
- */
-function renderAlerts(data) {
-  const container = document.getElementById("alertsContainer");
-  if (!container) return;
-
-  const alerts = data.alerts || [];
-  if (alerts.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-gray-400">
-        <i class="fas fa-check-circle text-2xl block mb-2"></i>
-        لا توجد تنبيهات
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = alerts
-    .slice(0, 6)
-    .map(
-      (a) => `
-        <div class="alert-item rounded-xl p-3 mb-2 flex items-center justify-between ${a.level || 'info'}">
-            <div class="flex items-center gap-3">
-                <span class="text-lg">${a.icon || "📌"}</span>
-                <div>
-                    <div class="text-sm font-medium">${a.title || a.message || ""}</div>
-                    <div class="text-xs text-gray-500">${a.detail || a.description || ""}</div>
-                </div>
-            </div>
-            ${a.link ? `<button onclick="window.location.href='${a.link}'" class="text-xs text-[#1e3a5f] hover:underline font-bold">عرض</button>` : ""}
-        </div>
-    `,
-    )
-    .join("");
-}
-
-/**
- * عرض معاينات اليوم
- */
-function renderAppointments(data) {
-  const container = document.getElementById("appointmentsContainer");
-  if (!container) return;
-
-  const appointments = data.today_appointments_list || [];
-  if (appointments.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-gray-400">
-        <i class="fas fa-calendar-day text-2xl block mb-2"></i>
-        لا توجد معاينات اليوم
-      </div>`;
-    return;
-  }
-
-  container.innerHTML = appointments
-    .slice(0, 6)
-    .map(
-      (a) => `
-        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl mb-2 hover:bg-slate-100 transition-colors">
-            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold">${(a.client || a.contact_name || "?").charAt(0)}</div>
-            <div class="flex-1">
-                <div class="text-sm font-semibold">${a.client || a.contact_name || "عميل"}</div>
-                <div class="text-xs text-gray-500">${a.type || a.deal_type || ""} · ${a.appointment_time || a.time || "غير محدد"}</div>
-                <div class="text-xs text-gray-400">${a.display_id || a.id || ""}</div>
-            </div>
-            <button onclick="window.location.href='${a.link || "requests.html"}'" class="text-xs text-[#1e3a5f] font-bold hover:underline">فتح</button>
-        </div>
-    `,
-    )
-    .join("");
-}
-
-/**
- * عرض المخططات البيانية
- */
-function renderCharts(data) {
-  // مخطط توزيع العقارات حسب النوع
-  const types = data.property_types || {};
-  const labels = Object.keys(types);
-  const values = Object.values(types);
-  const max = Math.max(...values, 1);
-  const colors = ["#10b981", "#f59e0b", "#3b82f6", "#8b5cf6", "#ef4444"];
-
-  const chartContainer = document.getElementById("propertyChart");
-  if (chartContainer) {
-    if (labels.length === 0) {
-      chartContainer.innerHTML =
-        `<div class="text-center text-gray-400 w-full">لا توجد بيانات كافية</div>`;
-    } else {
-      chartContainer.innerHTML = labels
-        .map(
-          (label, i) => `
-            <div class="flex flex-col items-center gap-2 flex-1">
-                <span class="text-xs font-bold text-gray-600">${values[i]}</span>
-                <div class="w-full max-w-[40px] rounded-t-lg chart-bar" style="height:${(values[i] / max) * 120}px; background:${colors[i % colors.length]}; transition: height 0.6s ease;"></div>
-                <span class="text-xs text-gray-500 truncate max-w-[60px]">${label}</span>
-            </div>
-        `,
-        )
-        .join("");
-    }
-  }
-
-  // مخطط حالات الطلبات
-  const statuses = data.request_statuses || {};
-  const statusLabels = Object.keys(statuses);
-  const statusValues = Object.values(statuses);
-  const statusMax = Math.max(...statusValues, 1);
-
-  const requestChart = document.getElementById("requestChart");
-  if (requestChart) {
-    if (statusLabels.length === 0) {
-      requestChart.innerHTML =
-        `<div class="text-center text-gray-400 w-full">لا توجد بيانات كافية</div>`;
-    } else {
-      requestChart.innerHTML = statusLabels
-        .map(
-          (label, i) => `
-            <div class="flex flex-col items-center gap-2 flex-1">
-                <span class="text-xs font-bold text-gray-600">${statusValues[i]}</span>
-                <div class="w-full max-w-[40px] rounded-t-lg chart-bar" style="height:${(statusValues[i] / statusMax) * 120}px; background:${colors[(i + 2) % colors.length]}; transition: height 0.6s ease;"></div>
-                <span class="text-xs text-gray-500 truncate max-w-[60px]">${label}</span>
-            </div>
-        `,
-        )
-        .join("");
-    }
-  }
-}
-
-/**
- * عرض آخر النشاطات
- */
-function renderActivity(data) {
-  const container = document.getElementById("activityFeed");
-  if (!container) return;
-
-  const activities = data.recent_activity || [];
-  if (activities.length === 0) {
-    container.innerHTML =
-      `<div class="text-center py-6 text-gray-400 text-sm">لا توجد نشاطات حديثة</div>`;
-    return;
-  }
-
-  const colorMap = {
-    offer: "gold",
-    request: "purple",
-    appointment: "blue",
-    reminder: "amber",
-    system: "gray",
-  };
-
-  container.innerHTML = activities
-    .slice(0, 6)
-    .map(
-      (a) => `
-        <div class="activity-item">
-            <div class="activity-dot ${colorMap[a.type] || "gray"}"></div>
-            <div class="flex-1">
-                <div class="text-sm font-medium">${a.text || a.title || ""}</div>
-                <div class="text-xs text-gray-500">${a.detail || a.description || ""}</div>
-                <div class="text-xs text-gray-400 mt-0.5">${a.time || a.created_at || ""}</div>
-            </div>
-            <button onclick="window.location.href='${a.link || "#"}'" class="text-xs text-[#1e3a5f] hover:underline">فتح</button>
-        </div>
-    `,
-    )
-    .join("");
-}
-
-/**
- * عرض القوائم المعلقة
- */
-function renderPending(data) {
-  // العروض المعلقة
-  const pendingOffers = data.pending_offers || [];
-  const offersList = document.getElementById("pendingOffersList");
-  if (offersList) {
-    if (pendingOffers.length === 0) {
-      offersList.innerHTML =
-        `<div class="text-center py-4 text-gray-400 text-sm">لا توجد عروض قيد الانتظار</div>`;
-    } else {
-      offersList.innerHTML = pendingOffers
-        .slice(0, 5)
-        .map(
-          (o) => `
-            <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
-                <div>
-                    <div class="text-sm font-semibold">${o.display_id || o.id || ""} — ${o.type || o.deal_type || ""}</div>
-                    <div class="text-xs text-gray-500">${o.city || ""} · ${o.stage_name || "قيد الانتظار"}</div>
-                </div>
-                <button onclick="window.location.href='offers.html'" class="text-xs text-[#1e3a5f] font-bold hover:underline">عرض</button>
-            </div>
-        `,
-        )
-        .join("");
-    }
-  }
-
-  // الطلبات المعلقة
-  const pendingRequests = data.pending_requests_list || [];
-  const requestsList = document.getElementById("pendingRequestsList");
-  if (requestsList) {
-    if (pendingRequests.length === 0) {
-      requestsList.innerHTML =
-        `<div class="text-center py-4 text-gray-400 text-sm">لا توجد طلبات قيد المطابقة</div>`;
-    } else {
-      requestsList.innerHTML = pendingRequests
-        .slice(0, 5)
-        .map(
-          (r) => `
-            <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
-                <div>
-                    <div class="text-sm font-semibold">${r.display_id || r.id || ""} — ${r.type || r.deal_type || ""}</div>
-                    <div class="text-xs text-gray-500">${r.city || ""} · ${r.client || r.contact_name || ""}</div>
-                </div>
-                <button onclick="window.location.href='requests.html'" class="text-xs text-[#1e3a5f] font-bold hover:underline">عرض</button>
-            </div>
-        `,
-        )
-        .join("");
-    }
-  }
-}
-
-/**
- * تحديث رسالة الترحيب
- */
-function updateGreeting() {
-  const hour = new Date().getHours();
-  let greeting = "صباح الخير";
-  if (hour >= 12 && hour < 17) greeting = "مساء الخير";
-  else if (hour >= 17) greeting = "مساء الخير";
-
-  // جلب اسم المستخدم من التوكن
-  let userName = "خالد";
-  try {
-    const user = API.getUser();
-    if (user && user.name) userName = user.name;
-  } catch (e) {
-    // استخدام الاسم الافتراضي
-  }
-
-  const greetingEl = document.getElementById("greetingText");
-  if (greetingEl) {
-    greetingEl.textContent = `${greeting}، ${userName} 👋 إليك ملخص أعمالك اليوم`;
-  }
-
-  const dateEl = document.getElementById("currentDate");
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString("ar-SA", {
-      weekday: "long",
+  function formatDate(dateStr) {
+    if (!dateStr) return "—";
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    return d.toLocaleDateString("ar-SA", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     });
   }
-}
 
-// ============================================================
-// LOAD DASHBOARD - تحميل بيانات لوحة التحكم
-// ============================================================
-async function loadDashboard() {
-  try {
-    // استدعاء API - ترمي استثناء في حالة الفشل
-    const result = await API.reports.dashboard();
-
-    // بما أن API.reports.dashboard ترمي استثناء في حالة الفشل،
-    // نصل إلى هنا فقط في حالة النجاح
-    dashboardData = result.data || {};
-
-    // التأكد من وجود جميع الحقول المطلوبة
-    dashboardData = {
-      total_offers: dashboardData.total_offers || 0,
-      total_requests: dashboardData.total_requests || 0,
-      active_offers: dashboardData.active_offers || 0,
-      pending_requests: dashboardData.pending_requests || 0,
-      today_appointments: dashboardData.today_appointments || 0,
-      delayed: dashboardData.delayed || 0,
-      alerts: dashboardData.alerts || [],
-      today_appointments_list: dashboardData.today_appointments_list || [],
-      property_types: dashboardData.property_types || {},
-      request_statuses: dashboardData.request_statuses || {},
-      recent_activity: dashboardData.recent_activity || [],
-      pending_offers: dashboardData.pending_offers || [],
-      pending_requests_list: dashboardData.pending_requests_list || [],
-    };
-
-    // عرض البيانات
-    renderStats(dashboardData);
-    renderAlerts(dashboardData);
-    renderAppointments(dashboardData);
-    renderCharts(dashboardData);
-    renderActivity(dashboardData);
-    renderPending(dashboardData);
-    updateGreeting();
-
-    // إظهار المحتوى (إن وجد)
-    const content = document.getElementById("dashboardContent");
-    if (content) content.style.display = "block";
-
-  } catch (err) {
-    console.error("❌ خطأ في تحميل لوحة التحكم:", err);
-    showToast(err.message || "حدث خطأ في تحميل البيانات", "error");
-
-    // عرض رسالة خطأ في الواجهة
-    const alertsContainer = document.getElementById("alertsContainer");
-    if (alertsContainer) {
-      alertsContainer.innerHTML = `
-        <div class="text-center py-8 text-red-500">
-          <i class="fas fa-exclamation-triangle text-3xl block mb-2"></i>
-          <p>${err.message || "حدث خطأ في تحميل البيانات"}</p>
-          <button onclick="loadDashboard()" class="mt-3 text-sm text-[#1e3a5f] hover:underline">🔄 إعادة المحاولة</button>
-        </div>
-      `;
-    }
+  function formatCurrency(amount) {
+    if (amount === undefined || amount === null) return "—";
+    return Number(amount).toLocaleString("ar-SA") + " ر.س";
   }
-}
 
-// ============================================================
-// ACTIONS - الإجراءات التفاعلية
-// ============================================================
-
-/**
- * عرض معاينات اليوم
- */
-function showTodayAppointments() {
-  const appointments = dashboardData.today_appointments_list || [];
-  if (appointments.length === 0) {
-    showToast("📅 لا توجد معاينات اليوم", "info");
-    return;
+  function getStageStyle(color) {
+    return `background:${color}15;color:${color};border:1px solid ${color}30;`;
   }
-  let msg = "📅 معاينات اليوم:\n";
-  appointments.forEach((a) => {
-    msg += `\n${a.display_id || a.id || ""} — ${a.client || a.contact_name || ""} — ${a.type || ""} (${a.appointment_time || a.time || "غير محدد"})`;
-  });
-  alert(msg);
-}
 
-/**
- * تصدير التقرير إلى Excel (CSV)
- */
-async function exportExcel() {
-  try {
-    showToast("⏳ جاري تحضير التقرير...", "info");
+  // ============================================================
+  // STATS RENDER
+  // ============================================================
 
-    const today = new Date();
-    const fromDate = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-      .toISOString()
-      .slice(0, 10);
-    const toDate = today.toISOString().slice(0, 10);
+  function renderStats(data) {
+    const stats = [
+      {
+        label: "إجمالي العروض",
+        value: data.total_offers,
+        icon: "fa-tags",
+        colors: "linear-gradient(135deg, #fef3c7, #fde68a);color:#b45309;",
+      },
+      {
+        label: "العروض النشطة",
+        value: data.active_offers,
+        icon: "fa-bolt",
+        colors: "linear-gradient(135deg, #dbeafe, #bfdbfe);color:#1d4ed8;",
+      },
+      {
+        label: "إجمالي الطلبات",
+        value: data.total_requests,
+        icon: "fa-clipboard-list",
+        colors: "linear-gradient(135deg, #d1fae5, #a7f3d0);color:#059669;",
+      },
+      {
+        label: "العملاء",
+        value: data.total_clients,
+        icon: "fa-users",
+        colors: "linear-gradient(135deg, #fce7f3, #fbcfe8);color:#be185d;",
+      },
+      {
+        label: "عروض الشركة",
+        value: data.company_offers,
+        icon: "fa-building",
+        colors: "linear-gradient(135deg, #e0e7ff, #c7d2fe);color:#4338ca;",
+      },
+      {
+        label: "عروض شخصية",
+        value: data.personal_offers,
+        icon: "fa-user",
+        colors: "linear-gradient(135deg, #fef9c3, #fde047);color:#a16207;",
+      },
+      {
+        label: "مكتملة - عروض",
+        value: data.completed_offers,
+        icon: "fa-check-circle",
+        colors: "linear-gradient(135deg, #dcfce7, #86efac);color:#15803d;",
+      },
+      {
+        label: "مكتملة - طلبات",
+        value: data.completed_requests,
+        icon: "fa-check-double",
+        colors: "linear-gradient(135deg, #ccfbf1, #5eead4);color:#0f766e;",
+      },
+    ];
 
-    // API.reports.offers ترمي استثناء في حالة الفشل
-    const result = await API.reports.offers(fromDate, toDate);
+    const rows = [stats.slice(0, 4), stats.slice(4, 8)];
 
-    const rows = result.data?.data || result.data || [];
-    if (rows.length === 0) {
-      showToast("لا توجد بيانات للتصدير", "error");
+    rows.forEach((row, rowIndex) => {
+      const container = document.getElementById(
+        rowIndex === 0 ? "statsContainer" : "statsContainer2"
+      );
+      if (!container) return;
+      container.innerHTML = row
+        .map(
+          (s) => `
+                <div class="stat-box animate-fade-in">
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <p class="text-xs font-medium" style="color: var(--text-secondary);">${s.label}</p>
+                            <h3 class="text-2xl font-extrabold mt-1" style="color: var(--text-primary);">${formatNumber(s.value)}</h3>
+                        </div>
+                        <div class="stat-icon-box" style="background: ${s.colors}">
+                            <i class="fas ${s.icon}"></i>
+                        </div>
+                    </div>
+                </div>
+            `
+        )
+        .join("");
+    });
+  }
+
+  // ============================================================
+  // CITIES RENDER
+  // ============================================================
+
+  function renderCities(offersByCity, requestsByCity) {
+    const container = document.getElementById("citiesList");
+    if (!container) return;
+
+    const allCities = {};
+    (offersByCity || []).forEach((c) => {
+      allCities[c.city] = (allCities[c.city] || 0) + c.count;
+    });
+    (requestsByCity || []).forEach((c) => {
+      allCities[c.city] = (allCities[c.city] || 0) + c.count;
+    });
+
+    const sorted = Object.entries(allCities)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6);
+    const max = sorted.length > 0 ? sorted[0][1] : 1;
+
+    if (sorted.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-city"></i>
+                    <p class="text-sm">لا توجد بيانات متاحة</p>
+                </div>
+            `;
       return;
     }
 
-    // إنشاء ملف CSV
-    const headers = Object.keys(rows[0]);
-    let csv = "\uFEFF" + headers.join(",") + "\n";
-    rows.forEach((r) => {
-      csv +=
-        headers
-          .map((h) => `"${String(r[h] || "").replace(/"/g, '""')}"`)
-          .join(",") + "\n";
-    });
+    container.innerHTML = sorted
+      .map(([city, count], i) => {
+        const pct = Math.round((count / max) * 100);
+        return `
+                <div class="city-item animate-fade-in" style="animation-delay:${i * 0.05}s;">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <span class="text-sm font-semibold" style="color:var(--text-primary);min-width:80px;">${city}</span>
+                        <div class="flex-1" style="max-width:200px;">
+                            <div style="background:var(--border-color);height:8px;border-radius:4px;overflow:hidden;">
+                                <div class="chart-bar" style="width:0%;" data-width="${pct}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="text-sm font-bold mr-3" style="color:var(--gold-primary);">${formatNumber(count)}</span>
+                </div>
+            `;
+      })
+      .join("");
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `تقرير_لوحة_التحكم_${today.toISOString().slice(0, 10)}.csv`;
-    link.click();
-
-    showToast("✅ تم تصدير التقرير بنجاح", "success");
-  } catch (err) {
-    console.error("❌ خطأ في التصدير:", err);
-    showToast(err.message || "حدث خطأ أثناء التصدير", "error");
-  }
-}
-
-// ============================================================
-// CHECK AUTH & INIT - التحقق من المصادقة وتهيئة الصفحة
-// ============================================================
-document.addEventListener("DOMContentLoaded", async function () {
-  console.log("📊 تحميل لوحة التحكم...");
-
-  // 1. التحقق من صحة التوكن - API.auth.checkAuth ترمي استثناء أو تعيد توجيه تلقائياً
-  const isAuthenticated = await API.auth.checkAuth(true);
-  if (!isAuthenticated) {
-    // سيتم التحويل تلقائياً بواسطة checkAuth
-    return;
+    setTimeout(() => {
+      container.querySelectorAll("[data-width]").forEach((bar) => {
+        bar.style.width = bar.dataset.width;
+      });
+    }, 100);
   }
 
-  // 2. إظهار المحتوى الرئيسي
-  const mainContent = document.getElementById("mainContent");
-  if (mainContent) {
-    mainContent.style.display = "block";
-    mainContent.classList.add("visible");
+  // ============================================================
+  // RECENT OFFERS RENDER
+  // ============================================================
+
+  function renderRecentOffers(offers) {
+    const container = document.getElementById("recentOffersList");
+    if (!container) return;
+
+    if (!offers || offers.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <p class="text-sm">لا توجد عروض حالياً</p>
+                </div>
+            `;
+      return;
+    }
+
+    container.innerHTML = offers
+      .map(
+        (o, i) => `
+            <div class="table-row flex items-center justify-between py-3 px-2 animate-fade-in" style="animation-delay:${i * 0.05}s;">
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-bold" style="color:var(--gold-primary);">${o.display_id || "—"}</span>
+                        <span class="stage-badge" style="${getStageStyle(o.stage_color || "#808080")}">
+                            <span class="w-2 h-2 rounded-full" style="background:${o.stage_color || "#808080"};"></span>
+                            ${o.current_stage || "—"}
+                        </span>
+                    </div>
+                    <p class="text-sm font-semibold truncate" style="color:var(--text-primary);">${o.title || "—"}</p>
+                    <p class="text-xs" style="color:var(--text-muted);">${o.city || "—"} · ${formatCurrency(o.price)}</p>
+                </div>
+                <a href="offers-detail.html?id=${o.id}" class="mr-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition" style="color:var(--text-muted);">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </div>
+        `
+      )
+      .join("");
   }
 
-  // 3. تحميل البيانات
-  await loadDashboard();
+  // ============================================================
+  // RECENT REQUESTS RENDER
+  // ============================================================
 
-  // 4. تشغيل التحديث التلقائي كل 60 ثانية
-  if (refreshInterval) clearInterval(refreshInterval);
-  refreshInterval = setInterval(loadDashboard, 60000);
+  function renderRecentRequests(requests) {
+    const container = document.getElementById("recentRequestsList");
+    if (!container) return;
 
-  console.log("✅ لوحة التحكم جاهزة");
-});
+    if (!requests || requests.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p class="text-sm">لا توجد طلبات حالياً</p>
+                </div>
+            `;
+      return;
+    }
 
-// ============================================================
-// EXPOSE GLOBALS - تصدير الدوال للاستخدام العالمي
-// ============================================================
-window.showTodayAppointments = showTodayAppointments;
-window.exportExcel = exportExcel;
-window.loadDashboard = loadDashboard;
-window.showToast = showToast;
+    container.innerHTML = requests
+      .map(
+        (r, i) => `
+            <div class="table-row flex items-center justify-between py-3 px-2 animate-fade-in" style="animation-delay:${i * 0.05}s;">
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-bold" style="color:var(--gold-primary);">${r.display_id || "—"}</span>
+                        <span class="stage-badge" style="${getStageStyle(r.stage_color || "#808080")}">
+                            <span class="w-2 h-2 rounded-full" style="background:${r.stage_color || "#808080"};"></span>
+                            ${r.current_stage || "—"}
+                        </span>
+                    </div>
+                    <p class="text-sm font-semibold truncate" style="color:var(--text-primary);">${r.contact?.name || "عميل"}</p>
+                    <p class="text-xs" style="color:var(--text-muted);">${r.city || "—"} · ميزانية: ${formatCurrency(r.budget)}</p>
+                </div>
+                <a href="requests-detail.html?id=${r.id}" class="mr-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition" style="color:var(--text-muted);">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </div>
+        `
+      )
+      .join("");
+  }
 
-console.log("📊 dashboard.js loaded successfully");
+  // ============================================================
+  // REMINDERS RENDER
+  // ============================================================
+
+  function renderReminders(reminders) {
+    const container = document.getElementById("remindersList");
+    if (!container) return;
+
+    if (!reminders || reminders.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <p class="text-sm">لا توجد تنبيهات حالياً</p>
+                </div>
+            `;
+      return;
+    }
+
+    container.innerHTML = reminders
+      .map((r, i) => {
+        const now = new Date();
+        const reminderTime = new Date(r.reminder_time);
+        const isOverdue = reminderTime < now && !r.is_sent;
+        const isDone = r.is_sent;
+        const dotClass = isDone
+          ? "reminder-done"
+          : isOverdue
+          ? "reminder-overdue"
+          : "reminder-upcoming";
+        const timeText = isDone
+          ? "تم الإرسال"
+          : isOverdue
+          ? "متأخر"
+          : formatDate(r.reminder_time);
+        const timeColor = isDone
+          ? "var(--success)"
+          : isOverdue
+          ? "var(--danger)"
+          : "var(--text-muted)";
+
+        return `
+                <div class="reminder-item animate-fade-in" style="animation-delay:${i * 0.05}s;">
+                    <div class="reminder-dot ${dotClass}"></div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold" style="color:var(--text-primary);">${r.note || "—"}</p>
+                        <div class="flex items-center gap-2 mt-1 flex-wrap">
+                            ${r.offer ? `<span class="text-xs" style="color:var(--gold-primary);"><i class="fas fa-tag ml-1"></i>${r.offer.display_id}</span>` : ""}
+                            ${r.request ? `<span class="text-xs" style="color:var(--info);"><i class="fas fa-clipboard ml-1"></i>${r.request.display_id}</span>` : ""}
+                            <span class="text-xs" style="color:${timeColor};"><i class="far fa-clock ml-1"></i>${timeText}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+      })
+      .join("");
+  }
+
+  // ============================================================
+  // LOAD DATA
+  // ============================================================
+
+  async function loadDashboard() {
+    // التحقق من المصادقة
+    const isAuthenticated = await API.requireAuth();
+    if (!isAuthenticated) {
+      return;
+    }
+
+    // جلب الإحصائيات
+    try {
+      const statsRes = await API.reports.dashboard();
+      if (statsRes.status === "success" && statsRes.data) {
+        renderStats(statsRes.data);
+        renderCities(
+          statsRes.data.offers_by_city,
+          statsRes.data.requests_by_city
+        );
+      }
+    } catch (err) {
+      console.error("Dashboard stats error:", err);
+    }
+
+    // جلب آخر العروض
+    try {
+      const offersRes = await API.offers.list({
+        per_page: 5,
+        sort_by: "created_at",
+        sort_order: "desc",
+      });
+      if (offersRes.status === "success" && offersRes.data?.data) {
+        renderRecentOffers(offersRes.data.data);
+      }
+    } catch (err) {
+      console.error("Recent offers error:", err);
+      const el = document.getElementById("recentOffersList");
+      if (el) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i>
+            <p class="text-sm" style="color:var(--danger);">فشل تحميل العروض</p>
+          </div>
+        `;
+      }
+    }
+
+    // جلب آخر الطلبات
+    try {
+      const requestsRes = await API.requests.list({
+        per_page: 5,
+        sort_by: "created_at",
+        sort_order: "desc",
+      });
+      if (requestsRes.status === "success" && requestsRes.data?.data) {
+        renderRecentRequests(requestsRes.data.data);
+      }
+    } catch (err) {
+      console.error("Recent requests error:", err);
+      const el = document.getElementById("recentRequestsList");
+      if (el) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i>
+            <p class="text-sm" style="color:var(--danger);">فشل تحميل الطلبات</p>
+          </div>
+        `;
+      }
+    }
+
+    // ===== جلب التذكيرات (باستخدام تقرير التذكيرات بدلاً من reminders.list) =====
+    try {
+      // استخدام نقطة نهاية التقارير للحصول على التذكيرات ضمن فترة زمنية (الشهر الحالي)
+      const today = new Date();
+      const nextMonth = new Date(today);
+      nextMonth.setMonth(today.getMonth() + 1);
+      const fromDate = today.toISOString().split('T')[0];
+      const toDate = nextMonth.toISOString().split('T')[0];
+      
+      const remindersRes = await API.reports.reminders(fromDate, toDate);
+      if (remindersRes.status === "success") {
+        const reminders = remindersRes.data?.data || remindersRes.data || [];
+        renderReminders(reminders);
+      }
+    } catch (err) {
+      console.error("Reminders error:", err);
+      const el = document.getElementById("remindersList");
+      if (el) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i>
+            <p class="text-sm" style="color:var(--danger);">فشل تحميل التنبيهات</p>
+          </div>
+        `;
+      }
+    }
+  }
+
+  // ============================================================
+  // INIT
+  // ============================================================
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadDashboard);
+  } else {
+    loadDashboard();
+  }
+})(); 

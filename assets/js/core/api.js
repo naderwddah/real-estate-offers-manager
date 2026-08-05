@@ -1,5 +1,6 @@
 // ============================================================
 // api.js - ربط الواجهات مع Backend (نسخة معتمدة على API فقط)
+// Base URL: https://masar.technova.fun/api
 // ============================================================
 
 const API = {
@@ -7,8 +8,44 @@ const API = {
   token: localStorage.getItem("masar_token") || null,
 
   // ============================================================
-  // HELPER - معالجة الأخطاء وإعادة التوجيه في حال 401
+  // CORE - معالجة الردود والأخطاء
   // ============================================================
+
+  getHeaders: () => {
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+    if (API.token) {
+      headers.Authorization = `Bearer ${API.token}`;
+    }
+    return headers;
+  },
+
+  /**
+   * دالة مساعدة للتحقق من التوكن وإعادة التوجيه إذا لزم الأمر
+   * تُستدعى في بداية كل دالة API تحتاج إلى مصادقة
+   * - إذا لم يكن هناك توكن: تعيد التوجيه إلى index.html (إلا إذا كنا فيها)
+   * - إذا كان هناك توكن: ترجع true
+   */
+  _ensureAuth: () => {
+    const token = localStorage.getItem("masar_token");
+    if (!token) {
+      if (!window.location.pathname.includes("index.html")) {
+        window.location.href = "index.html";
+      }
+      throw new Error("غير مسجل دخول");
+    }
+    API.token = token;
+    return true;
+  },
+
+  /**
+   * معالجة الرد من السيرفر
+   * - 401: إزالة التوكن وإعادة التوجيه إلى index.html
+   * - JSON parsing مع دعم الردود الفارغة
+   * - تجميع أخطاء Validation
+   */
   handleResponse: async (response) => {
     if (response.status === 401) {
       localStorage.removeItem("masar_token");
@@ -19,19 +56,57 @@ const API = {
       }
       throw new Error("جلسة منتهية، يرجى تسجيل الدخول مجدداً");
     }
-    const data = await response.json();
+
+    if (response.status === 204) {
+      return { status: "success", data: null };
+    }
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      if (!response.ok) {
+        throw new Error("حدث خطأ غير متوقع من الخادم");
+      }
+      data = { status: "success", data: null };
+    }
+
     if (!response.ok) {
       let errorMsg = data.message || "حدث خطأ";
-      if (data.errors) {
-        errorMsg = Object.values(data.errors).flat().join(", ");
+      if (data.errors && typeof data.errors === "object") {
+        const messages = [];
+        for (const key in data.errors) {
+          if (Array.isArray(data.errors[key])) {
+            messages.push(...data.errors[key]);
+          } else {
+            messages.push(String(data.errors[key]));
+          }
+        }
+        if (messages.length > 0) errorMsg = messages.join("، ");
       }
       throw new Error(errorMsg);
     }
+
     return data;
   },
 
+  /**
+   * تصفية المعاملات الفارغة قبل بناء Query String
+   */
+  buildQuery: (params) => {
+    const filtered = {};
+    for (const key in params) {
+      const val = params[key];
+      if (val !== undefined && val !== null && val !== "") {
+        filtered[key] = val;
+      }
+    }
+    const query = new URLSearchParams(filtered).toString();
+    return query ? `?${query}` : "";
+  },
+
   // ============================================================
-  // AUTH
+  // AUTH - المصادقة
   // ============================================================
   auth: {
     login: async (email, password) => {
@@ -51,6 +126,9 @@ const API = {
         }
         return data;
       } catch (err) {
+        API.token = null;
+        localStorage.removeItem("masar_token");
+        localStorage.removeItem("masar_user");
         return { status: "error", message: err.message };
       }
     },
@@ -76,38 +154,30 @@ const API = {
     },
 
     me: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      try {
-        const res = await fetch(`${API.baseUrl}/auth/me`, {
-          method: "GET",
-          headers: API.getHeaders(),
-        });
-        return await API.handleResponse(res);
-      } catch (err) {
-        throw err;
-      }
+      API._ensureAuth();
+      const res = await fetch(`${API.baseUrl}/auth/me`, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
+      return await API.handleResponse(res);
     },
 
     changePassword: async (
       currentPassword,
       newPassword,
-      newPasswordConfirmation
+      newPasswordConfirmation,
     ) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      try {
-        const res = await fetch(`${API.baseUrl}/auth/change-password`, {
-          method: "POST",
-          headers: API.getHeaders(),
-          body: JSON.stringify({
-            current_password: currentPassword,
-            new_password: newPassword,
-            new_password_confirmation: newPasswordConfirmation,
-          }),
-        });
-        return await API.handleResponse(res);
-      } catch (err) {
-        throw err;
-      }
+      API._ensureAuth();
+      const res = await fetch(`${API.baseUrl}/auth/change-password`, {
+        method: "POST",
+        headers: API.getHeaders(),
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+          new_password_confirmation: newPasswordConfirmation,
+        }),
+      });
+      return await API.handleResponse(res);
     },
 
     checkAuth: async (redirect = true) => {
@@ -131,19 +201,21 @@ const API = {
   },
 
   // ============================================================
-  // OFFERS
+  // OFFERS - العروض
   // ============================================================
   offers: {
     list: async (params = {}) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams(params).toString();
-      const url = query ? `${API.baseUrl}/offers?${query}` : `${API.baseUrl}/offers`;
-      const res = await fetch(url, { method: "GET", headers: API.getHeaders() });
+      API._ensureAuth();
+      const url = `${API.baseUrl}/offers${API.buildQuery(params)}`;
+      const res = await fetch(url, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
       return await API.handleResponse(res);
     },
 
     get: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/offers/${id}`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -152,7 +224,7 @@ const API = {
     },
 
     create: async (data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/offers`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -162,7 +234,7 @@ const API = {
     },
 
     update: async (id, data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/offers/${id}`, {
         method: "PUT",
         headers: API.getHeaders(),
@@ -172,7 +244,7 @@ const API = {
     },
 
     delete: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/offers/${id}`, {
         method: "DELETE",
         headers: API.getHeaders(),
@@ -181,7 +253,7 @@ const API = {
     },
 
     changeStage: async (id, stageId, notes = "") => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/offers/${id}/stage`, {
         method: "PATCH",
         headers: API.getHeaders(),
@@ -192,19 +264,21 @@ const API = {
   },
 
   // ============================================================
-  // REQUESTS
+  // REQUESTS - الطلبات
   // ============================================================
   requests: {
     list: async (params = {}) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams(params).toString();
-      const url = query ? `${API.baseUrl}/requests?${query}` : `${API.baseUrl}/requests`;
-      const res = await fetch(url, { method: "GET", headers: API.getHeaders() });
+      API._ensureAuth();
+      const url = `${API.baseUrl}/requests${API.buildQuery(params)}`;
+      const res = await fetch(url, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
       return await API.handleResponse(res);
     },
 
     get: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -213,7 +287,7 @@ const API = {
     },
 
     create: async (data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -223,7 +297,7 @@ const API = {
     },
 
     update: async (id, data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}`, {
         method: "PUT",
         headers: API.getHeaders(),
@@ -233,7 +307,7 @@ const API = {
     },
 
     delete: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}`, {
         method: "DELETE",
         headers: API.getHeaders(),
@@ -242,7 +316,7 @@ const API = {
     },
 
     changeStage: async (id, stageId, notes = "") => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}/stage`, {
         method: "PATCH",
         headers: API.getHeaders(),
@@ -252,7 +326,7 @@ const API = {
     },
 
     findMatches: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}/matching`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -261,7 +335,7 @@ const API = {
     },
 
     matchOffer: async (id, offerId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/requests/${id}/match`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -272,19 +346,21 @@ const API = {
   },
 
   // ============================================================
-  // CLIENTS
+  // CLIENTS - العملاء
   // ============================================================
   clients: {
     list: async (params = {}) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams(params).toString();
-      const url = query ? `${API.baseUrl}/clients?${query}` : `${API.baseUrl}/clients`;
-      const res = await fetch(url, { method: "GET", headers: API.getHeaders() });
+      API._ensureAuth();
+      const url = `${API.baseUrl}/clients${API.buildQuery(params)}`;
+      const res = await fetch(url, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
       return await API.handleResponse(res);
     },
 
     get: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients/${id}`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -293,7 +369,7 @@ const API = {
     },
 
     create: async (data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -303,7 +379,7 @@ const API = {
     },
 
     update: async (id, data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients/${id}`, {
         method: "PUT",
         headers: API.getHeaders(),
@@ -313,7 +389,7 @@ const API = {
     },
 
     delete: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients/${id}`, {
         method: "DELETE",
         headers: API.getHeaders(),
@@ -322,7 +398,7 @@ const API = {
     },
 
     offers: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients/${id}/offers`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -331,7 +407,7 @@ const API = {
     },
 
     requests: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/clients/${id}/requests`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -341,27 +417,23 @@ const API = {
   },
 
   // ============================================================
-  // REMINDERS - (مع دوال إضافية)
+  // REMINDERS - التذكيرات (تم التعديل هنا)
   // ============================================================
   reminders: {
     list: async (params = {}) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams(params).toString();
-      const url = query ? `${API.baseUrl}/reminders?${query}` : `${API.baseUrl}/reminders`;
-      const res = await fetch(url, { method: "GET", headers: API.getHeaders() });
+      API._ensureAuth();
+      // ✅ تغيير إلى GET مع query string
+      const url = `${API.baseUrl}/reminders${API.buildQuery(params)}`;
+      const res = await fetch(url, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
       return await API.handleResponse(res);
     },
 
-    // دالة جديدة: جلب التذكيرات المتأخرة
-    overdue: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const now = new Date().toISOString().slice(0, 19).replace("T", " ");
-      const query = new URLSearchParams({
-        is_sent: 0,
-        reminder_time: now,
-        overdue: 1
-      }).toString();
-      const res = await fetch(`${API.baseUrl}/reminders?${query}`, {
+    get: async (id) => {
+      API._ensureAuth();
+      const res = await fetch(`${API.baseUrl}/reminders/${id}`, {
         method: "GET",
         headers: API.getHeaders(),
       });
@@ -369,7 +441,7 @@ const API = {
     },
 
     active: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reminders/active`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -377,8 +449,17 @@ const API = {
       return await API.handleResponse(res);
     },
 
+    overdue: async () => {
+      API._ensureAuth();
+      const res = await fetch(`${API.baseUrl}/reminders/overdue`, {
+        method: "GET",
+        headers: API.getHeaders(),
+      });
+      return await API.handleResponse(res);
+    },
+
     create: async (data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reminders`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -388,7 +469,7 @@ const API = {
     },
 
     update: async (id, data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reminders/${id}`, {
         method: "PUT",
         headers: API.getHeaders(),
@@ -398,7 +479,7 @@ const API = {
     },
 
     delete: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reminders/${id}`, {
         method: "DELETE",
         headers: API.getHeaders(),
@@ -407,7 +488,7 @@ const API = {
     },
 
     markDone: async (id) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reminders/${id}/done`, {
         method: "PATCH",
         headers: API.getHeaders(),
@@ -416,22 +497,38 @@ const API = {
     },
 
     createStageTimeout: async (offerId, timeoutDays = 3, note = "") => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/reminders/offer/${offerId}/timeout`, {
-        method: "POST",
-        headers: API.getHeaders(),
-        body: JSON.stringify({ timeout_days: timeoutDays, note }),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reminders/offer/${offerId}/timeout`,
+        {
+          method: "POST",
+          headers: API.getHeaders(),
+          body: JSON.stringify({ timeout_days: timeoutDays, note }),
+        },
+      );
+      return await API.handleResponse(res);
+    },
+
+    createRequestTimeout: async (requestId, timeoutDays = 3, note = "") => {
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reminders/request/${requestId}/timeout`,
+        {
+          method: "POST",
+          headers: API.getHeaders(),
+          body: JSON.stringify({ timeout_days: timeoutDays, note }),
+        },
+      );
       return await API.handleResponse(res);
     },
   },
 
   // ============================================================
-  // REPORTS
+  // REPORTS - التقارير
   // ============================================================
   reports: {
     dashboard: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/reports/dashboard`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -440,54 +537,62 @@ const API = {
     },
 
     offers: async (fromDate, toDate) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams({
-        from_date: fromDate || "",
-        to_date: toDate || "",
-      }).toString();
-      const res = await fetch(`${API.baseUrl}/reports/offers?${query}`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reports/offers${API.buildQuery({ from_date: fromDate, to_date: toDate })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     requests: async (fromDate, toDate) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams({
-        from_date: fromDate || "",
-        to_date: toDate || "",
-      }).toString();
-      const res = await fetch(`${API.baseUrl}/reports/requests?${query}`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reports/requests${API.buildQuery({ from_date: fromDate, to_date: toDate })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     performance: async (fromDate, toDate) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams({
-        from_date: fromDate || "",
-        to_date: toDate || "",
-      }).toString();
-      const res = await fetch(`${API.baseUrl}/reports/performance?${query}`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reports/performance${API.buildQuery({ from_date: fromDate, to_date: toDate })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
+      return await API.handleResponse(res);
+    },
+
+    reminders: async (fromDate, toDate) => {
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reports/reminders${API.buildQuery({ from_date: fromDate, to_date: toDate })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     exportOffers: async (fromDate, toDate) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const query = new URLSearchParams({
-        from_date: fromDate || "",
-        to_date: toDate || "",
-      }).toString();
-      const res = await fetch(`${API.baseUrl}/reports/export/offers?${query}`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/reports/export/offers${API.buildQuery({ from_date: fromDate, to_date: toDate })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       if (!res.ok) {
         if (res.status === 401) {
           localStorage.removeItem("masar_token");
@@ -500,16 +605,16 @@ const API = {
         }
         throw new Error("فشل تصدير التقرير");
       }
-      return await res.text();
+      return await res.blob();
     },
   },
 
   // ============================================================
-  // STAGES
+  // STAGES - المراحل
   // ============================================================
   stages: {
     list: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/stages`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -518,7 +623,7 @@ const API = {
     },
 
     byTrack: async (trackType) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/stages/${trackType}`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -527,7 +632,7 @@ const API = {
     },
 
     nextStage: async (trackType, currentStageId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/stages/next`, {
         method: "POST",
         headers: API.getHeaders(),
@@ -541,11 +646,11 @@ const API = {
   },
 
   // ============================================================
-  // PROPERTY TYPES
+  // PROPERTY TYPES - أنواع العقارات
   // ============================================================
   propertyTypes: {
     list: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/property-types`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -555,11 +660,11 @@ const API = {
   },
 
   // ============================================================
-  // DEAL TYPES
+  // DEAL TYPES - أنواع المعاملات
   // ============================================================
   dealTypes: {
     list: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/deal-types`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -569,11 +674,11 @@ const API = {
   },
 
   // ============================================================
-  // SETTINGS
+  // SETTINGS - الإعدادات
   // ============================================================
   settings: {
     get: async () => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/settings`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -582,7 +687,7 @@ const API = {
     },
 
     update: async (data) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/settings`, {
         method: "PUT",
         headers: API.getHeaders(),
@@ -593,24 +698,53 @@ const API = {
   },
 
   // ============================================================
-  // ATTACHMENTS
+  // EMAILS - البريد الإلكتروني
+  // ============================================================
+  emails: {
+    read: async (limit = 10) => {
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/emails/read${API.buildQuery({ limit })}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
+      return await API.handleResponse(res);
+    },
+
+    send: async (to, subject, body) => {
+      API._ensureAuth();
+      const res = await fetch(`${API.baseUrl}/emails/send`, {
+        method: "POST",
+        headers: API.getHeaders(),
+        body: JSON.stringify({ to, subject, body }),
+      });
+      return await API.handleResponse(res);
+    },
+  },
+
+  // ============================================================
+  // ATTACHMENTS - المرفقات
   // ============================================================
   attachments: {
     uploadOffer: async (offerId, file, docType) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const formData = new FormData();
       formData.append("file", file);
       formData.append("doc_type", docType);
+      const headers = {};
+      if (API.token) headers.Authorization = `Bearer ${API.token}`;
       const res = await fetch(`${API.baseUrl}/attachments/offers/${offerId}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${API.token}` },
+        headers: headers,
         body: formData,
       });
       return await API.handleResponse(res);
     },
 
     uploadMultipleOffer: async (offerId, files, docTypes) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const formData = new FormData();
       files.forEach((file, index) => {
         formData.append(`files[]`, file);
@@ -618,16 +752,21 @@ const API = {
           formData.append(`doc_types[]`, docTypes[index]);
         }
       });
-      const res = await fetch(`${API.baseUrl}/attachments/offers/${offerId}/multiple`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${API.token}` },
-        body: formData,
-      });
+      const headers = {};
+      if (API.token) headers.Authorization = `Bearer ${API.token}`;
+      const res = await fetch(
+        `${API.baseUrl}/attachments/offers/${offerId}/multiple`,
+        {
+          method: "POST",
+          headers: headers,
+          body: formData,
+        },
+      );
       return await API.handleResponse(res);
     },
 
     listOffer: async (offerId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const res = await fetch(`${API.baseUrl}/attachments/offers/${offerId}`, {
         method: "GET",
         headers: API.getHeaders(),
@@ -636,39 +775,50 @@ const API = {
     },
 
     deleteOffer: async (offerId, attachmentId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/attachments/offers/${offerId}/${attachmentId}`, {
-        method: "DELETE",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/attachments/offers/${offerId}/${attachmentId}`,
+        {
+          method: "DELETE",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     downloadOffer: async (offerId, attachmentId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/attachments/offers/${offerId}/${attachmentId}/download`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/attachments/offers/${offerId}/${attachmentId}/download`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       if (!res.ok) throw new Error("فشل تحميل الملف");
       return await res.blob();
     },
 
     uploadRequest: async (requestId, file, docType) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const formData = new FormData();
       formData.append("file", file);
       formData.append("doc_type", docType);
-      const res = await fetch(`${API.baseUrl}/attachments/requests/${requestId}`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${API.token}` },
-        body: formData,
-      });
+      const headers = {};
+      if (API.token) headers.Authorization = `Bearer ${API.token}`;
+      const res = await fetch(
+        `${API.baseUrl}/attachments/requests/${requestId}`,
+        {
+          method: "POST",
+          headers: headers,
+          body: formData,
+        },
+      );
       return await API.handleResponse(res);
     },
 
     uploadMultipleRequest: async (requestId, files, docTypes) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
+      API._ensureAuth();
       const formData = new FormData();
       files.forEach((file, index) => {
         formData.append(`files[]`, file);
@@ -676,51 +826,60 @@ const API = {
           formData.append(`doc_types[]`, docTypes[index]);
         }
       });
-      const res = await fetch(`${API.baseUrl}/attachments/requests/${requestId}/multiple`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${API.token}` },
-        body: formData,
-      });
+      const headers = {};
+      if (API.token) headers.Authorization = `Bearer ${API.token}`;
+      const res = await fetch(
+        `${API.baseUrl}/attachments/requests/${requestId}/multiple`,
+        {
+          method: "POST",
+          headers: headers,
+          body: formData,
+        },
+      );
       return await API.handleResponse(res);
     },
 
     listRequest: async (requestId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/attachments/requests/${requestId}`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/attachments/requests/${requestId}`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     deleteRequest: async (requestId, attachmentId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/attachments/requests/${requestId}/${attachmentId}`, {
-        method: "DELETE",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/attachments/requests/${requestId}/${attachmentId}`,
+        {
+          method: "DELETE",
+          headers: API.getHeaders(),
+        },
+      );
       return await API.handleResponse(res);
     },
 
     downloadRequest: async (requestId, attachmentId) => {
-      if (!API.token) throw new Error("غير مسجل دخول");
-      const res = await fetch(`${API.baseUrl}/attachments/requests/${requestId}/${attachmentId}/download`, {
-        method: "GET",
-        headers: API.getHeaders(),
-      });
+      API._ensureAuth();
+      const res = await fetch(
+        `${API.baseUrl}/attachments/requests/${requestId}/${attachmentId}/download`,
+        {
+          method: "GET",
+          headers: API.getHeaders(),
+        },
+      );
       if (!res.ok) throw new Error("فشل تحميل الملف");
       return await res.blob();
     },
   },
 
   // ============================================================
-  // HELPER
+  // HELPERS - دوال مساعدة
   // ============================================================
-  getHeaders: () => ({
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${API.token}`,
-    Accept: "application/json",
-  }),
 
   isAuthenticated: () => !!API.token,
 
@@ -738,6 +897,19 @@ const API = {
       return false;
     }
   },
+
+  requireAuth: async (redirect = true) => {
+    if (window.location.pathname.includes("index.html")) {
+      return true;
+    }
+    const isValid = await API.verifyToken();
+    if (!isValid && redirect) {
+      window.location.href = "index.html";
+      return false;
+    }
+    return isValid;
+  },
 };
 
+// جعل API متاحاً عالمياً
 window.API = API;

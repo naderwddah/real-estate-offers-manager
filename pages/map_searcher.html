@@ -10,23 +10,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+
+        /* ===== ربط متغيرات الصفحة بمتغيرات global.css ===== */
+        :root {
+            --bg-primary: var(--bg-body);
+            --bg-secondary: var(--bg-card);
+            --bg-surface: var(--bg-card);
+            --bg-surface2: var(--bg-card);
+            --card-bg: var(--bg-card);
+            --hover-bg: rgba(212, 175, 55, 0.08);
+            --input-bg: var(--bg-card);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+
+            --gold: var(--gold-primary);
+            --gold-soft: var(--gold-light);
+            --emerald: var(--success);
+            --emerald-soft: var(--success-light);
+            --danger: var(--danger);
+            --border-light: var(--border-color);
+            --text-muted: var(--text-secondary);
+        }
+
         * {
             font-family: "Tajawal", sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            background: var(--bg-primary);
+            background: var(--bg-body);
             min-height: 100vh;
             color: var(--text-primary);
         }
 
+        /* ===== فئات مساعدة ===== */
         .bg-surface {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
         }
         .bg-surface2 {
-            background: var(--bg-surface);
+            background: var(--bg-card);
+        }
+        .bg-bg {
+            background: var(--bg-body);
         }
         .text-muted {
             color: var(--text-secondary);
@@ -37,17 +63,20 @@
         .border-line {
             border-color: var(--border-color);
         }
+        .border-light {
+            border-color: var(--border-color);
+        }
         .bg-gold {
-            background: var(--gold);
+            background: var(--gold-primary);
         }
         .text-gold {
-            color: var(--gold);
+            color: var(--gold-primary);
         }
         .bg-emerald {
-            background: var(--emerald);
+            background: var(--success);
         }
         .text-emerald {
-            color: var(--emerald);
+            color: var(--success);
         }
         .bg-danger {
             background: var(--danger);
@@ -56,6 +85,11 @@
             color: var(--danger);
         }
 
+        .hover\:bg-surface2:hover {
+            background: var(--bg-card);
+        }
+
+        /* ===== أزرار ===== */
         .btn {
             padding: 10px 28px;
             border-radius: 40px;
@@ -69,21 +103,21 @@
             font-size: 0.95rem;
         }
         .btn-gold {
-            background: var(--gold);
-            color: #0b121e;
+            background: var(--gold-primary);
+            color: var(--text-primary);
         }
         .btn-gold:hover {
-            background: var(--gold-soft);
+            background: var(--gold-light);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
         }
         .btn-outline {
             background: transparent;
             color: var(--text-primary);
-            border: 2px solid var(--border-light);
+            border: 2px solid var(--border-color);
         }
         .btn-outline:hover {
-            background: var(--bg-surface);
+            background: var(--bg-card);
             color: var(--text-primary);
         }
         .btn-sm {
@@ -91,19 +125,20 @@
             font-size: 0.8rem;
         }
         .btn-emerald {
-            background: var(--emerald);
+            background: var(--success);
             color: #fff;
         }
         .btn-emerald:hover {
-            background: var(--emerald-soft);
+            background: var(--success-light);
         }
 
         .main-content {
             display: block !important;
         }
 
+        /* ===== بطاقة البحث ===== */
         .search-card {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border-radius: 16px;
             border: 1px solid var(--border-color);
             padding: 24px;
@@ -111,17 +146,37 @@
             transition: all 0.2s;
         }
         .search-card:hover {
-            border-color: var(--gold);
+            border-color: var(--gold-primary);
         }
 
+        .search-card input {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            width: 100%;
+            transition: border 0.2s;
+            font-family: "Tajawal", sans-serif;
+        }
+        .search-card input:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+        }
+        .search-card input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* ===== جدول النتائج ===== */
         .result-table {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border-radius: 16px;
             border: 1px solid var(--border-color);
             overflow: hidden;
         }
         .result-table thead {
-            background: var(--bg-surface);
+            background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
         }
         .result-table th {
@@ -140,36 +195,38 @@
             background: var(--hover-bg);
         }
 
+        /* ===== حالة البحث ===== */
         .status-text {
             font-weight: 600;
             padding: 10px;
             border-radius: 10px;
-            background: var(--bg-primary);
+            background: var(--bg-body);
             border: 1px solid var(--border-color);
         }
         .status-text.loading {
-            color: var(--gold);
-            border-color: var(--gold);
+            color: var(--gold-primary);
+            border-color: var(--gold-primary);
         }
         .status-text.success {
-            color: var(--emerald);
-            border-color: var(--emerald);
+            color: var(--success);
+            border-color: var(--success);
         }
         .status-text.error {
             color: var(--danger);
             border-color: var(--danger);
         }
 
+        /* ===== Toast ===== */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 30px;
-            background: var(--bg-surface);
+            background: var(--bg-card);
             color: var(--text-primary);
             padding: 14px 28px;
             border-radius: 14px;
             font-weight: 500;
-            box-shadow: 0 12px 30px var(--shadow-color);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
             z-index: 9999;
             display: none;
             align-items: center;
@@ -186,10 +243,15 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== استجابة ===== */
         @media (max-width: 768px) {
             .search-card { padding: 16px; }
             .result-table { font-size: 0.85rem; }
             .result-table th, .result-table td { padding: 8px 10px; }
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -197,12 +259,12 @@
 
     <!-- TOAST -->
     <div class="toast" id="toast">
-        <i class="fas fa-check-circle text-emerald-400"></i>
+        <i class="fas fa-check-circle text-emerald"></i>
         <span id="toastMessage">تم الإجراء بنجاح</span>
     </div>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
+    <!-- SIDEBAR (سيتم تحميله عبر global.js) -->
+    <div id="sidebar-placeholder"></div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
@@ -226,11 +288,11 @@
                 <form id="searchForm" class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
                         <label class="block text-sm font-bold text-muted mb-2">النشاط التجاري</label>
-                        <input type="text" id="activity" required placeholder="مثال: مستشفيات، مطاعم، مقاهي..." class="w-full p-3 border-2 border-line rounded-xl focus:outline-none focus:border-gold bg-bg text-ink">
+                        <input type="text" id="activity" required placeholder="مثال: مستشفيات، مطاعم، مقاهي..." class="w-full">
                     </div>
                     <div class="flex-1">
                         <label class="block text-sm font-bold text-muted mb-2">المدينة / المنطقة</label>
-                        <input type="text" id="location" required placeholder="مثال: الرياض، جدة، حي النخيل..." class="w-full p-3 border-2 border-line rounded-xl focus:outline-none focus:border-gold bg-bg text-ink">
+                        <input type="text" id="location" required placeholder="مثال: الرياض، جدة، حي النخيل..." class="w-full">
                     </div>
                     <div class="flex items-end">
                         <button type="submit" id="searchBtn" class="btn btn-gold w-full md:w-auto">

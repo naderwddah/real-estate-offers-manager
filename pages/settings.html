@@ -1,5 +1,6 @@
 <!-- ============================================================ -->
 <!-- pages/settings.html - النسخة النهائية مع يوم التقرير        -->
+<!-- متوافقة مع global.css وتدعم الوضع الليلي والنهاري            -->
 <!-- ============================================================ -->
 <!doctype html>
 <html lang="ar" dir="rtl">
@@ -11,88 +12,467 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* جميع الأنماط كما هي، لا تغيير */
+        /* ===== ربط متغيرات الصفحة بمتغيرات global.css ===== */
+        :root {
+            --bg-primary: var(--bg-body);
+            --bg-secondary: var(--bg-card);
+            --bg-surface: var(--bg-card);
+            --bg-surface2: var(--bg-card);
+            --card-bg: var(--bg-card);
+            --hover-bg: rgba(212, 175, 55, 0.08);
+            --input-bg: var(--bg-card);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+
+            --gold: var(--gold-primary);
+            --gold-soft: var(--gold-light);
+            --emerald: var(--success);
+            --emerald-soft: var(--success-light);
+            --danger: var(--danger);
+            --border-light: var(--border-color);
+            --text-muted: var(--text-secondary);
+        }
+
         @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap");
         * { font-family: "Tajawal", sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg-primary); min-height: 100vh; color: var(--text-primary); }
-        .settings-card { background: var(--bg-secondary); border-radius: 20px; border: 1px solid var(--border-color); padding: 24px 28px; margin-bottom: 24px; transition: all 0.3s ease; position: relative; overflow: hidden; }
-        .settings-card:hover { border-color: rgba(201, 168, 76, 0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
-        .settings-card .card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--border-color); }
-        .settings-card .card-header .icon-box { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
-        .settings-card .card-header .icon-box.gold { background: rgba(201, 168, 76, 0.15); color: var(--gold); }
-        .settings-card .card-header .icon-box.blue { background: rgba(59,130,246,0.15); color: #3b82f6; }
-        .settings-card .card-header .icon-box.emerald { background: rgba(16,185,129,0.15); color: #10b981; }
-        .settings-card .card-header .icon-box.purple { background: rgba(139,92,246,0.15); color: #8b5cf6; }
-        .settings-card .card-header .icon-box.amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
-        .settings-card .card-header .icon-box.rose { background: rgba(244,63,94,0.15); color: #f43f5e; }
-        .settings-card .card-header .card-title { font-size: 18px; font-weight: 800; color: var(--text-primary); }
-        .settings-card .card-header .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-top: 2px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-        .field { display: flex; flex-direction: column; gap: 5px; }
-        .field label { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.3px; }
-        .field label .required { color: var(--danger); margin-right: 3px; }
-        .field input, .field select, .field textarea { border: 2px solid var(--border-light); border-radius: 12px; padding: 10px 14px; font-size: 0.9rem; transition: all 0.25s ease; background: var(--input-bg); color: var(--text-primary); width: 100%; font-family: "Tajawal", sans-serif; }
-        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(201,168,76,0.08); background: var(--bg-secondary); }
-        .field input::placeholder, .field textarea::placeholder { color: var(--text-muted); }
-        .field input:disabled, .field select:disabled, .field textarea:disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-primary); }
-        .field.full-width { grid-column: 1 / -1; }
-        .field .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
-        .btn { padding: 10px 28px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; transition: all 0.25s ease; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; text-decoration: none; }
-        .btn-gold { background: var(--gold); color: #0b121e; }
-        .btn-gold:hover { background: var(--gold-soft); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(201,168,76,0.3); }
-        .btn-outline { background: transparent; color: var(--text-primary); border: 2px solid var(--border-light); }
-        .btn-outline:hover { background: var(--bg-surface); border-color: var(--gold); color: var(--text-primary); }
-        .btn-sm { padding: 6px 16px; font-size: 0.78rem; border-radius: 30px; }
-        .btn-emerald { background: #10b981; color: #fff; }
-        .btn-emerald:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16,185,129,0.3); }
-        .btn-rose { background: #f43f5e; color: #fff; }
-        .btn-rose:hover { background: #e11d48; transform: translateY(-2px); }
-        .btn-amber { background: #f59e0b; color: #0b121e; }
-        .btn-amber:hover { background: #d97706; transform: translateY(-2px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
-        .btn .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
+        body { background: var(--bg-body); min-height: 100vh; color: var(--text-primary); }
+
+        /* ===== فئات مساعدة ===== */
+        .bg-surface {
+            background: var(--bg-card);
+        }
+        .bg-surface2 {
+            background: var(--bg-card);
+        }
+        .bg-bg {
+            background: var(--bg-body);
+        }
+        .text-muted {
+            color: var(--text-secondary);
+        }
+        .text-ink {
+            color: var(--text-primary);
+        }
+        .border-line {
+            border-color: var(--border-color);
+        }
+        .border-light {
+            border-color: var(--border-color);
+        }
+        .bg-gold {
+            background: var(--gold-primary);
+        }
+        .text-gold {
+            color: var(--gold-primary);
+        }
+        .bg-emerald {
+            background: var(--success);
+        }
+        .text-emerald {
+            color: var(--success);
+        }
+        .bg-danger {
+            background: var(--danger);
+        }
+        .text-danger {
+            color: var(--danger);
+        }
+
+        /* ===== أزرار ===== */
+        .btn {
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .btn-gold {
+            background: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        .btn-gold:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            background: var(--bg-card);
+            border-color: var(--gold-primary);
+            color: var(--text-primary);
+        }
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            border-radius: 30px;
+        }
+        .btn-emerald {
+            background: var(--success);
+            color: #fff;
+        }
+        .btn-emerald:hover {
+            background: var(--success-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        .btn-rose {
+            background: #f43f5e;
+            color: #fff;
+        }
+        .btn-rose:hover {
+            background: #e11d48;
+            transform: translateY(-2px);
+        }
+        .btn-amber {
+            background: #f59e0b;
+            color: #0b121e;
+        }
+        .btn-amber:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .tag-item { display: inline-flex; align-items: center; gap: 8px; background: var(--bg-surface); border-radius: 30px; padding: 6px 14px 6px 10px; font-size: 0.82rem; border: 1px solid var(--border-light); color: var(--text-primary); transition: all 0.2s; }
-        .tag-item:hover { border-color: var(--gold); }
-        .tag-item .remove { cursor: pointer; color: var(--text-secondary); font-weight: 700; font-size: 0.9rem; transition: color 0.2s; line-height: 1; }
-        .tag-item .remove:hover { color: var(--danger); }
-        .tag-input-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .tag-input-group input { flex: 1; min-width: 160px; }
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; }
-        .stat-item { background: var(--bg-primary); border-radius: 14px; padding: 14px 18px; text-align: center; border: 1px solid var(--border-color); transition: all 0.2s; }
-        .stat-item:hover { border-color: var(--gold); }
-        .stat-item .stat-value { font-size: 26px; font-weight: 900; color: var(--gold); }
-        .stat-item .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-        .edit-mode .settings-card { border-color: rgba(201,168,76,0.2); box-shadow: 0 0 0 1px rgba(201,168,76,0.1); }
-        .edit-mode .settings-card:hover { border-color: rgba(201,168,76,0.4); }
-        .edit-indicator { display: none; font-size: 11px; font-weight: 700; color: var(--gold); background: rgba(201,168,76,0.12); padding: 2px 12px; border-radius: 20px; margin-right: 10px; }
-        .edit-mode .edit-indicator { display: inline-block; }
-        .toast { position: fixed; bottom: 30px; left: 30px; background: var(--bg-surface); color: var(--text-primary); padding: 14px 28px; border-radius: 14px; font-weight: 500; box-shadow: 0 12px 30px var(--shadow-color); z-index: 9999; display: none; align-items: center; gap: 12px; animation: slideUp 0.3s ease; max-width: 90%; border: 1px solid var(--border-color); }
-        .toast.show { display: flex; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .toast.success { border-right: 4px solid #10b981; }
-        .toast.error { border-right: 4px solid #ef4444; }
+
+        /* ===== بطاقات الإعدادات ===== */
+        .settings-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .settings-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .settings-card .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .settings-card .card-header .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .settings-card .card-header .icon-box.gold {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-primary);
+        }
+        .settings-card .card-header .icon-box.blue {
+            background: rgba(59,130,246,0.15);
+            color: #3b82f6;
+        }
+        .settings-card .card-header .icon-box.emerald {
+            background: rgba(16,185,129,0.15);
+            color: #10b981;
+        }
+        .settings-card .card-header .icon-box.purple {
+            background: rgba(139,92,246,0.15);
+            color: #8b5cf6;
+        }
+        .settings-card .card-header .icon-box.amber {
+            background: rgba(245,158,11,0.15);
+            color: #f59e0b;
+        }
+        .settings-card .card-header .icon-box.rose {
+            background: rgba(244,63,94,0.15);
+            color: #f43f5e;
+        }
+        .settings-card .card-header .card-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .settings-card .card-header .card-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        /* ===== الحقول ===== */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .field label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+        .field label .required {
+            color: var(--danger);
+            margin-right: 3px;
+        }
+        .field input,
+        .field select,
+        .field textarea {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            width: 100%;
+            font-family: "Tajawal", sans-serif;
+        }
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.08);
+            background: var(--bg-card);
+        }
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--text-secondary);
+        }
+        .field input:disabled,
+        .field select:disabled,
+        .field textarea:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-body);
+        }
+        .field.full-width {
+            grid-column: 1 / -1;
+        }
+        .field .hint {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        /* ===== العلامات (Tags) ===== */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 6px 14px 6px 10px;
+            font-size: 0.82rem;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        .tag-item:hover {
+            border-color: var(--gold-primary);
+        }
+        .tag-item .remove {
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .tag-item .remove:hover {
+            color: var(--danger);
+        }
+        .tag-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .tag-input-group input {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        /* ===== إحصائيات ===== */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+        .stat-item {
+            background: var(--bg-body);
+            border-radius: 14px;
+            padding: 14px 18px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .stat-item:hover {
+            border-color: var(--gold-primary);
+        }
+        .stat-item .stat-value {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--gold-primary);
+        }
+        .stat-item .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ===== وضع التعديل ===== */
+        .edit-mode .settings-card {
+            border-color: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.1);
+        }
+        .edit-mode .settings-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+        .edit-indicator {
+            display: none;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            background: rgba(212, 175, 55, 0.12);
+            padding: 2px 12px;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        .edit-mode .edit-indicator {
+            display: inline-block;
+        }
+
+        /* ===== معاينة الشعار ===== */
+        .logo-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .logo-preview img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            background: var(--bg-body);
+        }
+        .logo-preview .placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideUp 0.3s ease;
+            max-width: 90%;
+            border: 1px solid var(--border-color);
+        }
+        .toast.show {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toast.success { border-right: 4px solid var(--success); }
+        .toast.error { border-right: 4px solid var(--danger); }
         .toast.info { border-right: 4px solid #3b82f6; }
-        .logo-preview { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .logo-preview img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 2px solid var(--border-color); background: var(--bg-primary); }
-        .logo-preview .placeholder { width: 60px; height: 60px; border-radius: 12px; border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; text-align: center; }
-        @media (max-width: 992px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .settings-card { padding: 18px 16px; } .stat-grid { grid-template-columns: 1fr 1fr; } .btn { padding: 8px 18px; font-size: 0.82rem; } }
-        .main-content { display: none !important; }
-        .main-content.visible { display: block !important; }
+
+        /* ===== استجابة ===== */
+        @media (max-width: 992px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .settings-card { padding: 18px 16px; }
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .btn { padding: 8px 18px; font-size: 0.82rem; }
+        }
+
+        .main-content {
+            display: none !important;
+        }
+        .main-content.visible {
+            display: block !important;
+        }
+
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
     <!-- TOAST -->
-    <div class="toast" id="toast"><i class="fas fa-check-circle text-emerald-400"></i><span id="toastMessage">تم الإجراء بنجاح</span></div>
+    <div class="toast" id="toast"><i class="fas fa-check-circle text-emerald"></i><span id="toastMessage">تم الإجراء بنجاح</span></div>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
+    <!-- SIDEBAR (سيتم تحميله عبر global.js) -->
+    <div id="sidebar-placeholder"></div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
@@ -272,20 +652,6 @@
                         </div>
                         <div class="tags-container" id="propertyTypesTags"></div>
                         <div class="hint">هذه الأنواع ستظهر في قوائم اختيار نوع العقار</div>
-                    </div>
-                </div>
-
-                <!-- 6. إحصائيات النظام -->
-                <div class="settings-card">
-                    <div class="card-header">
-                        <div class="icon-box purple"><i class="fas fa-chart-simple"></i></div>
-                        <div><div class="card-title">إحصائيات النظام</div><div class="card-subtitle">ملخص سريع لبيانات النظام</div></div>
-                    </div>
-                    <div class="stat-grid">
-                        <div class="stat-item"><div class="stat-value" id="statOffers">0</div><div class="stat-label">📋 العروض</div></div>
-                        <div class="stat-item"><div class="stat-value" id="statRequests">0</div><div class="stat-label">📝 الطلبات</div></div>
-                        <div class="stat-item"><div class="stat-value" id="statClients">0</div><div class="stat-label">👤 العملاء</div></div>
-                        <div class="stat-item"><div class="stat-value" id="statUsers">0</div><div class="stat-label">👥 المستخدمين</div></div>
                     </div>
                 </div>
 

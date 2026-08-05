@@ -1,105 +1,70 @@
-// ============================================================
-// global.js - دوال عامة
-// ============================================================
+(function() {
+    'use strict';
 
-// دالة عرض الإشعارات
-function showToast(message, type = 'success') {
-    const toast = document.getElementById('toast');
-    const icon = toast?.querySelector('i');
-    const text = document.getElementById('toastMessage');
-    if (!toast || !text) {
-        console.warn('Toast element not found:', message);
-        return;
+    function loadComponent(selector, url, callback) {
+        fetch(url)
+            .then(function(res) {
+                if (!res.ok) throw new Error('Failed to load ' + url);
+                return res.text();
+            })
+            .then(function(html) {
+                var container = document.createElement('div');
+                container.innerHTML = html;
+                var target = document.querySelector(selector);
+                if (target && target.parentNode) {
+                    target.parentNode.replaceChild(container.firstElementChild, target);
+                } else {
+                    document.body.insertBefore(container.firstElementChild, document.body.firstChild);
+                }
+                if (typeof callback === 'function') callback();
+            })
+            .catch(function(err) {
+                console.error('Error loading component:', err);
+            });
     }
 
-    text.textContent = message;
-    if (icon) {
-        if (type === 'error') {
-            icon.style.color = '#E05A4A';
-            icon.className = 'fas fa-exclamation-circle';
-        } else if (type === 'success') {
-            icon.style.color = '#1F7A5C';
-            icon.className = 'fas fa-check-circle';
-        } else {
-            icon.style.color = '#C9A24B';
-            icon.className = 'fas fa-info-circle';
+    function initTheme() {
+        var stored = localStorage.getItem('theme') || 'light';
+        var isDark = stored === 'dark';
+        document.documentElement.classList.toggle('dark', isDark);
+
+        var icon = document.getElementById('themeIcon');
+        if (icon) {
+            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        var toggleBtn = document.getElementById('themeToggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                var currentlyDark = document.documentElement.classList.contains('dark');
+                var newDark = !currentlyDark;
+                document.documentElement.classList.toggle('dark', newDark);
+                localStorage.setItem('theme', newDark ? 'dark' : 'light');
+                var icon2 = document.getElementById('themeIcon');
+                if (icon2) {
+                    icon2.className = newDark ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            });
         }
     }
-    toast.classList.add('show');
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => toast.classList.remove('show'), 3500);
-}
 
-// دالة تنسيق التاريخ
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    try {
-        const d = new Date(dateString);
-        return d.toLocaleDateString('ar-SA', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+    document.addEventListener('DOMContentLoaded', function() {
+        var headerPlaceholder = document.createElement('div');
+        headerPlaceholder.id = 'header-placeholder';
+        document.body.prepend(headerPlaceholder);
+
+        var sidebarPlaceholder = document.createElement('div');
+        sidebarPlaceholder.id = 'sidebar-placeholder';
+        document.body.prepend(sidebarPlaceholder);
+
+        loadComponent('#header-placeholder', '../components/header.html', function() {
+            initTheme();
         });
-    } catch (e) {
-        return dateString;
-    }
-}
 
-// دالة تنسيق الوقت
-function formatTime(dateString) {
-    if (!dateString) return '';
-    try {
-        const d = new Date(dateString);
-        return d.toLocaleTimeString('ar-SA', {
-            hour: '2-digit',
-            minute: '2-digit'
+        loadComponent('#sidebar-placeholder', '../components/sidebar.html', function() {
+            var script = document.createElement('script');
+            script.src = '../assets/js/components/sidebar.js';
+            document.body.appendChild(script);
         });
-    } catch (e) {
-        return '';
-    }
-}
-
-// دالة تنسيق المبلغ
-function formatMoney(amount) {
-    if (!amount && amount !== 0) return '—';
-    return Number(amount).toLocaleString('en-US') + ' ريال';
-}
-
-// دالة توليد معرف مؤقت
-function generateTempId() {
-    return 'temp_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-}
-
-// دالة الحصول على اسم مرحلة العرض
-function getOfferStageName(stageId, trackType = 'company') {
-    const stages = trackType === 'company' ?
-        ['عرض جديد', 'بانتظار رد المدير', 'تم تحديد السعر', 'تم إبلاغ المالك', 'تم استلام المستندات', 'عند الشؤون القانونية', 'مكتمل'] :
-        ['عرض جديد', 'تفاوض', 'تم الاتفاق', 'مكتمل'];
-    return stages[stageId - 1] || 'غير معروف';
-}
-
-// دالة الحصول على اسم مرحلة الطلب
-function getRequestStageName(stageId) {
-    const stages = ['طلب جديد', 'جاري المطابقة', 'تم اختيار العرض', 'جدولة المعاينة', 'مكتمل'];
-    return stages[stageId - 1] || 'غير معروف';
-}
-
-// دالة الحصول على لون الحالة
-function getStatusColor(stageId, type = 'offer') {
-    const colors = {
-        1: '#f97316', 2: '#f59e0b', 3: '#3b82f6',
-        4: '#8b5cf6', 5: '#10b981', 6: '#f59e0b',
-        7: '#10b981', 10: '#10b981', 11: '#f59e0b'
-    };
-    return colors[stageId] || '#9ca3af';
-}
-
-// تصدير الدوال
-window.showToast = showToast;
-window.formatDate = formatDate;
-window.formatTime = formatTime;
-window.formatMoney = formatMoney;
-window.generateTempId = generateTempId;
-window.getOfferStageName = getOfferStageName;
-window.getRequestStageName = getRequestStageName;
-window.getStatusColor = getStatusColor;
+    });
+})();

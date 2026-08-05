@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- pages/alerts.html - التنبيهات والتذكيرات (نسخة منظمة)        -->
+<!-- pages/alerts.html - التنبيهات والتذكيرات (نسخة متوافقة مع global.css) -->
 <!-- ============================================================ -->
 <!doctype html>
 <html lang="ar" dir="rtl">
@@ -18,29 +18,57 @@
     />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap");
+
+      /* ===== ربط متغيرات الصفحة بمتغيرات global.css ===== */
+      :root {
+        --bg-primary: var(--bg-body);
+        --bg-secondary: var(--bg-card);
+        --bg-surface: var(--bg-card);
+        --bg-surface2: var(--bg-card);
+        --bg-surface3: var(--bg-card);
+        --card-bg: var(--bg-card);
+        --hover-bg: rgba(212, 175, 55, 0.08);
+        --input-bg: var(--bg-card);
+        --shadow-color: rgba(0, 0, 0, 0.1);
+
+        --gold: var(--gold-primary);
+        --gold-soft: var(--gold-light);
+        --emerald: var(--success);
+        --emerald-soft: var(--success-light);
+        --danger: var(--danger);
+        --terracotta: #c0392b;
+        --terracotta-soft: var(--danger-light);
+        --border-light: var(--border-color);
+        --text-muted: var(--text-secondary);
+        --info: #3b82f6;
+        --warning: #f59e0b;
+      }
+
       * {
         font-family: "Tajawal", sans-serif;
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+
       body {
-        background: var(--bg-primary);
+        background: var(--bg-body);
         min-height: 100vh;
         color: var(--text-primary);
       }
 
+      /* ===== فئات مساعدة ===== */
       .bg-surface {
-        background: var(--bg-secondary);
+        background: var(--bg-card);
       }
       .bg-surface2 {
-        background: var(--bg-surface);
+        background: var(--bg-card);
       }
       .bg-surface3 {
-        background: var(--bg-surface2);
+        background: var(--bg-card);
       }
       .bg-bg {
-        background: var(--bg-primary);
+        background: var(--bg-body);
       }
       .text-muted {
         color: var(--text-secondary);
@@ -52,16 +80,16 @@
         border-color: var(--border-color);
       }
       .bg-gold {
-        background: var(--gold);
+        background: var(--gold-primary);
       }
       .text-gold {
-        color: var(--gold);
+        color: var(--gold-primary);
       }
       .bg-emerald {
-        background: var(--emerald);
+        background: var(--success);
       }
       .text-emerald {
-        color: var(--emerald);
+        color: var(--success);
       }
       .bg-danger {
         background: var(--danger);
@@ -70,17 +98,8 @@
         color: var(--danger);
       }
 
-      .stat-card {
-        transition: all 0.25s ease;
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        background: var(--card-bg);
-      }
-      .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 28px var(--shadow-color);
-      }
-      .stat-card .stat-icon {
+      /* ===== ألوان مخصصة للإحصائيات ===== */
+      .stat-icon {
         width: 44px;
         height: 44px;
         border-radius: 12px;
@@ -89,7 +108,53 @@
         justify-content: center;
         font-size: 1.2rem;
       }
+      .stat-icon.gold {
+        background: var(--gold-light);
+        color: var(--gold-primary);
+      }
+      .stat-icon.warning {
+        background: var(--warning-light);
+        color: var(--warning);
+      }
+      .stat-icon.emerald {
+        background: var(--success-light);
+        color: var(--success);
+      }
+      .stat-icon.danger {
+        background: var(--danger-light);
+        color: var(--danger);
+      }
 
+      html.dark .stat-icon.gold {
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--gold-primary);
+      }
+      html.dark .stat-icon.warning {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--warning);
+      }
+      html.dark .stat-icon.emerald {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--success);
+      }
+      html.dark .stat-icon.danger {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--danger);
+      }
+
+      /* ===== بطاقات الإحصائيات ===== */
+      .stat-card {
+        transition: all 0.25s ease;
+        border: 1px solid var(--border-color);
+        cursor: pointer;
+        background: var(--bg-card);
+      }
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+      }
+
+      /* ===== أزرار ===== */
       .btn {
         padding: 10px 28px;
         border-radius: 40px;
@@ -103,21 +168,21 @@
         font-size: 0.95rem;
       }
       .btn-gold {
-        background: var(--gold);
-        color: #0b121e;
+        background: var(--gold-primary);
+        color: var(--text-primary);
       }
       .btn-gold:hover {
-        background: var(--gold-soft);
+        background: var(--gold-light);
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(201, 162, 75, 0.25);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25);
       }
       .btn-outline {
         background: transparent;
         color: var(--text-primary);
-        border: 2px solid var(--border-light);
+        border: 2px solid var(--border-color);
       }
       .btn-outline:hover {
-        background: var(--bg-surface);
+        background: var(--bg-card);
         color: var(--text-primary);
       }
       .btn-sm {
@@ -132,6 +197,7 @@
         background: var(--terracotta);
       }
 
+      /* ===== باقي الأنماط ===== */
       .status-badge {
         display: inline-flex;
         align-items: center;
@@ -165,7 +231,7 @@
         display: flex;
       }
       .modal-box {
-        background: var(--bg-secondary);
+        background: var(--bg-card);
         border: 1px solid var(--border-color);
         border-radius: 24px;
         max-width: 600px;
@@ -173,7 +239,7 @@
         max-height: 92vh;
         overflow-y: auto;
         padding: 28px 32px;
-        box-shadow: 0 30px 60px var(--shadow-color);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
         animation: modalFadeIn 0.25s ease;
         position: relative;
       }
@@ -228,12 +294,12 @@
       .field input,
       .field select,
       .field textarea {
-        border: 2px solid var(--border-light);
+        border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 10px 14px;
         font-size: 0.9rem;
         transition: border 0.2s;
-        background: var(--input-bg);
+        background: var(--bg-card);
         color: var(--text-primary);
         width: 100%;
         font-family: "Tajawal", sans-serif;
@@ -242,12 +308,12 @@
       .field select:focus,
       .field textarea:focus {
         outline: none;
-        border-color: var(--gold);
-        box-shadow: 0 0 0 3px rgba(201, 162, 75, 0.08);
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
       }
       .field input::placeholder,
       .field textarea::placeholder {
-        color: var(--text-muted);
+        color: var(--text-secondary);
       }
       .field.full-width {
         grid-column: 1 / -1;
@@ -257,12 +323,12 @@
         position: fixed;
         bottom: 30px;
         left: 30px;
-        background: var(--bg-surface);
+        background: var(--bg-card);
         color: var(--text-primary);
         padding: 14px 28px;
         border-radius: 14px;
         font-weight: 500;
-        box-shadow: 0 12px 30px var(--shadow-color);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
         z-index: 9999;
         display: none;
         align-items: center;
@@ -292,17 +358,17 @@
         padding: 14px 16px;
         border-radius: 12px;
         border: 1px solid var(--border-color);
-        background: var(--bg-secondary);
+        background: var(--bg-card);
         transition: all 0.2s;
         margin-bottom: 8px;
       }
       .notif-item:hover {
-        border-color: var(--gold);
-        box-shadow: 0 2px 8px var(--shadow-color);
+        border-color: var(--gold-primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
       }
       .notif-item.unread {
-        border-right: 4px solid var(--gold);
-        background: var(--bg-surface);
+        border-right: 4px solid var(--gold-primary);
+        background: var(--bg-card);
       }
       .notif-item .notif-icon {
         font-size: 1.4rem;
@@ -324,7 +390,7 @@
       }
       .notif-item .notif-time {
         font-size: 0.7rem;
-        color: var(--text-muted);
+        color: var(--text-secondary);
         margin-top: 4px;
       }
       .notif-item .notif-actions {
@@ -343,7 +409,7 @@
         padding: 4px 6px;
       }
       .notif-item .notif-actions button:hover {
-        color: var(--gold);
+        color: var(--gold-primary);
       }
       .notif-item .notif-actions button.danger:hover {
         color: var(--danger);
@@ -353,16 +419,16 @@
         padding: 12px 16px;
         border-radius: 12px;
         border: 1px solid var(--border-color);
-        background: var(--bg-secondary);
+        background: var(--bg-card);
         margin-bottom: 8px;
         transition: all 0.2s;
       }
       .reminder-item:hover {
-        border-color: var(--gold);
+        border-color: var(--gold-primary);
       }
       .reminder-item.done {
         opacity: 0.5;
-        background: var(--bg-primary);
+        background: var(--bg-body);
       }
       .reminder-item .reminder-header {
         display: flex;
@@ -401,21 +467,21 @@
         transition: all 0.2s;
       }
       .reminder-item .reminder-actions .done-btn {
-        background: var(--emerald);
+        background: var(--success);
         color: #fff;
       }
       .reminder-item .reminder-actions .done-btn:hover {
-        background: var(--emerald-soft);
+        background: var(--success-light);
       }
       .reminder-item .reminder-actions .edit-btn {
-        background: var(--bg-surface);
+        background: var(--bg-card);
         color: var(--text-primary);
       }
       .reminder-item .reminder-actions .edit-btn:hover {
-        background: var(--bg-surface2);
+        background: var(--bg-body);
       }
       .reminder-item .reminder-actions .delete-btn {
-        background: var(--danger-soft);
+        background: var(--danger-light);
         color: var(--danger);
       }
       .reminder-item .reminder-actions .delete-btn:hover {
@@ -434,12 +500,12 @@
         color: var(--text-secondary);
       }
       .tab-btn.active {
-        background: var(--gold);
-        color: #0b121e;
-        box-shadow: 0 4px 12px rgba(201, 162, 75, 0.25);
+        background: var(--gold-primary);
+        color: var(--text-primary);
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
       }
       .tab-btn:hover:not(.active) {
-        background: var(--bg-surface);
+        background: var(--bg-card);
       }
       .tab-content {
         display: none;
@@ -451,7 +517,7 @@
       .filter-btn {
         padding: 4px 14px;
         border-radius: 20px;
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border-color);
         font-size: 0.75rem;
         font-weight: 600;
         cursor: pointer;
@@ -460,12 +526,12 @@
         color: var(--text-secondary);
       }
       .filter-btn.active {
-        background: var(--gold);
-        color: #0b121e;
-        border-color: var(--gold);
+        background: var(--gold-primary);
+        color: var(--text-primary);
+        border-color: var(--gold-primary);
       }
       .filter-btn:hover:not(.active) {
-        background: var(--bg-surface);
+        background: var(--bg-card);
       }
 
       @media (max-width: 768px) {
@@ -503,12 +569,12 @@
   <body>
     <!-- TOAST -->
     <div class="toast" id="toast">
-      <i class="fas fa-check-circle text-emerald-400"></i>
+      <i class="fas fa-check-circle text-emerald"></i>
       <span id="toastMessage">تم الإجراء بنجاح</span>
     </div>
 
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
+    <!-- SIDEBAR (سيتم تحميله عبر global.js) -->
+    <div id="sidebar-placeholder"></div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
@@ -536,7 +602,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="statsGrid">
           <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
             <div class="flex items-center gap-3">
-              <div class="stat-icon bg-blue-50/10 text-blue-400">
+              <div class="stat-icon gold">
                 <i class="fas fa-bell"></i>
               </div>
               <div>
@@ -552,13 +618,13 @@
           </div>
           <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
             <div class="flex items-center gap-3">
-              <div class="stat-icon bg-amber-50/10 text-amber-400">
+              <div class="stat-icon warning">
                 <i class="fas fa-circle"></i>
               </div>
               <div>
                 <p class="text-xs text-muted font-medium">غير مقروءة</p>
                 <p
-                  class="text-xl md:text-2xl font-bold text-amber-400"
+                  class="text-xl md:text-2xl font-bold text-warning"
                   id="unreadNotifications"
                 >
                   0
@@ -568,13 +634,13 @@
           </div>
           <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
             <div class="flex items-center gap-3">
-              <div class="stat-icon bg-emerald-50/10 text-emerald-400">
+              <div class="stat-icon emerald">
                 <i class="fas fa-clock"></i>
               </div>
               <div>
                 <p class="text-xs text-muted font-medium">التذكيرات</p>
                 <p
-                  class="text-xl md:text-2xl font-bold text-emerald-400"
+                  class="text-xl md:text-2xl font-bold text-emerald"
                   id="totalReminders"
                 >
                   0
@@ -584,13 +650,13 @@
           </div>
           <div class="stat-card rounded-xl px-3 py-3 md:py-4 shadow-sm">
             <div class="flex items-center gap-3">
-              <div class="stat-icon bg-red-50/10 text-red-400">
+              <div class="stat-icon danger">
                 <i class="fas fa-exclamation-triangle"></i>
               </div>
               <div>
                 <p class="text-xs text-muted font-medium">متأخرة</p>
                 <p
-                  class="text-xl md:text-2xl font-bold text-red-400"
+                  class="text-xl md:text-2xl font-bold text-danger"
                   id="overdueReminders"
                 >
                   0
