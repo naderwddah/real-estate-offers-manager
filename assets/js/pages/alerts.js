@@ -76,20 +76,6 @@ function loadRemindersLocally() {
   return [];
 }
 
-function getSampleReminders() {
-  const now = new Date();
-  const future = new Date(now.getTime() + 86400000);
-  return [
-    {
-      id: "rem_1",
-      title: "متابعة عرض ع-١٢٣",
-      reminder_time: future.toISOString(),
-      notes: "تذكير بمتابعة العرض مع العميل",
-      done: false,
-    },
-  ];
-}
-
 async function loadReminders() {
   try {
     const result = await API.reminders.list({ per_page: 100 });
@@ -113,17 +99,10 @@ async function loadReminders() {
     }
     // إذا فشل API، نستخدم التخزين المحلي
     reminders = loadRemindersLocally();
-    if (reminders.length === 0) {
-      reminders = getSampleReminders();
-      saveRemindersLocally();
-    }
+
   } catch (err) {
     console.warn("فشل تحميل التذكيرات من API:", err.message);
     reminders = loadRemindersLocally();
-    if (reminders.length === 0) {
-      reminders = getSampleReminders();
-      saveRemindersLocally();
-    }
   }
   renderReminders();
   renderStats();
@@ -175,10 +154,7 @@ async function loadData() {
   if (!isAuth) {
     // إذا لم يكن مسجلاً، نعرض البيانات المحلية فقط
     reminders = loadRemindersLocally();
-    if (reminders.length === 0) {
-      reminders = getSampleReminders();
-      saveRemindersLocally();
-    }
+
     notifications = [];
     renderNotifications();
     renderReminders();
